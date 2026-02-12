@@ -48,9 +48,9 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
             lang={packLang}
           />
 
-          <div className="rounded-xl border-2 border-dashed border-muted bg-muted/20 p-5 flex items-center gap-5 text-muted-foreground cursor-not-allowed opacity-60">
-            <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center shrink-0">
-              <Upload className="w-6 h-6" />
+          <div className="rounded-xl border-2 border-dashed border-muted bg-muted/20 p-4 flex items-center gap-4 text-muted-foreground cursor-not-allowed opacity-60">
+            <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center shrink-0">
+              <Upload className="w-5 h-5" />
             </div>
             <div>
               <h3 className="font-semibold">Загрузить свой пак</h3>
