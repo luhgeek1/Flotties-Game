@@ -1,10 +1,12 @@
-import { CheckCircle2, Pencil, Trash2 } from "lucide-react";
+import { CheckCircle2, Pencil, Trash2, User } from "lucide-react";
 import { motion } from "motion/react";
 
 type PlayerSetupCardProps = {
   layoutId: string;
   name: string;
+  isSelected?: boolean;
   status?: string;
+  onToggle?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 };
@@ -12,31 +14,38 @@ type PlayerSetupCardProps = {
 export function PlayerSetupCard({
   layoutId,
   name,
+  isSelected = false,
   status = "Участвует",
+  onToggle,
   onEdit,
   onDelete,
 }: PlayerSetupCardProps) {
+  const currentStatus = isSelected ? status : "Не участвует";
+
   return (
     <motion.div
       layoutId={layoutId}
+      onClick={onToggle}
       className={`
         flex items-center justify-between p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer
-        border-primary bg-primary/5 shadow-md
+        ${isSelected ? "border-primary bg-primary/5 shadow-md" : "border-border bg-background shadow-sm"}
       `}
     >
       <div className="flex items-center gap-3">
         <div
           className={`
             w-10 h-10 rounded-xl flex items-center justify-center transition-colors
-            bg-primary text-primary-foreground
+            ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}
           `}
         >
-          <CheckCircle2 className="w-5 h-5" />
+          {isSelected ? <CheckCircle2 className="w-5 h-5" /> : <User className="w-5 h-5" />}
         </div>
 
         <div className="flex flex-col">
-          <span className="text-base font-bold text-primary">{name}</span>
-          <span className="text-xs text-muted-foreground">{status}</span>
+          <span className={`text-base font-bold ${isSelected ? "text-primary" : "text-foreground"}`}>
+            {name}
+          </span>
+          <span className="text-xs text-muted-foreground">{currentStatus}</span>
         </div>
       </div>
 
