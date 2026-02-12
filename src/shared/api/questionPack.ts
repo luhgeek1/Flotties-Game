@@ -19,7 +19,7 @@ export type QuestionPack = {
 };
 
 export async function fetchDefaultQuestionPack(): Promise<QuestionPack> {
-  const resp = await fetch(new URL("../../app/questions.json", import.meta.url));
+  const resp = await fetch(new URL("../storage/questions.json", import.meta.url));
   if (!resp.ok) {
     throw new Error("Failed to load question pack");
   }
