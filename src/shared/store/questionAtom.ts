@@ -12,9 +12,9 @@ export const questionPacksAtom = atom(async () => {
 export function getSelectedQuestionPack(
   packs: QuestionPack[],
   selectedPackId: QuestionPack["id"] | null,
-): QuestionPack | null {
+): QuestionPack {
   if (packs.length === 0) {
-    return null;
+    throw new Error("ПАК ПУСТОЙ");
   }
 
   return packs.find(pack => pack.id === selectedPackId) ?? packs[0];

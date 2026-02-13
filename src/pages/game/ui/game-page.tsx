@@ -1,59 +1,60 @@
-import { useState } from "react";
+import { useAtom, useAtomValue } from "jotai";
 
-import { GameBoard, type GameBoardTheme } from "@/entities/game-board";
+import { GameBoard } from "@/entities/game-board";
 import { PlayerScoreCard } from "@/entities/players";
 import { ExitGameModal } from "@/features/exit-game";
-import { QuestionModal, type QuestionModalPlayer } from "@/features/question-modal";
+import { QuestionModal } from "@/features/question-modal";
 import { GameShell } from "@/widgets/game-shell";
+
+import {
+  gameIsExitModalOpenAtom,
+} from "@/shared/store/gameAtoms";
+import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
+import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+
+import { useGamePlayers } from "../model/useGamePlayers";
+import { useGameBoardData } from "../model/useGameBoardData";
+import { useQuestionState } from "../model/useQuestionState";
 
 type GamePageProps = {
   onExitToSetup?: () => void;
 };
 
-const BOARD_THEMES: GameBoardTheme[] = [
-  { id: "theme-1", title: "Theme 1 title", values: [100, 200, 300, 400, 500] },
-  { id: "theme-2", title: "Theme 2 title", values: [100, 200, 300, 400, 500] },
-  { id: "theme-3", title: "Theme 3 title", values: [100, 200, 300, 400, 500] },
-  { id: "theme-4", title: "Theme 4 title", values: [100, 200, 300, 400, 500] },
-  { id: "theme-5", title: "Theme 5 title", values: [100, 200, 300, 400, 500] },
-  { id: "theme-6", title: "Theme 6 title", values: [100, 200, 300, 400, 500] },
-];
-
-const SIDEBAR_PLAYERS = [
-  { id: "player-1", name: "Player 1", score: 0 },
-  { id: "player-2", name: "Player 2", score: 0 },
-];
-
-const QUESTION_PLAYERS: QuestionModalPlayer[] = [
-  { id: "player-1", name: "Player 1" },
-  { id: "player-2", name: "Player 2", answered: true },
-];
-
 export function GamePage({ onExitToSetup }: GamePageProps) {
-  const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
-  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+  const selectedPack = useAtomValue(selectedQuestionPackAtom);
+  const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
 
-  const closeQuestionModal = () => {
-    setActiveQuestionId(null);
-  };
+  const [isExitModalOpen, setIsExitModalOpen] = useAtom(gameIsExitModalOpenAtom);
 
-  const closeExitModal = () => {
-    setIsExitModalOpen(false);
-  };
+  const { gamePlayers, questionPlayers, resetScores } = useGamePlayers(selectedPlayerIds);
+  const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack);
+  const {
+    activeQuestion,
+    activeQuestionId,
+    closeQuestionModal,
+    handleQuestionSelect,
+    openedQuestionIds,
+    resetQuestionState,
+  } = useQuestionState(questionsById);
+
+  const questionsProgress = `Questions: ${openedQuestionIds.length}/${totalQuestions}`;
+
+  const setExitModalOpen = (open: boolean) => setIsExitModalOpen(open);
 
   const handleExitConfirm = () => {
-    setIsExitModalOpen(false);
-    setActiveQuestionId(null);
+    setExitModalOpen(false);
+    resetQuestionState();
+    resetScores();
     onExitToSetup?.();
   };
 
   return (
     <>
       <GameShell
-        packTitle="Pack title"
-        questionsProgress="Questions: 0/30"
-        onExitClick={() => setIsExitModalOpen(true)}
-        playersSlot={SIDEBAR_PLAYERS.map(player => (
+        packTitle={packTitle}
+        questionsProgress={questionsProgress}
+        onExitClick={() => setExitModalOpen(true)}
+        playersSlot={gamePlayers.map(player => (
           <PlayerScoreCard
             key={player.id}
             layoutId={`player-card-${player.id}`}
@@ -62,23 +63,27 @@ export function GamePage({ onExitToSetup }: GamePageProps) {
           />
         ))}
       >
-        <GameBoard themes={BOARD_THEMES} onQuestionSelect={setActiveQuestionId} />
+        <GameBoard
+          themes={boardThemes}
+          openedQuestionIds={openedQuestionIds}
+          onQuestionSelect={handleQuestionSelect}
+        />
       </GameShell>
 
       <QuestionModal
-        isOpen={activeQuestionId !== null}
+        isOpen={activeQuestion !== null}
         questionId={activeQuestionId}
-        questionValue={100}
-        questionText="Question text"
-        answerText="Answer text"
-        players={QUESTION_PLAYERS}
+        questionValue={activeQuestion?.value ?? ""}
+        questionText={activeQuestion?.question ?? ""}
+        answerText={activeQuestion?.answers[0] ?? "Ответ не указан"}
+        players={questionPlayers}
         onClose={closeQuestionModal}
         onBackToBoard={closeQuestionModal}
       />
 
       <ExitGameModal
         isOpen={isExitModalOpen}
-        onCancel={closeExitModal}
+        onCancel={() => setExitModalOpen(false)}
         onConfirm={handleExitConfirm}
       />
     </>
