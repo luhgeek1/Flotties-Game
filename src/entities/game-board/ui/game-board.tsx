@@ -13,12 +13,12 @@ type GameBoardProps = {
 
 export function GameBoard({ themes, onQuestionSelect }: GameBoardProps) {
   return (
-    <div className="w-full max-w-[1400px] h-full flex flex-col justify-center max-h-[90vh]">
+    <div className="w-full max-w-350 h-full flex flex-col justify-center max-h-[90vh]">
       <div className="grid grid-cols-6 gap-3 h-full">
         {themes.map(theme => (
           <div key={theme.id} className="flex flex-col gap-3 h-full">
-            <div className="flex-1 min-h-[60px] max-h-[100px] bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center p-2 text-center shadow-sm">
-              <h3 className="font-bold text-[10px] sm:text-xs md:text-sm lg:text-base uppercase tracking-tight text-foreground break-words w-full leading-tight line-clamp-3">
+            <div className="flex-1 min-h-15 max-h-25 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center p-2 text-center shadow-sm">
+              <h3 className="font-bold text-[10px] sm:text-xs md:text-sm lg:text-base uppercase tracking-tight text-foreground wrap-break-word w-full leading-tight line-clamp-3">
                 {theme.title}
               </h3>
             </div>
