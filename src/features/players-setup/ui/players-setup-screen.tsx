@@ -1,8 +1,10 @@
 import { useAtom } from "jotai";
+import { ChevronRight, Plus } from "lucide-react";
 import { motion } from "motion/react";
-import { Plus, ChevronRight } from "lucide-react";
 
 import { DEFAULT_PLAYERS, PlayerSetupCard, type PlayerId } from "@/entities/players";
+import { Button } from "@/shared/components/ui/button";
+import { cn } from "@/shared/lib/utils";
 import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 import { SetupShell } from "@/widgets/setup-shell";
 
@@ -43,12 +45,13 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
             <p className="text-xs text-muted-foreground">(минимум 3 игрока)</p>
           </div>
 
-          <button
+          <Button
             type="button"
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground gap-2 text-primary hover:text-primary/80 hover:bg-primary/10 h-10 px-4 py-2"
+            variant="ghost"
+            className="h-10 gap-2 px-4 text-primary hover:bg-primary/10 hover:text-primary/80"
           >
-            <Plus className="w-4 h-4" /> Добавить
-          </button>
+            <Plus className="h-4 w-4" /> Добавить
+          </Button>
         </div>
 
         <div className="space-y-3">
@@ -64,18 +67,21 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
         </div>
 
         <div className="pt-6">
-          <button
+          <Button
             disabled={!canContinue}
             type="button"
             onClick={() => {
               if (!canContinue) return;
               onContinue?.();
             }}
-            className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 w-full text-base h-14 rounded-xl font-bold shadow-lg shadow-primary/10"
+            className={cn(
+              "h-14 w-full rounded-xl text-base font-bold",
+              canContinue ? "shadow-lg shadow-primary/10" : "shadow-none"
+            )}
           >
             Продолжить {selectedPlayersCount}
-            <ChevronRight className="w-5 h-5 ml-2" />
-          </button>
+            <ChevronRight className="ml-2 h-5 w-5" />
+          </Button>
         </div>
       </motion.div>
     </SetupShell>

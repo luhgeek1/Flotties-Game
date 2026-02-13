@@ -1,9 +1,11 @@
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { motion } from "motion/react";
 import { ArrowLeft, Upload, Play } from "lucide-react";
 
 import { QuestionPackCard } from "@/entities/question-pack";
 import { questionPackAtom } from "@/shared/store/questionAtom";
+import { cn } from "@/shared/lib/utils";
+import { setupSelectedPackIdsAtom } from "@/shared/store/setupAtoms";
 import { SetupShell } from "@/widgets/setup-shell";
 
 type PacksSetupScreenProps = {
@@ -13,10 +15,25 @@ type PacksSetupScreenProps = {
 
 export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
   const questionPack = useAtomValue(questionPackAtom);
+  const packId = questionPack.id;
   const packTitle = questionPack.title;
   const packLang = questionPack.lang.toUpperCase();
   const roundsCount = questionPack.rounds.length;
   const themesCount = questionPack.rounds.at(0)?.themes.length ?? 0;
+  
+  const [selectedPackIds, setSelectedPackIds] = useAtom(setupSelectedPackIdsAtom);
+
+  const togglePackSelection = (packId: string) => {
+    setSelectedPackIds(prevSelected => {
+      if (prevSelected.includes(packId)) {
+        return prevSelected.filter(id => id !== packId);
+      }
+      return [...prevSelected, packId];
+    });
+  };
+
+  const isPackSelected = selectedPackIds.includes(packId);
+  const canStart = selectedPackIds.length > 0;
 
   return (
     <SetupShell>
@@ -46,6 +63,8 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
             roundsCount={roundsCount}
             themesCount={themesCount}
             lang={packLang}
+            isSelected={isPackSelected}
+            onToggle={() => togglePackSelection(packId)}
           />
 
           <div className="rounded-xl border-2 border-dashed border-muted bg-muted/20 p-4 flex items-center gap-4 text-muted-foreground cursor-not-allowed opacity-60">
@@ -62,8 +81,17 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
         <div className="pt-6">
           <button
             type="button"
-            onClick={onStart}
-            className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 w-full text-lg h-14 rounded-xl font-bold shadow-xl shadow-primary/20"
+            disabled={!canStart}
+            onClick={() => {
+              if (!canStart) return;
+              onStart?.();
+            }}
+            className={cn(
+              "inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full text-lg h-14 rounded-xl font-bold",
+              canStart
+                ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl shadow-primary/20"
+                : "bg-primary/60 text-primary-foreground",
+            )}
           >
             Начать игру
             <Play className="w-5 h-5 ml-2 fill-current" />

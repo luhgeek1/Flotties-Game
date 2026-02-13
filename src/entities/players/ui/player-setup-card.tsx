@@ -1,6 +1,9 @@
 import { CheckCircle2, Pencil, Trash2, User } from "lucide-react";
 import { motion } from "motion/react";
 
+import { Button } from "@/shared/components/ui/button";
+import { cn } from "@/shared/lib/utils";
+
 type PlayerSetupCardProps = {
   layoutId: string;
   name: string;
@@ -26,23 +29,24 @@ export function PlayerSetupCard({
     <motion.div
       layoutId={layoutId}
       onClick={onToggle}
-      className={`
-        flex items-center justify-between p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer
-        ${isSelected ? "border-primary bg-primary/5 shadow-md" : "border-border bg-background shadow-sm"}
-      `}
+      className={cn(
+        "flex items-center justify-between rounded-xl border-2 p-3 transition-all duration-200",
+        onToggle ? "cursor-pointer" : "cursor-default",
+        isSelected ? "border-primary bg-primary/5 shadow-md" : "border-border bg-background shadow-sm"
+      )}
     >
       <div className="flex items-center gap-3">
         <div
-          className={`
-            w-10 h-10 rounded-xl flex items-center justify-center transition-colors
-            ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}
-          `}
+          className={cn(
+            "flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
+            isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+          )}
         >
-          {isSelected ? <CheckCircle2 className="w-5 h-5" /> : <User className="w-5 h-5" />}
+          {isSelected ? <CheckCircle2 className="h-5 w-5" /> : <User className="h-5 w-5" />}
         </div>
 
         <div className="flex flex-col">
-          <span className={`text-base font-bold ${isSelected ? "text-primary" : "text-foreground"}`}>
+          <span className={cn("text-base font-bold", isSelected ? "text-primary" : "text-foreground")}>
             {name}
           </span>
           <span className="text-xs text-muted-foreground">{currentStatus}</span>
@@ -50,21 +54,33 @@ export function PlayerSetupCard({
       </div>
 
       <div className="flex items-center gap-2">
-        <button
+        <Button
           type="button"
-          onClick={onEdit}
-          className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9 text-muted-foreground/50 hover:text-primary"
+          variant="ghost"
+          size="icon"
+          disabled={!onEdit}
+          onClick={event => {
+            event.stopPropagation();
+            onEdit?.();
+          }}
+          className="h-9 w-9 text-muted-foreground hover:text-primary"
         >
-          <Pencil className="w-4 h-4" />
-        </button>
+          <Pencil className="h-4 w-4" />
+        </Button>
 
-        <button
+        <Button
           type="button"
-          onClick={onDelete}
-          className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          variant="ghost"
+          size="icon"
+          disabled={!onDelete}
+          onClick={event => {
+            event.stopPropagation();
+            onDelete?.();
+          }}
+          className="h-9 w-9 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
         >
-          <Trash2 className="w-4 h-4" />
-        </button>
+          <Trash2 className="h-4 w-4" />
+        </Button>
       </div>
     </motion.div>
   );
