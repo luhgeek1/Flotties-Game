@@ -1,10 +1,9 @@
 import { User } from "lucide-react";
 import { motion } from "motion/react";
+import type { Player } from "../model/types";
 
-type PlayerScoreCardProps = {
+type PlayerScoreCardProps = Pick<Player, "name" | "score"> & {
   layoutId?: string;
-  name: string;
-  score: number;
 };
 
 export function PlayerScoreCard({ layoutId, name, score }: PlayerScoreCardProps) {

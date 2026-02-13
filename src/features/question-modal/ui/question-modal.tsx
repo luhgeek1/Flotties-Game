@@ -1,11 +1,10 @@
 import { ArrowLeft, Eye, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
+import type { Player } from "@/entities/players";
 import { Button } from "@/shared/components/ui/button";
 
-export type QuestionModalPlayer = {
-  id: string;
-  name: string;
+export type QuestionModalPlayer = Pick<Player, "id" | "name"> & {
   answered?: boolean;
 };
 

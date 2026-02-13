@@ -1,10 +1,7 @@
-export type GameBoardQuestion = {
-  id: string;
-  value: number;
-};
+import type { QuestionPackQuestion, QuestionPackTheme } from "@/shared/api/questionPack";
 
-export type GameBoardTheme = {
-  id: string;
-  title: string;
+export type GameBoardQuestion = Pick<QuestionPackQuestion, "id" | "value">;
+
+export type GameBoardTheme = Omit<QuestionPackTheme, "questions"> & {
   questions: GameBoardQuestion[];
 };
