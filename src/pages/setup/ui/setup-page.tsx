@@ -4,7 +4,11 @@ import { PlayersSetupScreen } from "@/features/players-setup";
 import { PacksSetupScreen } from "@/features/packs-setup";
 import { setupStepAtom } from "@/shared/store/setupAtoms";
 
-export function SetupPage() {
+type SetupPageProps = {
+  onStartGame?: () => void;
+};
+
+export function SetupPage({ onStartGame }: SetupPageProps) {
   const [step, setStep] = useAtom(setupStepAtom);
 
   return (
@@ -12,7 +16,11 @@ export function SetupPage() {
       {step === "players" ? (
         <PlayersSetupScreen key="players-screen" onContinue={() => setStep("packs")} />
       ) : (
-        <PacksSetupScreen key="packs-screen" onBack={() => setStep("players")} />
+        <PacksSetupScreen
+          key="packs-screen"
+          onBack={() => setStep("players")}
+          onStart={onStartGame}
+        />
       )}
     </AnimatePresence>
   );

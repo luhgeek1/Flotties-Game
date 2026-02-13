@@ -1,7 +1,7 @@
-import { SetupPage } from "@/pages/setup";
+import { AppRouter } from "@/app/router";
 
 function App() {
-  return <SetupPage />;
+  return <AppRouter />;
 }
 
 export default App;
