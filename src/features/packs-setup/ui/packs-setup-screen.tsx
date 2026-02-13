@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { ArrowLeft, Upload, Play } from "lucide-react";
 
 import { QuestionPackCard } from "@/entities/question-pack";
+import { Button } from "@/shared/components/ui/button";
 import { questionPackAtom } from "@/shared/store/questionAtom";
 import { cn } from "@/shared/lib/utils";
 import { setupSelectedPackIdsAtom } from "@/shared/store/setupAtoms";
@@ -46,13 +47,15 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
         className="space-y-6"
       >
         <div className="flex items-center gap-2 mb-6">
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon-lg"
             onClick={onBack}
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 -ml-2"
+            className="-ml-2"
           >
             <ArrowLeft className="w-5 h-5" />
-          </button>
+          </Button>
 
           <h2 className="text-2xl font-bold tracking-tight">Выберите пак вопросов</h2>
         </div>
@@ -79,7 +82,7 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
         </div>
 
         <div className="pt-6">
-          <button
+          <Button
             type="button"
             disabled={!canStart}
             onClick={() => {
@@ -87,7 +90,7 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
               onStart?.();
             }}
             className={cn(
-              "inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full text-lg h-14 rounded-xl font-bold",
+              "w-full text-lg h-14 rounded-xl font-bold",
               canStart
                 ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl shadow-primary/20"
                 : "bg-primary/60 text-primary-foreground",
@@ -95,7 +98,7 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
           >
             Начать игру
             <Play className="w-5 h-5 ml-2 fill-current" />
-          </button>
+          </Button>
         </div>
       </motion.div>
     </SetupShell>
