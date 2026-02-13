@@ -1,2 +1,2 @@
 export { GameBoard } from "./ui";
-export type { GameBoardTheme } from "./ui";
+export type { GameBoardQuestion, GameBoardTheme } from "./model";

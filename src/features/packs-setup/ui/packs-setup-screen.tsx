@@ -4,9 +4,9 @@ import { ArrowLeft, Upload, Play } from "lucide-react";
 
 import { QuestionPackCard } from "@/entities/question-pack";
 import { Button } from "@/shared/components/ui/button";
-import { questionPackAtom } from "@/shared/store/questionAtom";
+import { questionPacksAtom } from "@/shared/store/questionAtom";
 import { cn } from "@/shared/lib/utils";
-import { setupSelectedPackIdsAtom } from "@/shared/store/setupAtoms";
+import { setupSelectedPackIdAtom } from "@/shared/store/setupAtoms";
 import { SetupShell } from "@/widgets/setup-shell";
 
 type PacksSetupScreenProps = {
@@ -15,26 +15,21 @@ type PacksSetupScreenProps = {
 };
 
 export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
-  const questionPack = useAtomValue(questionPackAtom);
-  const packId = questionPack.id;
-  const packTitle = questionPack.title;
-  const packLang = questionPack.lang.toUpperCase();
-  const roundsCount = questionPack.rounds.length;
-  const themesCount = questionPack.rounds.at(0)?.themes.length ?? 0;
-  
-  const [selectedPackIds, setSelectedPackIds] = useAtom(setupSelectedPackIdsAtom);
+  const questionPacks = useAtomValue(questionPacksAtom);
+  const [selectedPackId, setSelectedPackId] = useAtom(setupSelectedPackIdAtom);
 
+  //выбор пака
   const togglePackSelection = (packId: string) => {
-    setSelectedPackIds(prevSelected => {
-      if (prevSelected.includes(packId)) {
-        return prevSelected.filter(id => id !== packId);
+    setSelectedPackId(prevSelectedPackId => {
+      if (prevSelectedPackId === packId) {
+        return null;
       }
-      return [...prevSelected, packId];
+
+      return packId;
     });
   };
 
-  const isPackSelected = selectedPackIds.includes(packId);
-  const canStart = selectedPackIds.length > 0;
+  const canStart = selectedPackId !== null;
 
   return (
     <SetupShell>
@@ -61,14 +56,22 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
         </div>
 
         <div className="grid grid-cols-1 gap-4">
-          <QuestionPackCard
-            title={packTitle}
-            roundsCount={roundsCount}
-            themesCount={themesCount}
-            lang={packLang}
-            isSelected={isPackSelected}
-            onToggle={() => togglePackSelection(packId)}
-          />
+          {questionPacks.map(questionPack => {
+            const roundsCount = questionPack.rounds.length;
+            const themesCount = questionPack.rounds.at(0)?.themes.length ?? 0;
+
+            return (
+              <QuestionPackCard
+                key={questionPack.id}
+                title={questionPack.title}
+                roundsCount={roundsCount}
+                themesCount={themesCount}
+                lang={questionPack.lang.toUpperCase()}
+                isSelected={selectedPackId === questionPack.id}
+                onToggle={() => togglePackSelection(questionPack.id)}
+              />
+            );
+          })}
 
           <div className="rounded-xl border-2 border-dashed border-muted bg-muted/20 p-4 flex items-center gap-4 text-muted-foreground cursor-not-allowed opacity-60">
             <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center shrink-0">

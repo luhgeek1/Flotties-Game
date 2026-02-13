@@ -7,8 +7,6 @@ export type QuestionModalPlayer = {
   id: string;
   name: string;
   answered?: boolean;
-  onMarkIncorrect?: () => void;
-  onMarkCorrect?: () => void;
 };
 
 type QuestionModalProps = {

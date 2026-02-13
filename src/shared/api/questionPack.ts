@@ -1,21 +1,30 @@
-export type QuestionTheme = {
+export type QuestionPackQuestion = {
   id: string;
-  title: string;
-  questions: unknown[];
+  value: number;
+  type: string;
+  question: string;
+  answers: string[];
 };
 
-export type QuestionRound = {
+export type QuestionPackTheme = {
+  id: string;
+  title: string;
+  questions: QuestionPackQuestion[];
+};
+
+export type QuestionPackRound = {
   id: string;
   title: string;
   values: number[];
-  themes: QuestionTheme[];
+  themes: QuestionPackTheme[];
 };
 
 export type QuestionPack = {
   id: string;
   title: string;
   lang: string;
-  rounds: QuestionRound[];
+  rounds: QuestionPackRound[];
+  special: unknown;
 };
 
 export async function fetchDefaultQuestionPack(): Promise<QuestionPack> {

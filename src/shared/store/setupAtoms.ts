@@ -7,7 +7,7 @@ export type SetupStep = "players" | "packs";
 
 const STEP_STORAGE_KEY = "setup-step";
 const SELECTED_PLAYERS_STORAGE_KEY = "setup-selected-players";
-const SELECTED_PACKS_STORAGE_KEY = "setup-selected-packs";
+const SELECTED_PACK_ID_STORAGE_KEY = "setup-selected-pack-id";
 
 export const setupStepAtom = atomWithStorage<SetupStep>(
   STEP_STORAGE_KEY,
@@ -23,9 +23,9 @@ export const setupSelectedPlayerIdsAtom = atomWithStorage<PlayerId[]>(
   { getOnInit: true },
 );
 
-export const setupSelectedPackIdsAtom = atomWithStorage<QuestionPack["id"][]>(
-  SELECTED_PACKS_STORAGE_KEY,
-  [],
+export const setupSelectedPackIdAtom = atomWithStorage<QuestionPack["id"] | null>(
+  SELECTED_PACK_ID_STORAGE_KEY,
+  null,
   undefined,
   { getOnInit: true },
 );
