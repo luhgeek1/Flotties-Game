@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useAtom } from "jotai";
 import { motion } from "motion/react";
 import { Plus, ChevronRight } from "lucide-react";
 
 import { DEFAULT_PLAYERS, PlayerSetupCard, type PlayerId } from "@/entities/players";
+import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 import { SetupShell } from "@/widgets/setup-shell";
 
 type PlayersSetupScreenProps = {
@@ -12,7 +13,7 @@ type PlayersSetupScreenProps = {
 const MIN_PLAYERS_TO_CONTINUE = 3;
 
 export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
-  const [selectedPlayerIds, setSelectedPlayerIds] = useState<PlayerId[]>([]);
+  const [selectedPlayerIds, setSelectedPlayerIds] = useAtom(setupSelectedPlayerIdsAtom);
 
   const togglePlayerSelection = (playerId: PlayerId) => {
     setSelectedPlayerIds(prevSelected => {

@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useAtom } from "jotai";
 import { AnimatePresence } from "motion/react";
 import { PlayersSetupScreen } from "@/features/players-setup";
 import { PacksSetupScreen } from "@/features/packs-setup";
-
-type SetupStep = "players" | "packs";
+import { setupStepAtom } from "@/shared/store/setupAtoms";
 
 export function SetupPage() {
-  const [step, setStep] = useState<SetupStep>("players");
+  const [step, setStep] = useAtom(setupStepAtom);
 
   return (
     <AnimatePresence mode="wait">
