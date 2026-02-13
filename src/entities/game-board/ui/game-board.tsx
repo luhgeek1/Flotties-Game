@@ -3,11 +3,13 @@ import type { GameBoardTheme } from "../model";
 
 type GameBoardProps = {
   themes: GameBoardTheme[];
+  openedQuestionIds?: string[];
   onQuestionSelect?: (questionId: string) => void;
 };
 
-export function GameBoard({ themes, onQuestionSelect }: GameBoardProps) {
+export function GameBoard({ themes, openedQuestionIds = [], onQuestionSelect }: GameBoardProps) {
   const columns = Math.max(themes.length, 1);
+  const openedQuestionIdSet = new Set(openedQuestionIds);
 
   return (
     <div className="w-full max-w-350 h-full flex flex-col justify-center max-h-[90vh]">
@@ -24,6 +26,17 @@ export function GameBoard({ themes, onQuestionSelect }: GameBoardProps) {
             </div>
 
             {theme.questions.map(question => {
+              const isOpenedQuestion = openedQuestionIdSet.has(question.id);
+
+              if (isOpenedQuestion) {
+                return (
+                  <div
+                    key={question.id}
+                    className="flex-1 rounded-lg border border-muted bg-muted/40 shadow-sm"
+                  />
+                );
+              }
+
               return (
                 <motion.button
                   key={question.id}
