@@ -1,4 +1,4 @@
-import { ArrowLeft, Eye, X } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
 import type { Player } from "@/entities/players";
@@ -72,8 +72,7 @@ export function QuestionModal({
               </motion.div>
 
               <Button type="button" size="lg" className="gap-2 text-lg px-8 py-6 h-auto">
-                <Eye className="w-5 h-5" />
-                Show answer
+                Ответить 
               </Button>
 
               <div className="w-full mt-10">
