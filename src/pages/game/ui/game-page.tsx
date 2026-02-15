@@ -1,9 +1,11 @@
+import { useMemo } from "react";
 import { useAtom, useAtomValue } from "jotai";
 
 import { GameBoard } from "@/entities/game-board";
 import { PlayerScoreCard } from "@/entities/players";
 import { ExitGameModal } from "@/features/exit-game";
 import { QuestionModal } from "@/features/question-modal";
+import { RoundTransitionModal } from "@/features/round-transition";
 import { GameShell } from "@/widgets/game-shell";
 
 import {
@@ -18,16 +20,18 @@ import { useQuestionState } from "../model/useQuestionState";
 
 type GamePageProps = {
   onExitToSetup?: () => void;
+  onRoundTransitionConfirm?: () => void;
+  roundIndex?: number;
 };
 
-export function GamePage({ onExitToSetup }: GamePageProps) {
+export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex = 0 }: GamePageProps) {
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
 
   const [isExitModalOpen, setIsExitModalOpen] = useAtom(gameIsExitModalOpenAtom);
 
   const { gamePlayers, questionPlayers, resetScores, changePlayerScore } = useGamePlayers(selectedPlayerIds);
-  const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack);
+  const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack, roundIndex);
   const {
     activeQuestion,
     activeQuestionId,
@@ -50,14 +54,24 @@ export function GamePage({ onExitToSetup }: GamePageProps) {
   const isQuestionModalOpen = modalQuestionId !== null;
 
   const questionsProgress = `Questions: ${openedQuestionIds.length}/${totalQuestions}`;
+  const isRoundComplete = useMemo(() => (
+    totalQuestions > 0
+    && openedQuestionIds.length >= totalQuestions
+    && !isQuestionModalOpen
+  ), [isQuestionModalOpen, openedQuestionIds, totalQuestions]);
+  const isRoundTransitionModalOpen = Boolean(onRoundTransitionConfirm) && isRoundComplete;
 
   const setExitModalOpen = (open: boolean) => setIsExitModalOpen(open);
 
-  const handleExitConfirm = () => {
-    setExitModalOpen(false);
+  const exitToSetup = () => {
     resetQuestionState();
     resetScores();
     onExitToSetup?.();
+  };
+
+  const handleExitConfirm = () => {
+    setExitModalOpen(false);
+    exitToSetup();
   };
 
   return (
@@ -105,6 +119,16 @@ export function GamePage({ onExitToSetup }: GamePageProps) {
         isOpen={isExitModalOpen}
         onCancel={() => setExitModalOpen(false)}
         onConfirm={handleExitConfirm}
+      />
+
+      <RoundTransitionModal
+        isOpen={isRoundTransitionModalOpen}
+        onExitToSetup={() => {
+          exitToSetup();
+        }}
+        onConfirm={() => {
+          onRoundTransitionConfirm?.();
+        }}
       />
     </>
   );
