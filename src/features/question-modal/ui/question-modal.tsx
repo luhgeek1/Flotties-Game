@@ -61,7 +61,7 @@ export function QuestionModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm p-4"
         >
           <div className="w-full max-w-5xl flex flex-col items-center justify-center min-h-[60vh] max-h-[90vh]">
             <div className="w-full flex justify-between items-center mb-8 px-8">

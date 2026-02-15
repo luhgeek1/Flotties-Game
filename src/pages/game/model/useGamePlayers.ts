@@ -24,7 +24,10 @@ export function useGamePlayers(selectedPlayerIds: readonly string[]) {
     return picked.length ? picked : all;
   }, [selectedPlayerIds]);
 
-  const selectedPlayerIdsForGame = selectedPlayers.map(p => p.id);
+  const selectedPlayerIdsForGame = useMemo(
+    () => selectedPlayers.map(p => p.id),
+    [selectedPlayers],
+  );
 
   useEffect(() => {
     setPlayerScores(prev => buildScoresByPlayerIds(selectedPlayerIdsForGame, prev));
@@ -36,7 +39,7 @@ export function useGamePlayers(selectedPlayerIds: readonly string[]) {
   );
 
   const questionPlayers: QuestionModalPlayer[] = useMemo(
-    () => gamePlayers.map(p => ({ id: p.id, name: p.name })),
+    () => gamePlayers.map(p => ({ id: p.id, name: p.name, keyCode: p.keyCode })),
     [gamePlayers],
   );
 
@@ -44,5 +47,18 @@ export function useGamePlayers(selectedPlayerIds: readonly string[]) {
     setPlayerScores(buildScoresByPlayerIds(selectedPlayerIdsForGame));
   }, [setPlayerScores, selectedPlayerIdsForGame]);
 
-  return { gamePlayers, questionPlayers, selectedPlayerIdsForGame, resetScores };
+  const changePlayerScore = useCallback((playerId: string, delta: number) => {
+    setPlayerScores(prev => ({
+      ...prev,
+      [playerId]: (prev[playerId] ?? 0) + delta,
+    }));
+  }, [setPlayerScores]);
+
+  return {
+    gamePlayers,
+    questionPlayers,
+    selectedPlayerIdsForGame,
+    resetScores,
+    changePlayerScore,
+  };
 }

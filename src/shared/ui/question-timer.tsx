@@ -1,3 +1,4 @@
+//помог сделать CODEX
 import { motion } from "motion/react";
 
 import { Progress } from "@/shared/components/ui/progress";
