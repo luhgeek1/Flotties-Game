@@ -9,6 +9,7 @@ type GameShellProps = {
   playersSlot: ReactNode;
   children: ReactNode;
   onExitClick?: () => void;
+  onOpenAllQuestionsClick?: () => void;
   onThemeToggle?: () => void;
 };
 
@@ -18,6 +19,7 @@ export function GameShell({
   playersSlot,
   children,
   onExitClick,
+  onOpenAllQuestionsClick,
   onThemeToggle,
 }: GameShellProps) {
   return (
@@ -36,6 +38,11 @@ export function GameShell({
           </div>
 
           <div className="flex gap-2">
+            {onOpenAllQuestionsClick ? (
+              <Button type="button" variant="outline" size="sm" onClick={onOpenAllQuestionsClick}>
+                Закончить раньше
+              </Button>
+            ) : null}
             <Button type="button" variant="ghost" size="icon" title="Toggle theme" onClick={onThemeToggle}>
               <Sun className="w-5 h-5" />
             </Button>

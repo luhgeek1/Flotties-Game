@@ -95,6 +95,10 @@ export function useQuestionState({
     return createQuestionFlowState(activeQuestionId);
   }, [activeQuestionId, questionFlowState]);
 
+  const openAllQuestions = useCallback(() => {
+    setOpenedQuestionIds(Array.from(questionsById.keys()));
+  }, [questionsById, setOpenedQuestionIds]);
+
   return {
     activeQuestion,
     activeQuestionId,
@@ -107,6 +111,7 @@ export function useQuestionState({
     submitAnswer,
     markAnswerWrong,
     continueAfterWrong,
+    openAllQuestions,
     resetQuestionState,
   };
 }

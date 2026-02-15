@@ -43,6 +43,7 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
     markAnswerWrong,
     continueAfterWrong,
     openedQuestionIds,
+    openAllQuestions,
     resetQuestionState,
   } = useQuestionState({
     questionsById,
@@ -80,6 +81,7 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
         packTitle={packTitle}
         questionsProgress={questionsProgress}
         onExitClick={() => setExitModalOpen(true)}
+        onOpenAllQuestionsClick={openAllQuestions}
         playersSlot={gamePlayers.map(player => (
           <PlayerScoreCard
             key={player.id}
