@@ -26,16 +26,28 @@ export function GamePage({ onExitToSetup }: GamePageProps) {
 
   const [isExitModalOpen, setIsExitModalOpen] = useAtom(gameIsExitModalOpenAtom);
 
-  const { gamePlayers, questionPlayers, resetScores } = useGamePlayers(selectedPlayerIds);
+  const { gamePlayers, questionPlayers, resetScores, changePlayerScore } = useGamePlayers(selectedPlayerIds);
   const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack);
   const {
     activeQuestion,
     activeQuestionId,
-    closeQuestionModal,
     handleQuestionSelect,
+    modalState,
+    questionTimerDurationMs,
+    setAnswerInput,
+    submitAnswer,
+    markAnswerWrong,
+    continueAfterWrong,
     openedQuestionIds,
     resetQuestionState,
-  } = useQuestionState(questionsById);
+  } = useQuestionState({
+    questionsById,
+    players: questionPlayers,
+    onPlayerScoreDelta: changePlayerScore,
+  });
+  const modalQuestionId = activeQuestionId ?? modalState?.questionId ?? null;
+  const modalQuestion = modalQuestionId ? questionsById.get(modalQuestionId) ?? null : null;
+  const isQuestionModalOpen = modalQuestionId !== null;
 
   const questionsProgress = `Questions: ${openedQuestionIds.length}/${totalQuestions}`;
 
@@ -71,14 +83,22 @@ export function GamePage({ onExitToSetup }: GamePageProps) {
       </GameShell>
 
       <QuestionModal
-        isOpen={activeQuestion !== null}
-        questionId={activeQuestionId}
-        questionValue={activeQuestion?.value ?? ""}
-        questionText={activeQuestion?.question ?? ""}
-        answerText={activeQuestion?.answers[0] ?? "Ответ не указан"}
+        isOpen={isQuestionModalOpen}
+        questionId={modalQuestionId}
+        questionValue={modalQuestion?.value ?? activeQuestion?.value ?? ""}
+        questionText={modalQuestion?.question ?? activeQuestion?.question ?? ""}
+        answerText={modalQuestion?.answers[0] ?? activeQuestion?.answers[0] ?? "Ответ не указан"}
         players={questionPlayers}
-        onClose={closeQuestionModal}
-        onBackToBoard={closeQuestionModal}
+        phase={modalState?.phase ?? null}
+        remainingMs={modalState?.remainingMs ?? questionTimerDurationMs}
+        timerDurationMs={questionTimerDurationMs}
+        attemptedPlayerIds={modalState?.attemptedPlayerIds ?? []}
+        activePlayerId={modalState?.activePlayerId ?? null}
+        answerInput={modalState?.answerInput ?? ""}
+        onAnswerInputChange={setAnswerInput}
+        onSubmitAnswer={submitAnswer}
+        onMarkAnswerWrong={markAnswerWrong}
+        onContinue={continueAfterWrong}
       />
 
       <ExitGameModal

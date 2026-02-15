@@ -1,44 +1,112 @@
 import { useAtom } from "jotai";
-import { useMemo } from "react";
-import { gameActiveQuestionIdAtom, gameOpenedQuestionIdsAtom } from "@/shared/store/gameAtoms";
-import type { QuestionPackQuestion } from "@/shared/api/questionPack";
+import { useCallback, useMemo } from "react";
 
-export function useQuestionState(questionsById: Map<string, QuestionPackQuestion>) {
+import type { QuestionPackQuestion } from "@/shared/api/questionPack";
+import {
+  gameActiveQuestionIdAtom,
+  gameOpenedQuestionIdsAtom,
+  gameQuestionFlowStateAtom,
+} from "@/shared/store/gameAtoms";
+
+import {
+  createQuestionFlowState,
+  QUESTION_TIMER_DURATION_MS,
+  type QuestionStatePlayer,
+} from "./questionFlow";
+import { useQuestionAnswerActions } from "./useQuestionAnswerActions";
+import { useQuestionAutoCloseEffect } from "./useQuestionAutoCloseEffect";
+import { useQuestionBuzzingEffect } from "./useQuestionBuzzingEffect";
+import { useQuestionLifecycleActions } from "./useQuestionLifecycleActions";
+import { useQuestionTimerEffect } from "./useQuestionTimerEffect";
+
+export type { QuestionStatePlayer } from "./questionFlow";
+
+type UseQuestionStateArgs = {
+  questionsById: Map<string, QuestionPackQuestion>;
+  players: QuestionStatePlayer[];
+  onPlayerScoreDelta: (playerId: string, delta: number) => void;
+};
+
+export function useQuestionState({
+  questionsById,
+  players,
+  onPlayerScoreDelta,
+}: UseQuestionStateArgs) {
   const [activeQuestionId, setActiveQuestionId] = useAtom(gameActiveQuestionIdAtom);
   const [openedQuestionIds, setOpenedQuestionIds] = useAtom(gameOpenedQuestionIdsAtom);
+  const [questionFlowState, setQuestionFlowState] = useAtom(gameQuestionFlowStateAtom);
 
   const openedSet = useMemo(() => new Set(openedQuestionIds), [openedQuestionIds]);
-  const isOpened = (id: string) => openedSet.has(id);
+  const isOpened = useCallback((id: string) => openedSet.has(id), [openedSet]);
 
-  const activeQuestion = activeQuestionId
-    ? questionsById.get(activeQuestionId) ?? null
-    : null;
+  const activeQuestion = activeQuestionId ? questionsById.get(activeQuestionId) ?? null : null;
+  const flowPhase = questionFlowState?.phase ?? (activeQuestionId ? "reading" : null);
 
-  const markOpened = (id: string) => {
-    setOpenedQuestionIds(prev => (prev.includes(id) ? prev : [...prev, id]));
-  };
+  const setActiveQuestionIdValue = useCallback((next: string | null) => {
+    setActiveQuestionId(next);
+  }, [setActiveQuestionId]);
 
-  const handleQuestionSelect = (id: string) => {
-    if (isOpened(id)) return;
-    setActiveQuestionId(id);
-  };
+  const setOpenedQuestionIdsWithUpdater = useCallback((updater: (prev: string[]) => string[]) => {
+    setOpenedQuestionIds(updater);
+  }, [setOpenedQuestionIds]);
 
-  const closeQuestionModal = () => {
-    if (activeQuestionId) markOpened(activeQuestionId);
-    setActiveQuestionId(null);
-  };
+  const { closeQuestionModal, handleQuestionSelect, resetQuestionState } = useQuestionLifecycleActions({
+    activeQuestionId,
+    activeQuestionValue: activeQuestion?.value ?? null,
+    questionFlowState,
+    isOpened,
+    onPlayerScoreDelta,
+    setActiveQuestionId: setActiveQuestionIdValue,
+    setOpenedQuestionIds: setOpenedQuestionIdsWithUpdater,
+    setQuestionFlowState,
+  });
 
-  const resetQuestionState = () => {
-    setActiveQuestionId(null);
-    setOpenedQuestionIds([]);
-  };
+  const { setAnswerInput, submitAnswer, markAnswerWrong, continueAfterWrong } = useQuestionAnswerActions({
+    activeQuestionId,
+    activeQuestion,
+    questionFlowState,
+    players,
+    onPlayerScoreDelta,
+    closeQuestionModal,
+    setQuestionFlowState,
+  });
+
+  useQuestionTimerEffect({
+    activeQuestionId,
+    flowPhase,
+    setQuestionFlowState,
+  });
+
+  useQuestionBuzzingEffect({
+    activeQuestionId,
+    flowPhase,
+    players,
+    setQuestionFlowState,
+  });
+
+  useQuestionAutoCloseEffect({
+    flowPhase,
+    closeQuestionModal,
+  });
+
+  const modalState = useMemo(() => {
+    if (questionFlowState) return questionFlowState;
+    if (!activeQuestionId) return null;
+    return createQuestionFlowState(activeQuestionId);
+  }, [activeQuestionId, questionFlowState]);
 
   return {
     activeQuestion,
     activeQuestionId,
     openedQuestionIds,
+    modalState,
+    questionTimerDurationMs: QUESTION_TIMER_DURATION_MS,
     handleQuestionSelect,
     closeQuestionModal,
+    setAnswerInput,
+    submitAnswer,
+    markAnswerWrong,
+    continueAfterWrong,
     resetQuestionState,
   };
 }
