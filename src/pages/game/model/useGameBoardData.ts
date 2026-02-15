@@ -3,9 +3,9 @@ import { useMemo } from "react";
 import type { GameBoardTheme } from "@/entities/game-board";
 import type { QuestionPack, QuestionPackQuestion } from "@/shared/api/questionPack";
 
-export function useGameBoardData(selectedPack: QuestionPack) {
+export function useGameBoardData(selectedPack: QuestionPack, roundIndex = 0) {
   return useMemo(() => {
-    const activeRound = selectedPack.rounds[0];
+    const activeRound = selectedPack.rounds[roundIndex];
     if (!activeRound) {
       throw new Error("НЕТ РАУНДОВ В ПАКЕ");
     }
@@ -25,7 +25,7 @@ export function useGameBoardData(selectedPack: QuestionPack) {
       boardThemes,
       questionsById,
       totalQuestions: questionsById.size,
-      packTitle: selectedPack.title,
+      packTitle: `${selectedPack.title} · ${activeRound.title}`,
     };
-  }, [selectedPack]);
+  }, [roundIndex, selectedPack]);
 }

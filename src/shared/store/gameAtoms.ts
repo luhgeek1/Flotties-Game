@@ -5,6 +5,7 @@ const IS_EXIT_MODAL_OPEN_STORAGE_KEY = "game-is-exit-modal-open";
 const OPENED_QUESTION_IDS_STORAGE_KEY = "game-opened-question-ids";
 const PLAYER_SCORES_STORAGE_KEY = "game-player-scores";
 const QUESTION_FLOW_STORAGE_KEY = "game-question-flow";
+const ROUND_2_UNLOCKED_STORAGE_KEY = "game-round-2-unlocked";
 
 export const gameActiveQuestionIdAtom = atomWithStorage<string | null>(
   ACTIVE_QUESTION_ID_STORAGE_KEY,
@@ -55,6 +56,13 @@ export type GameQuestionFlowState = {
 export const gameQuestionFlowStateAtom = atomWithStorage<GameQuestionFlowState | null>(
   QUESTION_FLOW_STORAGE_KEY,
   null,
+  undefined,
+  { getOnInit: true },
+);
+
+export const gameRound2UnlockedAtom = atomWithStorage<boolean>(
+  ROUND_2_UNLOCKED_STORAGE_KEY,
+  false,
   undefined,
   { getOnInit: true },
 );
