@@ -2,9 +2,7 @@ import type { PlayerPickParticipant, ResolveCurrentPickerIdArgs, ResolveRoundSta
 
 export function getLowestScorePlayerId(
   players: readonly PlayerPickParticipant[],
-): string | null {
-  if (players.length === 0) return null;
-
+): string{
   return players.reduce((lowestPlayer, player) => {
     if (player.score < lowestPlayer.score) return player;
     return lowestPlayer;
@@ -14,15 +12,8 @@ export function getLowestScorePlayerId(
 export function resolveRoundStartPickerId({
   players,
   roundIndex,
-  round2StarterId,
-}: ResolveRoundStartPickerIdArgs): string | null {
-  if (players.length === 0) return null;
-
-  if (roundIndex === 0) return players[0]?.id ?? null;
-
-  if (round2StarterId && players.some(player => player.id === round2StarterId)) {
-    return round2StarterId;
-  }
+}: ResolveRoundStartPickerIdArgs): string{
+  if (roundIndex === 0) return players[0].id;
 
   return getLowestScorePlayerId(players);
 }
@@ -31,13 +22,11 @@ export function resolveCurrentPickerId({
   players,
   roundStartPickerId,
   completedPicksCount,
-}: ResolveCurrentPickerIdArgs): string | null {
-  if (!players.length || !roundStartPickerId) return null;
+}: ResolveCurrentPickerIdArgs): string{
 
   const startIndex = players.findIndex(player => player.id === roundStartPickerId);
-  const safeStartIndex = startIndex >= 0 ? startIndex : 0;
   const shift = completedPicksCount % players.length;
-  const currentIndex = (safeStartIndex + shift) % players.length;
+  const currentIndex = (startIndex + shift) % players.length;
 
-  return players[currentIndex]?.id ?? players[0]?.id ?? null;
+  return players[currentIndex].id;
 }

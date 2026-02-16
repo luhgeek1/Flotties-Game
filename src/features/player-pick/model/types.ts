@@ -7,7 +7,6 @@ export type PlayerPickParticipant = {
 export type ResolveRoundStartPickerIdArgs = {
   players: readonly PlayerPickParticipant[];
   roundIndex: number;
-  round2StarterId: string | null;
 };
 
 export type ResolveCurrentPickerIdArgs = {

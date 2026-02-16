@@ -31,9 +31,8 @@ export function usePlayerPick({
     () => resolveRoundStartPickerId({
       players,
       roundIndex,
-      round2StarterId,
     }),
-    [players, round2StarterId, roundIndex],
+    [players, roundIndex],
   );
 
   const currentPickerId = useMemo(
