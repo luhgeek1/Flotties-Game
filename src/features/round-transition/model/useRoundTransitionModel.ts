@@ -15,14 +15,14 @@ export function useRoundTransitionModel({ playerScores, onConfirm, onExitToSetup
 
       return [
         {
-          key: "score",
-          type: "score",
-          items: scoreChartItems,
-        },
-        {
           key: "mvp",
           type: "mvp",
           player: mvpPlayer,
+        },
+        {
+          key: "score",
+          type: "score",
+          items: scoreChartItems,
         },
         {
           key: "leader",

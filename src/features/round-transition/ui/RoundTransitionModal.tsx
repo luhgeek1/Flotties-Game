@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react"
 
 import lottiCongrImage from "@/shared/assets/lotti_congr.jpg"
-import { roundTransitionHeadingByStep } from "../model/constants"
+import { roundTransitionHeadingByStep, roundTransitionLottiZoom } from "../model/constants"
 
 import type { RoundTransitionModalProps } from "../model/types"
 import { useRoundTransitionModel } from "../model/useRoundTransitionModel"
@@ -36,9 +36,9 @@ export function RoundTransitionModal({
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{
             opacity: 1,
-            scale: 1,
+            scale: model.isLeaderSlideBackgroundVisible ? roundTransitionLottiZoom.modalScale : 1,
             y: 0,
-            transition: { type: "spring", stiffness: 300, damping: 25 },
+            transition: model.isLeaderSlideBackgroundVisible ? roundTransitionLottiZoom.transition : { type: "spring", stiffness: 300, damping: 25 },
           }}
           exit={{ opacity: 0, scale: 0.95, y: 10, transition: { duration: 0.2 } }}
           className="relative z-10 w-full max-w-3xl overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-xl"
@@ -51,10 +51,10 @@ export function RoundTransitionModal({
                 key="leader-slide-background"
                 className="pointer-events-none absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
                 style={{ backgroundImage: `url(${lottiCongrImage})` }}
-                initial={{ opacity: 0, scale: 1.03 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, scale: 1 }}
+                animate={{ opacity: 1}}
                 exit={{ opacity: 0, scale: 1.03 }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
+                transition={roundTransitionLottiZoom.transition}
               />
             ) : null}
           </AnimatePresence>

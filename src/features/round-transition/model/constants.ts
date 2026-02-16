@@ -8,7 +8,12 @@ export const roundTransitionStepVariants: Variants = {
   exit: { opacity: 0, x: -20, transition: { duration: 0.2 } },
 }
 
+export const roundTransitionLottiZoom = {
+  modalScale: 1.1,
+  transition: { duration: 0.6, ease: "easeOut" },
+} as const
+
 export const roundTransitionHeadingByStep: Record<RoundTransitionStep, string> = {
-  score: "Общий счет",
+  score: "Итоги Раунда",
   confirm: "Следующий этап",
 }
