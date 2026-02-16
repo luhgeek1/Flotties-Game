@@ -4,6 +4,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { GameBoard } from "@/entities/game-board";
 import { PlayerScoreCard } from "@/entities/players";
 import { ExitGameModal } from "@/features/exit-game";
+import { PlayerPickBanner, usePlayerPick } from "@/features/player-pick";
 import { QuestionModal } from "@/features/question-modal";
 import { resetRoundTransitionStorageAtom } from "@/shared/store/round-transition-storage";
 import { RoundTransitionModal } from "@/features/round-transition"
@@ -56,6 +57,15 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
   const modalQuestion = modalQuestionId ? questionsById.get(modalQuestionId) ?? null : null;
   const isQuestionModalOpen = modalQuestionId !== null;
 
+  const {
+    currentPickerId,
+    currentPicker,
+  } = usePlayerPick({
+    players: gamePlayers,
+    roundIndex,
+    completedPicksCount: openedQuestionIds.length,
+  });
+
   const questionsProgress = `Questions: ${openedQuestionIds.length}/${totalQuestions}`;
   const isRoundComplete = useMemo(() => (
     totalQuestions > 0
@@ -63,6 +73,12 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
     && !isQuestionModalOpen
   ), [isQuestionModalOpen, openedQuestionIds, totalQuestions]);
   const isRoundTransitionModalOpen = Boolean(onRoundTransitionConfirm) && isRoundComplete;
+  const hasQuestionsToPick = openedQuestionIds.length < totalQuestions;
+  const activePickerId = hasQuestionsToPick ? currentPickerId : null;
+  const isRoundStartIntroOpen = hasQuestionsToPick
+    && openedQuestionIds.length === 0
+    && !isQuestionModalOpen
+    && !isRoundTransitionModalOpen;
 
   const setExitModalOpen = (open: boolean) => setIsExitModalOpen(open);
 
@@ -91,14 +107,21 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
             layoutId={`player-card-${player.id}`}
             name={player.name}
             score={player.score}
+            isPicking={player.id === activePickerId}
           />
         ))}
       >
-        <GameBoard
-          themes={boardThemes}
-          openedQuestionIds={openedQuestionIds}
-          onQuestionSelect={handleQuestionSelect}
-        />
+        <div className="relative h-full w-full flex items-center justify-center">
+          <PlayerPickBanner
+            playerName={currentPicker?.name ?? null}
+            isOpen={isRoundStartIntroOpen}
+          />
+          <GameBoard
+            themes={boardThemes}
+            openedQuestionIds={openedQuestionIds}
+            onQuestionSelect={handleQuestionSelect}
+          />
+        </div>
       </GameShell>
 
       <QuestionModal

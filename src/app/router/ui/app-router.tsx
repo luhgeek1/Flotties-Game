@@ -8,6 +8,7 @@ import {
   gameIsExitModalOpenAtom,
   gameOpenedQuestionIdsAtom,
   gameRound2UnlockedAtom,
+  gameRound2StartPickerIdAtom,
   gameQuestionFlowStateAtom,
 } from "@/shared/store/gameAtoms";
 import {
@@ -37,13 +38,15 @@ export function AppRouter() {
   const setOpenedQuestionIds = useSetAtom(gameOpenedQuestionIdsAtom);
   const setQuestionFlowState = useSetAtom(gameQuestionFlowStateAtom);
   const setIsExitModalOpen = useSetAtom(gameIsExitModalOpenAtom);
+  const setRound2StartPickerId = useSetAtom(gameRound2StartPickerIdAtom);
 
   const resetQuestionRoundState = useCallback(() => {
     setActiveQuestionId(null);
     setOpenedQuestionIds([]);
     setQuestionFlowState(null);
     setIsExitModalOpen(false);
-  }, [setActiveQuestionId, setIsExitModalOpen, setOpenedQuestionIds, setQuestionFlowState]);
+    setRound2StartPickerId(null);
+  }, [setActiveQuestionId, setIsExitModalOpen, setOpenedQuestionIds, setQuestionFlowState, setRound2StartPickerId]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -110,7 +113,10 @@ export function AppRouter() {
   if (route === "game") {
     return (
       <GamePage
-        onExitToSetup={() => navigateTo("setup", { round2Access: "lock" })}
+        onExitToSetup={() => navigateTo("setup", {
+          round2Access: "lock",
+          resetQuestionState: true,
+        })}
         onRoundTransitionConfirm={() => navigateTo("game2r", {
           replace: true,
           resetQuestionState: true,
@@ -121,7 +127,10 @@ export function AppRouter() {
   }
 
   if (route === "game2r") {
-    return <GamePage2R onExitToSetup={() => navigateTo("setup", { round2Access: "lock" })} />;
+    return <GamePage2R onExitToSetup={() => navigateTo("setup", {
+      round2Access: "lock",
+      resetQuestionState: true,
+    })} />;
   }
 
   return <SetupPage onStartGame={() => navigateTo("game", {
