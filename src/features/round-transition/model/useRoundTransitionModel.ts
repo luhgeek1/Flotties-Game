@@ -1,15 +1,17 @@
 import { useMemo, useState } from "react"
 import { useAtom } from "jotai"
 
-import { resetRoundTransitionStorageAtom, roundTransitionCarouselIndexAtom, roundTransitionStepAtom} from "@/shared/store/round-transition-storage"
-import { buildScoreChartItems, getRoundTransitionQuestionsStats, sortPlayersByScore } from "./selectors"
+import {
+  resetRoundTransitionStorageAtom,
+  roundTransitionCarouselIndexAtom,
+  roundTransitionStepAtom,
+} from "@/shared/store/round-transition-storage"
+import { buildScoreChartItems, sortPlayersByScore } from "./selectors"
 import type { RoundTransitionModalProps, RoundTransitionScoreSlide } from "./types"
 import { useHoverReveal } from "./useHoverReveal"
 
 export function useRoundTransitionModel({
   playerScores,
-  openedQuestionsCount,
-  totalQuestionsCount,
   onConfirm,
   onExitToSetup,
 }: RoundTransitionModalProps) {
@@ -17,7 +19,7 @@ export function useRoundTransitionModel({
     () => {
       const sortedPlayers = sortPlayersByScore(playerScores)
       const scoreChartItems = buildScoreChartItems(sortedPlayers)
-      const { safeOpenedQuestionsCount, safeTotalQuestionsCount, completionPercent } = getRoundTransitionQuestionsStats(openedQuestionsCount, totalQuestionsCount)
+      const mvpPlayer = sortedPlayers[0] ?? null
 
       return [
         {
@@ -26,11 +28,9 @@ export function useRoundTransitionModel({
           items: scoreChartItems,
         },
         {
-          key: "questions",
-          type: "questions",
-          opened: safeOpenedQuestionsCount,
-          total: safeTotalQuestionsCount,
-          percent: completionPercent,
+          key: "mvp",
+          type: "mvp",
+          player: mvpPlayer,
         },
         {
           key: "leader",
@@ -38,7 +38,7 @@ export function useRoundTransitionModel({
         },
       ]
     },
-    [playerScores, openedQuestionsCount, totalQuestionsCount],
+    [playerScores],
   )
 
   const [step, setStep] = useAtom(roundTransitionStepAtom)

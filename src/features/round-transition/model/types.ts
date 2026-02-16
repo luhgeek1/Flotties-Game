@@ -9,8 +9,6 @@ export type RoundTransitionModalPlayerScore = {
 export type RoundTransitionModalProps = {
   isOpen: boolean
   playerScores: RoundTransitionModalPlayerScore[]
-  openedQuestionsCount: number
-  totalQuestionsCount: number
   roundNumber: number
   onConfirm?: () => void
   onExitToSetup?: () => void
@@ -23,11 +21,9 @@ export type RoundTransitionScoreSlide =
       items: ScoreBarChartItem[]
     }
   | {
-      key: "questions"
-      type: "questions"
-      opened: number
-      total: number
-      percent: number
+      key: "mvp"
+      type: "mvp"
+      player: RoundTransitionModalPlayerScore | null
     }
   | {
       key: "leader"
