@@ -1,11 +1,12 @@
 import { useMemo } from "react";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { GameBoard } from "@/entities/game-board";
 import { PlayerScoreCard } from "@/entities/players";
 import { ExitGameModal } from "@/features/exit-game";
 import { QuestionModal } from "@/features/question-modal";
-import { RoundTransitionModal } from "@/features/round-transition";
+import { resetRoundTransitionStorageAtom } from "@/shared/store/round-transition-storage";
+import { RoundTransitionModal } from "@/features/round-transition"
 import { GameShell } from "@/widgets/game-shell";
 
 import {
@@ -29,6 +30,7 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
 
   const [isExitModalOpen, setIsExitModalOpen] = useAtom(gameIsExitModalOpenAtom);
+  const resetRoundTransitionStorage = useSetAtom(resetRoundTransitionStorageAtom);
 
   const { gamePlayers, questionPlayers, resetScores, changePlayerScore } = useGamePlayers(selectedPlayerIds);
   const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack, roundIndex);
@@ -65,6 +67,7 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
   const setExitModalOpen = (open: boolean) => setIsExitModalOpen(open);
 
   const exitToSetup = () => {
+    resetRoundTransitionStorage();
     resetQuestionState();
     resetScores();
     onExitToSetup?.();
@@ -125,6 +128,12 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
 
       <RoundTransitionModal
         isOpen={isRoundTransitionModalOpen}
+        playerScores={gamePlayers.map(player => ({
+          id: player.id,
+          name: player.name,
+          score: player.score,
+        }))}
+        roundNumber={roundIndex + 1}
         onExitToSetup={() => {
           exitToSetup();
         }}
