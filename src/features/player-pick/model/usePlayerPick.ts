@@ -21,7 +21,6 @@ export function usePlayerPick({
 
   useEffect(() => {
     if (roundIndex !== 1) return;
-    if (players.length === 0) return;
     if (round2StarterId && players.some(player => player.id === round2StarterId)) return;
 
     setRound2StarterId(getLowestScorePlayerId(players));
@@ -41,11 +40,11 @@ export function usePlayerPick({
       roundStartPickerId,
       completedPicksCount,
     }),
-    [completedPicksCount, players, roundStartPickerId],
+    [players, roundStartPickerId, completedPicksCount],
   );
 
   const currentPicker = useMemo(
-    () => players.find(player => player.id === currentPickerId) ?? null,
+    () => players.find(player => player.id === currentPickerId),
     [currentPickerId, players],
   );
 
