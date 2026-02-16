@@ -57,6 +57,7 @@ export function useQuestionAnswerActions({
       return;
     }
 
+    onPlayerScoreDelta(questionFlowState.activePlayerId, -activeQuestion.value);
     setQuestionFlowState(prev => {
       if (!prev || prev.questionId !== activeQuestionId || prev.phase !== "answering") return prev;
       return setWrongAnswerResult(prev);
@@ -70,13 +71,22 @@ export function useQuestionAnswerActions({
   ]);
 
   const markAnswerWrong = useCallback(() => {
-    if (!activeQuestionId) return;
+    if (!activeQuestionId || !activeQuestion || !questionFlowState) return;
+    if (questionFlowState.phase !== "answering") return;
+    if (!questionFlowState.activePlayerId) return;
 
+    onPlayerScoreDelta(questionFlowState.activePlayerId, -activeQuestion.value);
     setQuestionFlowState(prev => {
       if (!prev || prev.questionId !== activeQuestionId || prev.phase !== "answering") return prev;
       return setWrongAnswerResult(prev);
     });
-  }, [activeQuestionId, setQuestionFlowState]);
+  }, [
+    activeQuestion,
+    activeQuestionId,
+    onPlayerScoreDelta,
+    questionFlowState,
+    setQuestionFlowState,
+  ]);
 
   const continueAfterWrong = useCallback(() => {
     if (!questionFlowState) return;

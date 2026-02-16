@@ -1,15 +1,10 @@
 import { useCallback } from "react";
 
-import type { GameQuestionFlowState } from "@/shared/store/gameAtoms";
-
 import { createQuestionFlowState, type SetQuestionFlowState } from "./questionFlow";
 
 type UseQuestionLifecycleActionsArgs = {
   activeQuestionId: string | null;
-  activeQuestionValue: number | null;
-  questionFlowState: GameQuestionFlowState | null;
   isOpened: (questionId: string) => boolean;
-  onPlayerScoreDelta: (playerId: string, delta: number) => void;
   setActiveQuestionId: (next: string | null) => void;
   setOpenedQuestionIds: (updater: (prev: string[]) => string[]) => void;
   setQuestionFlowState: SetQuestionFlowState;
@@ -17,10 +12,7 @@ type UseQuestionLifecycleActionsArgs = {
 
 export function useQuestionLifecycleActions({
   activeQuestionId,
-  activeQuestionValue,
-  questionFlowState,
   isOpened,
-  onPlayerScoreDelta,
   setActiveQuestionId,
   setOpenedQuestionIds,
   setQuestionFlowState,
@@ -29,29 +21,13 @@ export function useQuestionLifecycleActions({
     setOpenedQuestionIds(prev => (prev.includes(id) ? prev : [...prev, id]));
   }, [setOpenedQuestionIds]);
 
-  const applyWrongAnswerPenalties = useCallback(() => {
-    if (activeQuestionValue === null || !questionFlowState) return;
-    if (questionFlowState.phase === "result-correct") return;
-
-    questionFlowState.attemptedPlayerIds.forEach(playerId => {
-      onPlayerScoreDelta(playerId, -activeQuestionValue);
-    });
-  }, [activeQuestionValue, onPlayerScoreDelta, questionFlowState]);
-
   const closeQuestionModal = useCallback(() => {
     if (!activeQuestionId) return;
 
     markOpened(activeQuestionId);
-    applyWrongAnswerPenalties();
     setActiveQuestionId(null);
     setQuestionFlowState(null);
-  }, [
-    activeQuestionId,
-    applyWrongAnswerPenalties,
-    markOpened,
-    setActiveQuestionId,
-    setQuestionFlowState,
-  ]);
+  }, [activeQuestionId, markOpened, setActiveQuestionId, setQuestionFlowState]);
 
   const handleQuestionSelect = useCallback((id: string) => {
     if (isOpened(id)) return;

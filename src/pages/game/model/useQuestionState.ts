@@ -52,10 +52,7 @@ export function useQuestionState({
 
   const { closeQuestionModal, handleQuestionSelect, resetQuestionState } = useQuestionLifecycleActions({
     activeQuestionId,
-    activeQuestionValue: activeQuestion?.value ?? null,
-    questionFlowState,
     isOpened,
-    onPlayerScoreDelta,
     setActiveQuestionId: setActiveQuestionIdValue,
     setOpenedQuestionIds: setOpenedQuestionIdsWithUpdater,
     setQuestionFlowState,
