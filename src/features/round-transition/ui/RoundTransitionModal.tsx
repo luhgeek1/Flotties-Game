@@ -1,7 +1,14 @@
+import confetti from "canvas-confetti"
 import { AnimatePresence, motion } from "motion/react"
+import { useEffect } from "react"
 
 import lottiCongrImage from "@/shared/assets/lotti_congr.jpg"
-import { roundTransitionHeadingByStep, roundTransitionLottiZoom } from "../model/constants"
+import {
+  roundTransitionConfettiDefaults,
+  roundTransitionConfettiOrigins,
+  roundTransitionHeadingByStep,
+  roundTransitionLottiZoom,
+} from "../model/constants"
 
 import type { RoundTransitionModalProps } from "../model/types"
 import { useRoundTransitionModel } from "../model/useRoundTransitionModel"
@@ -18,6 +25,13 @@ export function RoundTransitionModal({
     roundNumber,
     ...props,
   })
+
+  useEffect(() => {
+    if (!isOpen)
+      return
+
+    roundTransitionConfettiOrigins.forEach(origin => { confetti({ ...roundTransitionConfettiDefaults, origin, })})
+  }, [isOpen])
 
   if (!isOpen)
     return null
