@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import type { ScoreBarChartItem } from "@/shared/ui"
 
 export type RoundTransitionModalPlayerScore = {
   id: string
@@ -16,7 +16,20 @@ export type RoundTransitionModalProps = {
   onExitToSetup?: () => void
 }
 
-export type RoundTransitionCarouselSlide = {
-  key: "score" | "questions" | "leader"
-  content: ReactNode
-}
+export type RoundTransitionScoreSlide =
+  | {
+      key: "score"
+      type: "score"
+      items: ScoreBarChartItem[]
+    }
+  | {
+      key: "questions"
+      type: "questions"
+      opened: number
+      total: number
+      percent: number
+    }
+  | {
+      key: "leader"
+      type: "leader"
+    }
