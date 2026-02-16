@@ -1,20 +1,12 @@
 import { useMemo, useState } from "react"
 import { useAtom } from "jotai"
 
-import {
-  resetRoundTransitionStorageAtom,
-  roundTransitionCarouselIndexAtom,
-  roundTransitionStepAtom,
-} from "@/shared/store/round-transition-storage"
+import { resetRoundTransitionStorageAtom, roundTransitionCarouselIndexAtom, roundTransitionStepAtom } from "@/shared/store/round-transition-storage"
 import { buildScoreChartItems, sortPlayersByScore } from "./selectors"
 import type { RoundTransitionModalProps, RoundTransitionScoreSlide } from "./types"
 import { useHoverReveal } from "./useHoverReveal"
 
-export function useRoundTransitionModel({
-  playerScores,
-  onConfirm,
-  onExitToSetup,
-}: RoundTransitionModalProps) {
+export function useRoundTransitionModel({ playerScores, onConfirm, onExitToSetup }: RoundTransitionModalProps) {
   const slides = useMemo<ReadonlyArray<RoundTransitionScoreSlide>>(
     () => {
       const sortedPlayers = sortPlayersByScore(playerScores)

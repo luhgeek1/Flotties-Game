@@ -1,1 +1,1 @@
-export { RoundTransitionModal } from "./ui/round-transition-modal";
+export { RoundTransitionModal } from "./ui/RoundTransitionModal"
