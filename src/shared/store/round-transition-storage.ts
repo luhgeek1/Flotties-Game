@@ -1,7 +1,7 @@
 import { atom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 
-export type RoundTransitionStep = "score" | "next-round"
+export type RoundTransitionStep = "score" | "confirm"
 
 const ROUND_TRANSITION_STEP_STORAGE_KEY = "round-transition-step"
 const ROUND_TRANSITION_CAROUSEL_INDEX_STORAGE_KEY = "round-transition-carousel-index"
