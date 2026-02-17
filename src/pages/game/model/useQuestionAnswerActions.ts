@@ -17,6 +17,7 @@ type UseQuestionAnswerActionsArgs = {
   activeQuestion: QuestionPackQuestion | null;
   questionFlowState: GameQuestionFlowState | null;
   players: QuestionStatePlayer[];
+  isSingleAttemptQuestion?: (questionId: string) => boolean;
   onPlayerScoreDelta: (playerId: string, delta: number) => void;
   closeQuestionModal: () => void;
   setQuestionFlowState: SetQuestionFlowState;
@@ -27,6 +28,7 @@ export function useQuestionAnswerActions({
   activeQuestion,
   questionFlowState,
   players,
+  isSingleAttemptQuestion,
   onPlayerScoreDelta,
   closeQuestionModal,
   setQuestionFlowState,
@@ -97,6 +99,14 @@ export function useQuestionAnswerActions({
     }
 
     if (questionFlowState.phase !== "result-wrong") return;
+    const isSingleAttempt = activeQuestionId
+      ? (isSingleAttemptQuestion?.(activeQuestionId) ?? false)
+      : false;
+
+    if (isSingleAttempt) {
+      closeQuestionModal();
+      return;
+    }
 
     const hasPlayersForReplay = players.some(
       player => !questionFlowState.attemptedPlayerIds.includes(player.id),
@@ -111,7 +121,14 @@ export function useQuestionAnswerActions({
 
       return setReadingReplay(prev);
     });
-  }, [closeQuestionModal, players, questionFlowState, setQuestionFlowState]);
+  }, [
+    activeQuestionId,
+    closeQuestionModal,
+    isSingleAttemptQuestion,
+    players,
+    questionFlowState,
+    setQuestionFlowState,
+  ]);
 
   return {
     setAnswerInput,

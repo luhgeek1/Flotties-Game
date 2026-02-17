@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { createQuestionFlowState, type SetQuestionFlowState } from "./questionFlow";
+import { createQuestionFlowAnsweringState, createQuestionFlowState, type SetQuestionFlowState } from "./questionFlow";
 
 type UseQuestionLifecycleActionsArgs = {
   activeQuestionId: string | null;
@@ -36,6 +36,13 @@ export function useQuestionLifecycleActions({
     setQuestionFlowState(createQuestionFlowState(id));
   }, [isOpened, setActiveQuestionId, setQuestionFlowState]);
 
+  const startQuestionAnswering = useCallback((questionId: string, playerId: string) => {
+    if (isOpened(questionId)) return;
+
+    setActiveQuestionId(questionId);
+    setQuestionFlowState(createQuestionFlowAnsweringState(questionId, playerId));
+  }, [isOpened, setActiveQuestionId, setQuestionFlowState]);
+
   const resetQuestionState = useCallback(() => {
     setActiveQuestionId(null);
     setOpenedQuestionIds(() => []);
@@ -53,6 +60,7 @@ export function useQuestionLifecycleActions({
   return {
     closeQuestionModal,
     handleQuestionSelect,
+    startQuestionAnswering,
     resetQuestionState,
     markQuestionOpened,
   };

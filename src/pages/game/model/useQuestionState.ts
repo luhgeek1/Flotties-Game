@@ -2,17 +2,8 @@ import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import type { QuestionPackQuestion } from "@/shared/api/questionPack";
-import {
-  gameActiveQuestionIdAtom,
-  gameOpenedQuestionIdsAtom,
-  gameQuestionFlowStateAtom,
-} from "@/shared/store/gameAtoms";
-
-import {
-  createQuestionFlowState,
-  QUESTION_TIMER_DURATION_MS,
-  type QuestionStatePlayer,
-} from "./questionFlow";
+import { gameActiveQuestionIdAtom, gameOpenedQuestionIdsAtom, gameQuestionFlowStateAtom } from "@/shared/store/gameAtoms";
+import { createQuestionFlowState, QUESTION_TIMER_DURATION_MS, type QuestionStatePlayer } from "./questionFlow";
 import { useQuestionAnswerActions } from "./useQuestionAnswerActions";
 import { useQuestionAutoCloseEffect } from "./useQuestionAutoCloseEffect";
 import { useQuestionBuzzingEffect } from "./useQuestionBuzzingEffect";
@@ -24,12 +15,14 @@ export type { QuestionStatePlayer } from "./questionFlow";
 type UseQuestionStateArgs = {
   questionsById: Map<string, QuestionPackQuestion>;
   players: QuestionStatePlayer[];
+  isSingleAttemptQuestion?: (questionId: string) => boolean;
   onPlayerScoreDelta: (playerId: string, delta: number) => void;
 };
 
 export function useQuestionState({
   questionsById,
   players,
+  isSingleAttemptQuestion,
   onPlayerScoreDelta,
 }: UseQuestionStateArgs) {
   const [activeQuestionId, setActiveQuestionId] = useAtom(gameActiveQuestionIdAtom);
@@ -50,7 +43,13 @@ export function useQuestionState({
     setOpenedQuestionIds(updater);
   }, [setOpenedQuestionIds]);
 
-  const { closeQuestionModal, handleQuestionSelect, resetQuestionState, markQuestionOpened } = useQuestionLifecycleActions({
+  const {
+    closeQuestionModal,
+    handleQuestionSelect,
+    startQuestionAnswering,
+    resetQuestionState,
+    markQuestionOpened,
+  } = useQuestionLifecycleActions({
     activeQuestionId,
     isOpened,
     setActiveQuestionId: setActiveQuestionIdValue,
@@ -63,6 +62,7 @@ export function useQuestionState({
     activeQuestion,
     questionFlowState,
     players,
+    isSingleAttemptQuestion,
     onPlayerScoreDelta,
     closeQuestionModal,
     setQuestionFlowState,
@@ -103,6 +103,7 @@ export function useQuestionState({
     modalState,
     questionTimerDurationMs: QUESTION_TIMER_DURATION_MS,
     handleQuestionSelect,
+    startQuestionAnswering,
     closeQuestionModal,
     setAnswerInput,
     submitAnswer,

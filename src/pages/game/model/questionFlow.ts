@@ -27,6 +27,20 @@ export function createQuestionFlowState(questionId: string): GameQuestionFlowSta
   };
 }
 
+export function createQuestionFlowAnsweringState(
+  questionId: string,
+  playerId: string,
+): GameQuestionFlowState {
+  return {
+    questionId,
+    phase: "answering",
+    remainingMs: QUESTION_TIMER_DURATION_MS,
+    attemptedPlayerIds: [],
+    activePlayerId: playerId,
+    answerInput: "",
+  };
+}
+
 export function normalizeAnswer(value: string): string {
   return value
     .trim()
