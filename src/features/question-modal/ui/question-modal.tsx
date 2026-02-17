@@ -28,7 +28,6 @@ type QuestionModalProps = {
   answerInput: string;
   onAnswerInputChange: (value: string) => void;
   onSubmitAnswer: () => void;
-  onMarkAnswerWrong: () => void;
   onContinue: () => void;
 };
 
@@ -48,7 +47,6 @@ export function QuestionModal({
   answerInput,
   onAnswerInputChange,
   onSubmitAnswer,
-  onMarkAnswerWrong,
   onContinue,
 }: QuestionModalProps) {
   const activePlayer = players.find(player => player.id === activePlayerId) ?? null;
@@ -103,7 +101,6 @@ export function QuestionModal({
                   answerInput={answerInput}
                   onAnswerInputChange={onAnswerInputChange}
                   onSubmitAnswer={onSubmitAnswer}
-                  onMarkAnswerWrong={onMarkAnswerWrong}
                 />
               ) : null}
 

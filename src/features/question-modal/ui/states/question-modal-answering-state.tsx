@@ -10,7 +10,6 @@ type QuestionModalAnsweringStateProps = {
   answerInput: string;
   onAnswerInputChange: (value: string) => void;
   onSubmitAnswer: () => void;
-  onMarkAnswerWrong: () => void;
 };
 
 export function QuestionModalAnsweringState({
@@ -20,7 +19,6 @@ export function QuestionModalAnsweringState({
   answerInput,
   onAnswerInputChange,
   onSubmitAnswer,
-  onMarkAnswerWrong,
 }: QuestionModalAnsweringStateProps) {
   return (
     <div className="w-full max-w-2xl space-y-8 animate-in slide-in-from-bottom-10">
@@ -56,11 +54,8 @@ export function QuestionModalAnsweringState({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 pt-4">
-        <Button type="button" size="lg" variant="outline" onClick={onMarkAnswerWrong}>
-          Неверно (Manual)
-        </Button>
-        <Button type="button" size="lg" onClick={onSubmitAnswer}>
+      <div className="pt-4 flex justify-center">
+        <Button type="button" size="lg" className="w-full max-w-[14rem]" onClick={onSubmitAnswer}>
           Ответить
         </Button>
       </div>

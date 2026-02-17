@@ -56,7 +56,6 @@ export function useGamePageModel({
     questionTimerDurationMs,
     setAnswerInput,
     submitAnswer,
-    markAnswerWrong,
     continueAfterWrong,
     openedQuestionIds,
     openAllQuestions,
@@ -204,7 +203,6 @@ export function useGamePageModel({
       answerInput: modalState?.answerInput ?? "",
       onAnswerInputChange: setAnswerInput,
       onSubmitAnswer: submitAnswer,
-      onMarkAnswerWrong: markAnswerWrong,
       onContinue: continueAfterWrong,
     },
     exitModal: {

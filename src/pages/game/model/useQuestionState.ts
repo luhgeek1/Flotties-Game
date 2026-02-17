@@ -57,7 +57,7 @@ export function useQuestionState({
     setQuestionFlowState,
   });
 
-  const { setAnswerInput, submitAnswer, markAnswerWrong, continueAfterWrong } = useQuestionAnswerActions({
+  const { setAnswerInput, submitAnswer, continueAfterWrong } = useQuestionAnswerActions({
     activeQuestionId,
     activeQuestion,
     questionFlowState,
@@ -107,7 +107,6 @@ export function useQuestionState({
     closeQuestionModal,
     setAnswerInput,
     submitAnswer,
-    markAnswerWrong,
     continueAfterWrong,
     openAllQuestions,
     resetQuestionState,
