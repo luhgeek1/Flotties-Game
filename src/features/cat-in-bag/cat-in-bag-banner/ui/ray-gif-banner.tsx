@@ -3,17 +3,19 @@ import { AnimatePresence, motion } from "motion/react";
 
 import { GreenRays } from "./green-rays";
 
+const DEFAULT_CAT_IN_BAG_GIF_URL = "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnR5dnZ6cG1reGpydmhwZHQ0MG1ib29rbzZlemMxdjk1N2g5ZDc4cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9KeOUp3sIqL6w/giphy.gif";
+
 type RayGifBannerProps = {
   open: boolean;
   onClose: () => void;
-  gifUrl: string;
+  gifUrl?: string;
   autoCloseMs?: number;
 };
 
 export function RayGifBanner({
   open,
   onClose,
-  gifUrl,
+  gifUrl = DEFAULT_CAT_IN_BAG_GIF_URL,
   autoCloseMs = 3000,
 }: RayGifBannerProps) {
   useEffect(() => {
