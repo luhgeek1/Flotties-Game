@@ -3,6 +3,7 @@ import { useAtom, useSetAtom } from "jotai";
 
 import { GamePage, GamePage2R } from "@/pages/game";
 import { SetupPage } from "@/pages/setup";
+import { setupStepAtom } from "@/shared/store/setupAtoms";
 import {
   gameActiveQuestionIdAtom,
   gameIsExitModalOpenAtom,
@@ -22,6 +23,7 @@ import {
 type NavigateOptions = {
   replace?: boolean;
   resetQuestionState?: boolean;
+  resetSetupStep?: boolean;
   round2Access?: "lock" | "unlock" | "keep";
 };
 
@@ -39,6 +41,7 @@ export function AppRouter() {
   const setQuestionFlowState = useSetAtom(gameQuestionFlowStateAtom);
   const setIsExitModalOpen = useSetAtom(gameIsExitModalOpenAtom);
   const setRound2StartPickerId = useSetAtom(gameRound2StartPickerIdAtom);
+  const setSetupStep = useSetAtom(setupStepAtom);
 
   const resetQuestionRoundState = useCallback(() => {
     setActiveQuestionId(null);
@@ -93,6 +96,10 @@ export function AppRouter() {
       resetQuestionRoundState();
     }
 
+    if (options?.resetSetupStep) {
+      setSetupStep("players");
+    }
+
     if (nextIsRound2Unlocked !== isRound2Unlocked) {
       setIsRound2Unlocked(nextIsRound2Unlocked);
     }
@@ -108,7 +115,7 @@ export function AppRouter() {
     }
 
     setRoute(guardedRoute);
-  }, [isRound2Unlocked, resetQuestionRoundState, route, setIsRound2Unlocked]);
+  }, [isRound2Unlocked, resetQuestionRoundState, route, setIsRound2Unlocked, setSetupStep]);
 
   if (route === "game") {
     return (
@@ -116,6 +123,7 @@ export function AppRouter() {
         onExitToSetup={() => navigateTo("setup", {
           round2Access: "lock",
           resetQuestionState: true,
+          resetSetupStep: true,
         })}
         onRoundTransitionConfirm={() => navigateTo("game2r", {
           replace: true,
@@ -130,6 +138,7 @@ export function AppRouter() {
     return <GamePage2R onExitToSetup={() => navigateTo("setup", {
       round2Access: "lock",
       resetQuestionState: true,
+      resetSetupStep: true,
     })} />;
   }
 
