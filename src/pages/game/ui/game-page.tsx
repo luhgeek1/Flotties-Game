@@ -142,6 +142,7 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
             layoutId={`player-card-${player.id}`}
             name={player.name}
             score={player.score}
+            avatarUrl={player.avatarUrl}
             isPicking={player.id === activePickerId}
           />
         ))}

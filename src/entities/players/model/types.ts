@@ -4,5 +4,6 @@ export type Player = {
   id: PlayerId;
   name: string;
   keyCode: string;
+  avatarUrl: string;
   score: number;
 };

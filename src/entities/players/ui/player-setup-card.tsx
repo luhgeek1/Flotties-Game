@@ -1,4 +1,4 @@
-import { CheckCircle2, Pencil, Trash2, User } from "lucide-react";
+import { CheckCircle2, Pencil, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
 
 import { Button } from "@/shared/components/ui/button";
@@ -7,6 +7,7 @@ import { cn } from "@/shared/lib/utils";
 type PlayerSetupCardProps = {
   layoutId: string;
   name: string;
+  avatarUrl: string;
   isSelected?: boolean;
   status?: string;
   onToggle?: () => void;
@@ -17,6 +18,7 @@ type PlayerSetupCardProps = {
 export function PlayerSetupCard({
   layoutId,
   name,
+  avatarUrl,
   isSelected = false,
   status = "Участвует",
   onToggle,
@@ -38,11 +40,16 @@ export function PlayerSetupCard({
       <div className="flex items-center gap-3">
         <div
           className={cn(
-            "flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
-            isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+            "relative h-10 w-10 rounded-xl overflow-hidden border transition-colors",
+            isSelected ? "border-primary/60" : "border-border"
           )}
         >
-          {isSelected ? <CheckCircle2 className="h-5 w-5" /> : <User className="h-5 w-5" />}
+          <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
+          {isSelected ? (
+            <span className="absolute -right-1 -bottom-1 rounded-full bg-primary p-0.5 text-primary-foreground">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+            </span>
+          ) : null}
         </div>
 
         <div className="flex flex-col">

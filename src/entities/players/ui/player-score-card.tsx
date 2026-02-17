@@ -4,7 +4,7 @@ import { Badge } from "@/shared/components/ui/badge";
 import { cn } from "@/shared/lib/utils";
 import type { Player } from "../model/types";
 
-type PlayerScoreCardProps = Pick<Player, "name" | "score"> & {
+type PlayerScoreCardProps = Pick<Player, "name" | "score" | "avatarUrl"> & {
   layoutId?: string;
   isPicking?: boolean;
 };
@@ -13,6 +13,7 @@ export function PlayerScoreCard({
   layoutId,
   name,
   score,
+  avatarUrl,
   isPicking = false,
 }: PlayerScoreCardProps) {
   return (
@@ -25,8 +26,14 @@ export function PlayerScoreCard({
           : "bg-card border-border hover:border-primary/40",
       )}
     >
-      <div className="h-12 w-12 rounded-full flex items-center justify-center shrink-0 border-2 shadow-sm bg-background border-border text-foreground">
-        <User className="w-6 h-6" />
+      <div className="h-12 w-12 rounded-full shrink-0 border-2 shadow-sm bg-background border-border overflow-hidden">
+        {avatarUrl ? (
+          <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
+        ) : (
+          <div className="h-full w-full flex items-center justify-center text-foreground">
+            <User className="w-6 h-6" />
+          </div>
+        )}
       </div>
 
       <div className="flex-1 min-w-0 flex flex-col">

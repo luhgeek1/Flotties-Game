@@ -5,6 +5,7 @@ import { Input } from "@/shared/components/ui/input";
 
 type QuestionModalAnsweringStateProps = {
   playerName: string;
+  playerAvatarUrl: string | null;
   questionText: string;
   answerInput: string;
   onAnswerInputChange: (value: string) => void;
@@ -14,6 +15,7 @@ type QuestionModalAnsweringStateProps = {
 
 export function QuestionModalAnsweringState({
   playerName,
+  playerAvatarUrl,
   questionText,
   answerInput,
   onAnswerInputChange,
@@ -23,8 +25,12 @@ export function QuestionModalAnsweringState({
   return (
     <div className="w-full max-w-2xl space-y-8 animate-in slide-in-from-bottom-10">
       <div className="flex items-center justify-center gap-4 mb-4">
-        <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
-          <User className="w-8 h-8" />
+        <div className="w-16 h-16 rounded-full border border-border overflow-hidden bg-background flex items-center justify-center">
+          {playerAvatarUrl ? (
+            <img src={playerAvatarUrl} alt={playerName} className="h-full w-full object-cover" />
+          ) : (
+            <User className="w-8 h-8 text-primary" />
+          )}
         </div>
 
         <div className="text-left">

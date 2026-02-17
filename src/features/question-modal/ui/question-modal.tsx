@@ -96,6 +96,7 @@ export function QuestionModal({
               {currentPhase === "answering" ? (
                 <QuestionModalAnsweringState
                   playerName={activePlayer?.name ?? "Игрок"}
+                  playerAvatarUrl={activePlayer?.avatarUrl ?? null}
                   questionText={questionText}
                   answerInput={answerInput}
                   onAnswerInputChange={onAnswerInputChange}

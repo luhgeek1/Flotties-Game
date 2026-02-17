@@ -41,7 +41,12 @@ export function useGamePlayers(selectedPlayerIds: readonly PlayerId[]) {
   );
 
   const questionPlayers: QuestionModalPlayer[] = useMemo(
-    () => gamePlayers.map(p => ({ id: p.id, name: p.name, keyCode: p.keyCode })),
+    () => gamePlayers.map(p => ({
+      id: p.id,
+      name: p.name,
+      keyCode: p.keyCode,
+      avatarUrl: p.avatarUrl,
+    })),
     [gamePlayers],
   );
 
