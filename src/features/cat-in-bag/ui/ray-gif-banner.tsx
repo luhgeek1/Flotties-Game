@@ -59,6 +59,10 @@ export function RayGifBanner({
             transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
             onClick={event => event.stopPropagation()}
           >
+            <h2 className="text-4xl sm:text-5xl font-black tracking-wide text-green-950 text-center drop-shadow-lg bg-white px-6 py-3 rounded-xl">
+              КОТ В МЕШКЕ
+            </h2>
+
             <div className="relative group cursor-pointer" onClick={onClose}>
               <div
                 className="absolute -inset-1 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"
