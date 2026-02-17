@@ -19,6 +19,7 @@ type QuestionModalProps = {
   questionText: string;
   answerText: string;
   players: QuestionModalPlayer[];
+  isSingleAttemptMode?: boolean;
   phase: GameQuestionPhase | null;
   remainingMs: number;
   timerDurationMs: number;
@@ -38,6 +39,7 @@ export function QuestionModal({
   questionText,
   answerText,
   players,
+  isSingleAttemptMode = false,
   phase,
   remainingMs,
   timerDurationMs,
@@ -110,7 +112,11 @@ export function QuestionModal({
               ) : null}
 
               {currentPhase === "result-wrong" ? (
-                <QuestionModalResultWrongState onContinue={onContinue} />
+                <QuestionModalResultWrongState
+                  answerText={answerText}
+                  showCorrectAnswer={isSingleAttemptMode}
+                  onContinue={onContinue}
+                />
               ) : null}
 
               {currentPhase === "result-timeout" ? (

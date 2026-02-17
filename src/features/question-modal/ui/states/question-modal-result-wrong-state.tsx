@@ -3,10 +3,14 @@ import { X } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
 type QuestionModalResultWrongStateProps = {
+  answerText?: string;
+  showCorrectAnswer?: boolean;
   onContinue: () => void;
 };
 
 export function QuestionModalResultWrongState({
+  answerText,
+  showCorrectAnswer = false,
   onContinue,
 }: QuestionModalResultWrongStateProps) {
   return (
@@ -17,8 +21,17 @@ export function QuestionModalResultWrongState({
 
       <h2 className="text-4xl font-black">Неверно</h2>
 
+      {showCorrectAnswer && answerText ? (
+        <div className="bg-muted p-6 rounded-xl border mt-8">
+          <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">
+            Правильный ответ
+          </p>
+          <p className="text-3xl font-black text-primary">{answerText}</p>
+        </div>
+      ) : null}
+
       <Button type="button" size="lg" className="mt-8 w-full" onClick={onContinue}>
-        Продолжить
+        {showCorrectAnswer ? "Закрыть" : "Продолжить"}
       </Button>
     </div>
   );
