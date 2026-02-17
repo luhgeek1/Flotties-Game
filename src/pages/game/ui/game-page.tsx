@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { GameBoard, type GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
-import { RayGifBanner } from "@/features/cat-in-bag";
+import { RayGifBanner } from "@/features/cat-in-bag/cat-in-bag-banner";
 import { PlayerScoreCard } from "@/entities/players";
 import { ExitGameModal } from "@/features/exit-game";
 import { PlayerPickBanner, usePlayerPick } from "@/features/player-pick";
