@@ -50,7 +50,7 @@ export function useQuestionState({
     setOpenedQuestionIds(updater);
   }, [setOpenedQuestionIds]);
 
-  const { closeQuestionModal, handleQuestionSelect, resetQuestionState } = useQuestionLifecycleActions({
+  const { closeQuestionModal, handleQuestionSelect, resetQuestionState, markQuestionOpened } = useQuestionLifecycleActions({
     activeQuestionId,
     isOpened,
     setActiveQuestionId: setActiveQuestionIdValue,
@@ -110,5 +110,6 @@ export function useQuestionState({
     continueAfterWrong,
     openAllQuestions,
     resetQuestionState,
+    markQuestionOpened,
   };
 }

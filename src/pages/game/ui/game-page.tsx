@@ -1,8 +1,13 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { GameBoard, type GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
 import { RayGifBanner } from "@/features/cat-in-bag/cat-in-bag-banner";
+import {
+  CatInBagTransferModal,
+  useCatInBagTransfer,
+  type CatInBagTransferCompletePayload,
+} from "@/features/cat-in-bag/cat-in-bag-transfer";
 import { PlayerScoreCard } from "@/entities/players";
 import { ExitGameModal } from "@/features/exit-game";
 import { PlayerPickBanner, usePlayerPick } from "@/features/player-pick";
@@ -26,15 +31,11 @@ type GamePageProps = {
   roundIndex?: number;
 };
 
-const CAT_IN_BAG_GIF_URL = "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnR5dnZ6cG1reGpydmhwZHQ0MG1ib29rbzZlemMxdjk1N2g5ZDc4cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9KeOUp3sIqL6w/giphy.gif";
-
 export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex = 0 }: GamePageProps) {
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
 
   const { roundSpecialMap } = useRoundSpecialMap(selectedPack, roundIndex);
-  const [isCatInBagBannerOpen, setIsCatInBagBannerOpen] = useState(false);
-  const [pendingCatInBagQuestionId, setPendingCatInBagQuestionId] = useState<string | null>(null);
 
   const [isExitModalOpen, setIsExitModalOpen] = useAtom(gameIsExitModalOpenAtom);
   const resetRoundTransitionStorage = useSetAtom(resetRoundTransitionStorageAtom);
@@ -54,6 +55,7 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
     openedQuestionIds,
     openAllQuestions,
     resetQuestionState,
+    markQuestionOpened,
   } = useQuestionState({
     questionsById,
     players: questionPlayers,
@@ -82,25 +84,27 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
 
     return next;
   }, [roundSpecialMap]);
-  const handleCatInBagBannerClose = useCallback(() => {
-    setIsCatInBagBannerOpen(false);
-
-    if (!pendingCatInBagQuestionId) return;
-
-    handleQuestionSelect(pendingCatInBagQuestionId);
-    setPendingCatInBagQuestionId(null);
-  }, [handleQuestionSelect, pendingCatInBagQuestionId]);
-  const handleBoardQuestionSelect = useCallback((questionId: string) => {
-    if (isCatInBagBannerOpen) return;
-
-    if (specialTypeByQuestionId[questionId] === "catInBag") {
-      setPendingCatInBagQuestionId(questionId);
-      setIsCatInBagBannerOpen(true);
-      return;
-    }
-
-    handleQuestionSelect(questionId);
-  }, [handleQuestionSelect, isCatInBagBannerOpen, specialTypeByQuestionId]);
+  const handleCatInBagTransferComplete = useCallback(
+    ({ questionId }: CatInBagTransferCompletePayload) => {
+      markQuestionOpened(questionId);
+    },
+    [markQuestionOpened],
+  );
+  const {
+    isBannerOpen: isCatInBagBannerOpen,
+    isTransferOpen: isCatInBagTransferOpen,
+    chooserName: catInBagChooserName,
+    transferPlayers: catInBagTransferPlayers,
+    handleBoardQuestionSelect,
+    handleBannerClose: handleCatInBagBannerClose,
+    handleTransferPlayerSelect: handleCatInBagTransferPlayerSelect,
+  } = useCatInBagTransfer({
+    players: gamePlayers,
+    currentPickerId,
+    specialTypeByQuestionId,
+    onRegularQuestionSelect: handleQuestionSelect,
+    onTransferComplete: handleCatInBagTransferComplete,
+  });
 
   const isRoundComplete = useMemo(() => (
     totalQuestions > 0
@@ -164,8 +168,14 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
       <RayGifBanner
         open={isCatInBagBannerOpen}
         onClose={handleCatInBagBannerClose}
-        gifUrl={CAT_IN_BAG_GIF_URL}
         autoCloseMs={3000}
+      />
+
+      <CatInBagTransferModal
+        open={isCatInBagTransferOpen}
+        chooserName={catInBagChooserName ?? currentPicker?.name ?? null}
+        players={catInBagTransferPlayers}
+        onSelectPlayer={handleCatInBagTransferPlayerSelect}
       />
 
       <QuestionModal

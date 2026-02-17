@@ -42,9 +42,18 @@ export function useQuestionLifecycleActions({
     setQuestionFlowState(null);
   }, [setActiveQuestionId, setOpenedQuestionIds, setQuestionFlowState]);
 
+  const markQuestionOpened = useCallback((questionId: string) => {
+    if (isOpened(questionId)) return;
+
+    markOpened(questionId);
+    setActiveQuestionId(null);
+    setQuestionFlowState(null);
+  }, [isOpened, markOpened, setActiveQuestionId, setQuestionFlowState]);
+
   return {
     closeQuestionModal,
     handleQuestionSelect,
     resetQuestionState,
+    markQuestionOpened,
   };
 }
