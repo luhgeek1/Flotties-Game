@@ -1,2 +1,7 @@
 export { GameBoard } from "./ui";
-export type { GameBoardQuestion, GameBoardTheme } from "./model";
+export type {
+  GameBoardQuestion,
+  GameBoardSpecialQuestionType,
+  GameBoardSpecialTypeByQuestionId,
+  GameBoardTheme,
+} from "./model";

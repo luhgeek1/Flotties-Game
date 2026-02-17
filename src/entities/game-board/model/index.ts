@@ -1,1 +1,6 @@
-export type { GameBoardQuestion, GameBoardTheme } from "./types";
+export type {
+  GameBoardQuestion,
+  GameBoardSpecialQuestionType,
+  GameBoardSpecialTypeByQuestionId,
+  GameBoardTheme,
+} from "./types";

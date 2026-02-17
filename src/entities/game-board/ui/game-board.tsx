@@ -1,13 +1,23 @@
 import { motion } from "motion/react";
-import type { GameBoardTheme } from "../model";
+import { cn } from "@/shared/lib/utils";
+import type {
+  GameBoardSpecialTypeByQuestionId,
+  GameBoardTheme,
+} from "../model";
 
 type GameBoardProps = {
   themes: GameBoardTheme[];
+  specialTypeByQuestionId?: GameBoardSpecialTypeByQuestionId;
   openedQuestionIds?: string[];
   onQuestionSelect?: (questionId: string) => void;
 };
 
-export function GameBoard({ themes, openedQuestionIds = [], onQuestionSelect }: GameBoardProps) {
+export function GameBoard({
+  themes,
+  specialTypeByQuestionId = {},
+  openedQuestionIds = [],
+  onQuestionSelect,
+}: GameBoardProps) {
   const columns = Math.max(themes.length, 1);
   const openedQuestionIdSet = new Set(openedQuestionIds);
 
@@ -27,12 +37,25 @@ export function GameBoard({ themes, openedQuestionIds = [], onQuestionSelect }: 
 
             {theme.questions.map(question => {
               const isOpenedQuestion = openedQuestionIdSet.has(question.id);
+              const specialType = specialTypeByQuestionId[question.id];
+              const specialBorderClass = specialType === "catInBag"
+                ? "border-red-500 hover:border-red-400"
+                : specialType === "auction"
+                  ? "border-violet-500 hover:border-violet-400"
+                  : "border-border hover:border-primary";
 
               if (isOpenedQuestion) {
                 return (
                   <div
                     key={question.id}
-                    className="flex-1 rounded-lg border border-muted bg-muted/40 shadow-sm"
+                    className={cn(
+                      "flex-1 rounded-lg bg-muted/40 shadow-sm border",
+                      specialType === "catInBag"
+                        ? "border-red-500/50"
+                        : specialType === "auction"
+                          ? "border-violet-500/50"
+                          : "border-muted",
+                    )}
                   />
                 );
               }
@@ -45,7 +68,10 @@ export function GameBoard({ themes, openedQuestionIds = [], onQuestionSelect }: 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => onQuestionSelect?.(question.id)}
-                  className="flex-1 rounded-lg flex items-center justify-center text-xl md:text-3xl font-black font-mono transition-all duration-200 shadow-sm border bg-card text-primary border-border hover:border-primary hover:bg-primary/5 hover:shadow-md cursor-pointer"
+                  className={cn(
+                    "flex-1 rounded-lg flex items-center justify-center text-xl md:text-3xl font-black font-mono transition-all duration-200 shadow-sm border bg-card text-primary hover:bg-primary/5 hover:shadow-md cursor-pointer",
+                    specialBorderClass,
+                  )}
                 >
                   {question.value}
                 </motion.button>

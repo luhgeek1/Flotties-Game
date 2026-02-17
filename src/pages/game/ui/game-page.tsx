@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
-import { GameBoard } from "@/entities/game-board";
+import { GameBoard, type GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
 import { PlayerScoreCard } from "@/entities/players";
 import { ExitGameModal } from "@/features/exit-game";
 import { PlayerPickBanner, usePlayerPick } from "@/features/player-pick";
@@ -29,7 +29,7 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
 
-  useRoundSpecialMap(selectedPack, roundIndex);
+  const { roundSpecialMap } = useRoundSpecialMap(selectedPack, roundIndex);
 
   const [isExitModalOpen, setIsExitModalOpen] = useAtom(gameIsExitModalOpenAtom);
   const resetRoundTransitionStorage = useSetAtom(resetRoundTransitionStorageAtom);
@@ -68,6 +68,16 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
   });
 
   const questionsProgress = `Questions: ${openedQuestionIds.length}/${totalQuestions}`;
+  const specialTypeByQuestionId = useMemo<GameBoardSpecialTypeByQuestionId>(() => {
+    const next: GameBoardSpecialTypeByQuestionId = {};
+
+    Object.entries(roundSpecialMap).forEach(([questionId, specialCell]) => {
+      next[questionId] = specialCell.type;
+    });
+
+    return next;
+  }, [roundSpecialMap]);
+
   const isRoundComplete = useMemo(() => (
     totalQuestions > 0
     && openedQuestionIds.length >= totalQuestions
@@ -119,6 +129,7 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
           />
           <GameBoard
             themes={boardThemes}
+            specialTypeByQuestionId={specialTypeByQuestionId}
             openedQuestionIds={openedQuestionIds}
             onQuestionSelect={handleQuestionSelect}
           />
