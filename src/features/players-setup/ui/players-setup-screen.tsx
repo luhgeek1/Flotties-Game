@@ -5,14 +5,12 @@ import { motion } from "motion/react";
 import { DEFAULT_PLAYERS, PlayerSetupCard, type PlayerId } from "@/entities/players";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
-import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { MIN_PLAYERS_TO_START_GAME, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 import { SetupShell } from "@/widgets/setup-shell";
 
 type PlayersSetupScreenProps = {
   onContinue?: () => void;
 };
-
-const MIN_PLAYERS_TO_CONTINUE = 3;
 
 export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
   const [selectedPlayerIds, setSelectedPlayerIds] = useAtom(setupSelectedPlayerIdsAtom);
@@ -27,7 +25,7 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
   };
 
   const selectedPlayersCount = selectedPlayerIds.length;
-  const canContinue = selectedPlayersCount >= MIN_PLAYERS_TO_CONTINUE;
+  const canContinue = selectedPlayersCount >= MIN_PLAYERS_TO_START_GAME;
 
   return (
     <SetupShell>

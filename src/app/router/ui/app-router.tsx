@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { GamePage, GamePage2R } from "@/pages/game";
 import { SetupPage } from "@/pages/setup";
-import { setupStepAtom } from "@/shared/store/setupAtoms";
+import {
+  MIN_PLAYERS_TO_START_GAME,
+  setupSelectedPackIdAtom,
+  setupSelectedPlayerIdsAtom,
+  setupStepAtom,
+} from "@/shared/store/setupAtoms";
 import {
   gameActiveQuestionIdAtom,
   gameIsExitModalOpenAtom,
@@ -36,7 +41,12 @@ function resolveRound2Access(current: boolean, mode: NavigateOptions["round2Acce
 
 export function AppRouter() {
   const [isRound2Unlocked, setIsRound2Unlocked] = useAtom(gameRound2UnlockedAtom);
-  const [route, setRoute] = useState<AppRoute>(() => getInitialRoute(window.location.pathname, isRound2Unlocked));
+  const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
+  const selectedPackId = useAtomValue(setupSelectedPackIdAtom);
+  const canEnterGame = selectedPlayerIds.length >= MIN_PLAYERS_TO_START_GAME && selectedPackId !== null;
+  const [route, setRoute] = useState<AppRoute>(
+    () => getInitialRoute(window.location.pathname, isRound2Unlocked, canEnterGame),
+  );
   const setActiveQuestionId = useSetAtom(gameActiveQuestionIdAtom);
   const setOpenedQuestionIds = useSetAtom(gameOpenedQuestionIdsAtom);
   const setQuestionFlowState = useSetAtom(gameQuestionFlowStateAtom);
@@ -67,6 +77,7 @@ export function AppRouter() {
         requestedRoute: resolveRoute(window.location.pathname),
         currentRoute: route,
         isRound2Unlocked,
+        canEnterGame,
       });
       const nextPath = ROUTE_PATH[nextRoute];
 
@@ -82,7 +93,7 @@ export function AppRouter() {
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [isRound2Unlocked, route]);
+  }, [canEnterGame, isRound2Unlocked, route]);
 
   useEffect(() => {
     const expectedPath = ROUTE_PATH[route];
@@ -100,6 +111,7 @@ export function AppRouter() {
       requestedRoute: nextRoute,
       currentRoute: route,
       isRound2Unlocked: nextIsRound2Unlocked,
+      canEnterGame,
     });
 
     if (options?.resetQuestionState) {
@@ -125,7 +137,7 @@ export function AppRouter() {
     }
 
     setRoute(guardedRoute);
-  }, [isRound2Unlocked, resetQuestionRoundState, route, setIsRound2Unlocked, setSetupStep]);
+  }, [canEnterGame, isRound2Unlocked, resetQuestionRoundState, route, setIsRound2Unlocked, setSetupStep]);
 
   if (route === "game") {
     return (

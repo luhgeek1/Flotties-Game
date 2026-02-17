@@ -9,6 +9,8 @@ const STEP_STORAGE_KEY = "setup-step";
 const SELECTED_PLAYERS_STORAGE_KEY = "setup-selected-players";
 const SELECTED_PACK_ID_STORAGE_KEY = "setup-selected-pack-id";
 
+export const MIN_PLAYERS_TO_START_GAME = 3;
+
 export const setupStepAtom = atomWithStorage<SetupStep>(
   STEP_STORAGE_KEY,
   "players",
