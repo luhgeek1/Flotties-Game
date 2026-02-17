@@ -10,15 +10,14 @@ import { resetRoundTransitionStorageAtom } from "@/shared/store/round-transition
 import { RoundTransitionModal } from "@/features/round-transition"
 import { GameShell } from "@/widgets/game-shell";
 
-import {
-  gameIsExitModalOpenAtom,
-} from "@/shared/store/gameAtoms";
+import { gameIsExitModalOpenAtom } from "@/shared/store/gameAtoms";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
 import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 
 import { useGamePlayers } from "../model/useGamePlayers";
 import { useGameBoardData } from "../model/useGameBoardData";
 import { useQuestionState } from "../model/useQuestionState";
+import { useRoundSpecialMap } from "../model/useRoundSpecialMap";
 
 type GamePageProps = {
   onExitToSetup?: () => void;
@@ -29,6 +28,8 @@ type GamePageProps = {
 export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex = 0 }: GamePageProps) {
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
+
+  useRoundSpecialMap(selectedPack, roundIndex);
 
   const [isExitModalOpen, setIsExitModalOpen] = useAtom(gameIsExitModalOpenAtom);
   const resetRoundTransitionStorage = useSetAtom(resetRoundTransitionStorageAtom);
