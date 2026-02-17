@@ -2,27 +2,37 @@ import { AnimatePresence, motion } from "motion/react";
 import { useMemo } from "react";
 
 import { cn } from "@/shared/lib/utils";
-import type { CatInBagTransferPlayer } from "../model";
+import type { CatInBagTransferModalMode, CatInBagTransferPlayer } from "../model";
 
 type CatInBagTransferModalProps = {
   open: boolean;
+  mode: CatInBagTransferModalMode;
   chooserName: string | null;
+  answeringPlayerName: string | null;
+  questionTheme: string | null;
   players: CatInBagTransferPlayer[];
+  bidOptions: number[];
   onSelectPlayer: (playerId: string) => void;
+  onSelectBid: (bid: number) => void;
 };
 
 export function CatInBagTransferModal({
   open,
+  mode,
   chooserName,
+  answeringPlayerName,
+  questionTheme,
   players,
+  bidOptions,
   onSelectPlayer,
+  onSelectBid,
 }: CatInBagTransferModalProps) {
-  const title = useMemo(() => {
+  const transferTitle = useMemo(() => {
     if (!chooserName) return "Игрок выбирает, кому передать вопрос";
 
     return (
       <>
-        Игрок <span className="font-extrabold text-slate-900">{chooserName}</span> выбирает, кому передать вопрос
+        <span className="font-extrabold text-slate-900">{chooserName}</span> выбирает, кому передать вопрос
       </>
     );
   }, [chooserName]);
@@ -51,53 +61,97 @@ export function CatInBagTransferModal({
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             className="relative z-10 w-full max-w-5xl rounded-[34px] border border-slate-200 bg-white px-6 pb-12 pt-9 shadow-[0_28px_85px_rgba(15,23,42,0.18)] sm:px-10 md:px-14"
           >
-            <div className="mx-auto mt-8 flex max-w-3xl flex-col items-center text-center">
-              <h2 className="text-4xl font-black uppercase tracking-tight text-slate-900 sm:text-5xl">
-                Кот в мешке
-              </h2>
-              <p className="mt-3 text-xl font-medium text-slate-500 sm:text-2xl">{title}</p>
-            </div>
+            {mode === "transfer" ? (
+              <>
+                <div className="mx-auto mt-8 flex max-w-3xl flex-col items-center text-center">
+                  <h2 className="text-4xl font-black uppercase tracking-tight text-slate-900 sm:text-5xl">
+                    Кот в мешке
+                  </h2>
+                  <p className="mt-3 text-xl font-medium text-slate-500 sm:text-2xl">{transferTitle}</p>
+                </div>
 
-            {players.length > 0 ? (
-              <div className="mx-auto mt-14 grid max-w-3xl gap-4 sm:grid-cols-2">
-                {players.map((player, index) => (
-                  <motion.button
-                    key={player.id}
-                    type="button"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.22, delay: 0.08 + index * 0.06 }}
-                    whileHover={{ y: -3, scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    onClick={() => onSelectPlayer(player.id)}
-                    className={cn(
-                      "group rounded-3xl border-2 border-slate-200 bg-slate-50 px-4 py-8 text-center transition-colors hover:border-slate-300 hover:bg-white",
-                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2",
-                    )}
-                  >
-                    <div className="mx-auto h-20 w-20 overflow-hidden rounded-full border border-slate-300 bg-slate-200">
-                      <img
-                        src={player.avatarUrl}
-                        alt={player.name}
-                        className="h-full w-full object-cover grayscale"
-                      />
-                    </div>
+                {players.length > 0 ? (
+                  <div className="mx-auto mt-14 grid max-w-3xl gap-4 sm:grid-cols-2">
+                    {players.map((player, index) => (
+                      <motion.button
+                        key={player.id}
+                        type="button"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.22, delay: 0.08 + index * 0.06 }}
+                        whileHover={{ y: -3, scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={() => onSelectPlayer(player.id)}
+                        className={cn(
+                          "group rounded-3xl border-2 border-slate-200 bg-slate-50 px-4 py-8 text-center transition-colors hover:border-slate-300 hover:bg-white",
+                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2",
+                        )}
+                      >
+                        <div className="mx-auto h-20 w-20 overflow-hidden rounded-full border border-slate-300 bg-slate-200">
+                          <img
+                            src={player.avatarUrl}
+                            alt={player.name}
+                            className="h-full w-full object-cover grayscale"
+                          />
+                        </div>
 
-                    <div className="mt-5 text-[38px] font-black leading-none tracking-tight text-slate-900">
-                      {player.name}
-                    </div>
+                        <div className="mt-5 text-[38px] font-black leading-none tracking-tight text-slate-900">
+                          {player.name}
+                        </div>
 
-                    <div className="mt-2 text-3xl font-mono font-semibold tracking-tight text-slate-400">
-                      {player.score}
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
+                        <div className="mt-2 text-3xl font-mono font-semibold tracking-tight text-slate-400">
+                          {player.score}
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mx-auto mt-14 flex max-w-xl flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 px-6 py-10 text-center">
+                    <p className="text-2xl font-semibold text-slate-700">
+                      Нет доступных игроков для передачи вопроса
+                    </p>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="mx-auto mt-14 flex max-w-xl flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 px-6 py-10 text-center">
-                <p className="text-2xl font-semibold text-slate-700">
-                  Нет доступных игроков для передачи вопроса
-                </p>
+              <div className="mx-auto mt-8 flex max-w-3xl flex-col items-center text-center">
+                <div className="inline-flex items-center rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-500">
+                  Отвечает&nbsp;
+                  <span className="font-black text-slate-900">{answeringPlayerName ?? "Игрок"}</span>
+                </div>
+
+                <h2 className="mt-7 text-5xl font-black tracking-tight text-slate-900 sm:text-6xl">
+                  Тема: <span className="font-black text-slate-900">{questionTheme}</span>
+                </h2>
+
+                {questionTheme ? (
+                  <p className="mt-4 text-lg font-semibold text-slate-500">
+                      Выберите ставку
+                  </p>
+                ) : null}
+
+                <div className="mt-8 grid w-full gap-4 sm:grid-cols-2">
+                  {bidOptions.map((bid, index) => (
+                    <motion.button
+                      key={bid}
+                      type="button"
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.22, delay: 0.08 + index * 0.06 }}
+                      whileHover={{ y: -3, scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                      onClick={() => onSelectBid(bid)}
+                      className={cn(
+                        "group rounded-3xl border-2 border-slate-200 bg-slate-50 px-4 py-12 text-center transition-colors hover:border-slate-300 hover:bg-white",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2",
+                      )}
+                    >
+                      <span className="text-8xl font-black tracking-tight text-slate-900">
+                        {bid}
+                      </span>
+                    </motion.button>
+                  ))}
+                </div>
               </div>
             )}
           </motion.div>

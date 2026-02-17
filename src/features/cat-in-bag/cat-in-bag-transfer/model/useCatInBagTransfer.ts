@@ -3,32 +3,44 @@ import { useCallback, useMemo, useState } from "react";
 
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
 import {
+  catInBagBidByQuestionIdAtom,
+  catInBagBidModalOpenAtom,
+  catInBagPendingQuestionIdAtom,
+  catInBagPickerPlayerIdAtom,
   catInBagSelectedAnsweringPlayerIdAtom,
   catInBagTransferModalOpenAtom,
 } from "@/shared/store/specialAtom";
 
-import type { CatInBagTransferCompletePayload, CatInBagTransferPlayer } from "./types";
+import type { CatInBagBidCompletePayload, CatInBagTransferModalMode, CatInBagTransferPlayer } from "./types";
 
 type UseCatInBagTransferArgs = {
   players: CatInBagTransferPlayer[];
+  roundIndex: number;
   currentPickerId: string | null;
   specialTypeByQuestionId: GameBoardSpecialTypeByQuestionId;
+  catInBagThemeByQuestionId: Record<string, string>;
   onRegularQuestionSelect: (questionId: string) => void;
-  onTransferComplete: (payload: CatInBagTransferCompletePayload) => void;
+  onBidComplete: (payload: CatInBagBidCompletePayload) => void;
 };
 
 export function useCatInBagTransfer({
   players,
+  roundIndex,
   currentPickerId,
   specialTypeByQuestionId,
+  catInBagThemeByQuestionId,
   onRegularQuestionSelect,
-  onTransferComplete,
+  onBidComplete,
 }: UseCatInBagTransferArgs) {
   const [isBannerOpen, setIsBannerOpen] = useState(false);
   const [isTransferOpen, setIsTransferOpen] = useAtom(catInBagTransferModalOpenAtom);
-  const [, setSelectedAnsweringPlayerId] = useAtom(catInBagSelectedAnsweringPlayerIdAtom);
-  const [pendingQuestionId, setPendingQuestionId] = useState<string | null>(null);
-  const [pickerId, setPickerId] = useState<string | null>(null);
+  const [isBidOpen, setIsBidOpen] = useAtom(catInBagBidModalOpenAtom);
+  const [pendingQuestionId, setPendingQuestionId] = useAtom(catInBagPendingQuestionIdAtom);
+  const [pickerId, setPickerId] = useAtom(catInBagPickerPlayerIdAtom);
+  const [selectedAnsweringPlayerId, setSelectedAnsweringPlayerId] = useAtom(catInBagSelectedAnsweringPlayerIdAtom);
+  const [, setBidByQuestionId] = useAtom(catInBagBidByQuestionIdAtom);
+
+  const isTransferModalOpen = isTransferOpen || isBidOpen;
 
   const chooser = useMemo(() => {
     if (!pickerId) return null;
@@ -36,10 +48,31 @@ export function useCatInBagTransfer({
     return players.find(player => player.id === pickerId) ?? null;
   }, [pickerId, players]);
 
+  const answeringPlayer = useMemo(() => {
+    if (!selectedAnsweringPlayerId) return null;
+
+    return players.find(player => player.id === selectedAnsweringPlayerId) ?? null;
+  }, [players, selectedAnsweringPlayerId]);
+
   const transferPlayers = useMemo(
     () => players.filter(player => player.id !== pickerId),
     [pickerId, players],
   );
+
+  const bidOptions = useMemo(
+    () => (roundIndex === 0 ? [100, 500] : [200, 1000]),
+    [roundIndex],
+  );
+  const bidQuestionTheme = useMemo(
+    () => (pendingQuestionId ? catInBagThemeByQuestionId[pendingQuestionId] ?? null : null),
+    [catInBagThemeByQuestionId, pendingQuestionId],
+  );
+
+  const modalMode = useMemo<CatInBagTransferModalMode | null>(() => {
+    if (isTransferOpen) return "transfer";
+    if (isBidOpen) return "bid";
+    return null;
+  }, [isBidOpen, isTransferOpen]);
 
   const handleBannerClose = useCallback(() => {
     setIsBannerOpen(false);
@@ -50,21 +83,44 @@ export function useCatInBagTransfer({
 
   const handleTransferPlayerSelect = useCallback((playerId: string) => {
     if (!pendingQuestionId) return;
-
     setSelectedAnsweringPlayerId(playerId);
-    onTransferComplete({
+    setIsTransferOpen(false);
+    setIsBidOpen(true);
+  }, [pendingQuestionId, setIsBidOpen, setIsTransferOpen, setSelectedAnsweringPlayerId]);
+
+  const handleBidSelect = useCallback((bid: number) => {
+    if (!pendingQuestionId || !selectedAnsweringPlayerId) return;
+
+    setBidByQuestionId(prev => ({
+      ...prev,
+      [pendingQuestionId]: bid,
+    }));
+    onBidComplete({
       questionId: pendingQuestionId,
-      targetPlayerId: playerId,
+      targetPlayerId: selectedAnsweringPlayerId,
+      bid,
     });
     setIsTransferOpen(false);
+    setIsBidOpen(false);
     setPendingQuestionId(null);
     setPickerId(null);
-  }, [onTransferComplete, pendingQuestionId, setIsTransferOpen, setSelectedAnsweringPlayerId]);
+  }, [
+    onBidComplete,
+    pendingQuestionId,
+    selectedAnsweringPlayerId,
+    setBidByQuestionId,
+    setIsBidOpen,
+    setIsTransferOpen,
+    setPendingQuestionId,
+    setPickerId,
+  ]);
 
   const handleBoardQuestionSelect = useCallback((questionId: string) => {
-    if (isBannerOpen || isTransferOpen) return;
+    if (isBannerOpen || isTransferModalOpen) return;
 
     if (specialTypeByQuestionId[questionId] === "catInBag") {
+      setIsTransferOpen(false);
+      setIsBidOpen(false);
       setSelectedAnsweringPlayerId(null);
       setPendingQuestionId(questionId);
       setPickerId(currentPickerId);
@@ -76,19 +132,28 @@ export function useCatInBagTransfer({
   }, [
     currentPickerId,
     isBannerOpen,
-    isTransferOpen,
+    isTransferModalOpen,
     onRegularQuestionSelect,
+    setIsBidOpen,
+    setIsTransferOpen,
+    setPendingQuestionId,
+    setPickerId,
     setSelectedAnsweringPlayerId,
     specialTypeByQuestionId,
   ]);
 
   return {
     isBannerOpen,
-    isTransferOpen,
+    isTransferModalOpen,
+    modalMode,
     chooserName: chooser?.name ?? null,
+    answeringPlayerName: answeringPlayer?.name ?? null,
+    bidQuestionTheme,
     transferPlayers,
+    bidOptions,
     handleBoardQuestionSelect,
     handleBannerClose,
     handleTransferPlayerSelect,
+    handleBidSelect,
   };
 }

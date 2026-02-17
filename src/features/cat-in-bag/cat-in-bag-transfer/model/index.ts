@@ -1,2 +1,6 @@
-export type { CatInBagTransferCompletePayload, CatInBagTransferPlayer } from "./types";
+export type {
+  CatInBagBidCompletePayload,
+  CatInBagTransferModalMode,
+  CatInBagTransferPlayer,
+} from "./types";
 export { useCatInBagTransfer } from "./useCatInBagTransfer";

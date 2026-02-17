@@ -5,7 +5,10 @@ export type CatInBagTransferPlayer = {
   avatarUrl: string;
 };
 
-export type CatInBagTransferCompletePayload = {
+export type CatInBagBidCompletePayload = {
   questionId: string;
   targetPlayerId: string;
+  bid: number;
 };
+
+export type CatInBagTransferModalMode = "transfer" | "bid";
