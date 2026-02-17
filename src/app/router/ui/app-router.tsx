@@ -12,6 +12,7 @@ import {
   gameRound2StartPickerIdAtom,
   gameQuestionFlowStateAtom,
 } from "@/shared/store/gameAtoms";
+import { resetRoundSpecialMapsAtom } from "@/shared/store/specialAtom";
 import {
   ROUTE_PATH,
   coerceRoute,
@@ -41,6 +42,7 @@ export function AppRouter() {
   const setQuestionFlowState = useSetAtom(gameQuestionFlowStateAtom);
   const setIsExitModalOpen = useSetAtom(gameIsExitModalOpenAtom);
   const setRound2StartPickerId = useSetAtom(gameRound2StartPickerIdAtom);
+  const resetRoundSpecialMaps = useSetAtom(resetRoundSpecialMapsAtom);
   const setSetupStep = useSetAtom(setupStepAtom);
 
   const resetQuestionRoundState = useCallback(() => {
@@ -49,7 +51,15 @@ export function AppRouter() {
     setQuestionFlowState(null);
     setIsExitModalOpen(false);
     setRound2StartPickerId(null);
-  }, [setActiveQuestionId, setIsExitModalOpen, setOpenedQuestionIds, setQuestionFlowState, setRound2StartPickerId]);
+    resetRoundSpecialMaps();
+  }, [
+    resetRoundSpecialMaps,
+    setActiveQuestionId,
+    setIsExitModalOpen,
+    setOpenedQuestionIds,
+    setQuestionFlowState,
+    setRound2StartPickerId,
+  ]);
 
   useEffect(() => {
     const handlePopState = () => {
