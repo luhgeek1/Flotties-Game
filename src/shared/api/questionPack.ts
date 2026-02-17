@@ -1,9 +1,27 @@
+export type QuestionPackQuestionType = "normal";
+
 export type QuestionPackQuestion = {
   id: string;
   value: number;
-  type: string;
+  type: QuestionPackQuestionType;
   question: string;
   answers: string[];
+};
+
+export type QuestionPackSpecialQuestion = {
+  id: string;
+  theme: string;
+  question: string;
+  answers: string[];
+};
+
+export type QuestionPackSpecialBucket = {
+  questions: QuestionPackSpecialQuestion[];
+};
+
+export type QuestionPackSpecial = {
+  catInBag: QuestionPackSpecialBucket;
+  auction: QuestionPackSpecialBucket;
 };
 
 export type QuestionPackTheme = {
@@ -24,7 +42,7 @@ export type QuestionPack = {
   title: string;
   lang: string;
   rounds: QuestionPackRound[];
-  special: unknown;
+  special: QuestionPackSpecial;
 };
 
 export async function fetchDefaultQuestionPack(): Promise<QuestionPack> {
