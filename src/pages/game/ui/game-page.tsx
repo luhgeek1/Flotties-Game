@@ -1,29 +1,14 @@
-import { useCallback, useMemo } from "react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-
-import { GameBoard, type GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
+import { GameBoard } from "@/entities/game-board";
 import { RayGifBanner } from "@/features/cat-in-bag/cat-in-bag-banner";
-import {
-  CatInBagTransferModal,
-  useCatInBagTransfer,
-  type CatInBagTransferCompletePayload,
-} from "@/features/cat-in-bag/cat-in-bag-transfer";
+import { CatInBagTransferModal } from "@/features/cat-in-bag/cat-in-bag-transfer";
 import { PlayerScoreCard } from "@/entities/players";
 import { ExitGameModal } from "@/features/exit-game";
-import { PlayerPickBanner, usePlayerPick } from "@/features/player-pick";
+import { PlayerPickBanner } from "@/features/player-pick";
 import { QuestionModal } from "@/features/question-modal";
-import { resetRoundTransitionStorageAtom } from "@/shared/store/round-transition-storage";
 import { RoundTransitionModal } from "@/features/round-transition"
 import { GameShell } from "@/widgets/game-shell";
 
-import { gameIsExitModalOpenAtom } from "@/shared/store/gameAtoms";
-import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
-import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
-
-import { useGamePlayers } from "../model/useGamePlayers";
-import { useGameBoardData } from "../model/useGameBoardData";
-import { useQuestionState } from "../model/useQuestionState";
-import { useRoundSpecialMap } from "../model/useRoundSpecialMap";
+import { useGamePageModel } from "../model/useGamePageModel";
 
 type GamePageProps = {
   onExitToSetup?: () => void;
@@ -32,192 +17,60 @@ type GamePageProps = {
 };
 
 export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex = 0 }: GamePageProps) {
-  const selectedPack = useAtomValue(selectedQuestionPackAtom);
-  const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
-
-  const { roundSpecialMap } = useRoundSpecialMap(selectedPack, roundIndex);
-
-  const [isExitModalOpen, setIsExitModalOpen] = useAtom(gameIsExitModalOpenAtom);
-  const resetRoundTransitionStorage = useSetAtom(resetRoundTransitionStorageAtom);
-
-  const { gamePlayers, questionPlayers, resetScores, changePlayerScore } = useGamePlayers(selectedPlayerIds);
-  const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack, roundIndex);
-  const {
-    activeQuestion,
-    activeQuestionId,
-    handleQuestionSelect,
-    modalState,
-    questionTimerDurationMs,
-    setAnswerInput,
-    submitAnswer,
-    markAnswerWrong,
-    continueAfterWrong,
-    openedQuestionIds,
-    openAllQuestions,
-    resetQuestionState,
-    markQuestionOpened,
-  } = useQuestionState({
-    questionsById,
-    players: questionPlayers,
-    onPlayerScoreDelta: changePlayerScore,
-  });
-  const modalQuestionId = activeQuestionId ?? modalState?.questionId ?? null;
-  const modalQuestion = modalQuestionId ? questionsById.get(modalQuestionId) ?? null : null;
-  const isQuestionModalOpen = modalQuestionId !== null;
-
-  const {
-    currentPickerId,
-    currentPicker,
-  } = usePlayerPick({
-    players: gamePlayers,
+  const model = useGamePageModel({
+    onExitToSetup,
+    onRoundTransitionConfirm,
     roundIndex,
-    completedPicksCount: openedQuestionIds.length,
   });
-
-  const questionsProgress = `Questions: ${openedQuestionIds.length}/${totalQuestions}`;
-  const specialTypeByQuestionId = useMemo<GameBoardSpecialTypeByQuestionId>(() => {
-    const next: GameBoardSpecialTypeByQuestionId = {};
-
-    Object.entries(roundSpecialMap).forEach(([questionId, specialCell]) => {
-      next[questionId] = specialCell.type;
-    });
-
-    return next;
-  }, [roundSpecialMap]);
-  const handleCatInBagTransferComplete = useCallback(
-    ({ questionId }: CatInBagTransferCompletePayload) => {
-      markQuestionOpened(questionId);
-    },
-    [markQuestionOpened],
-  );
-  const {
-    isBannerOpen: isCatInBagBannerOpen,
-    isTransferOpen: isCatInBagTransferOpen,
-    chooserName: catInBagChooserName,
-    transferPlayers: catInBagTransferPlayers,
-    handleBoardQuestionSelect,
-    handleBannerClose: handleCatInBagBannerClose,
-    handleTransferPlayerSelect: handleCatInBagTransferPlayerSelect,
-  } = useCatInBagTransfer({
-    players: gamePlayers,
-    currentPickerId,
-    specialTypeByQuestionId,
-    onRegularQuestionSelect: handleQuestionSelect,
-    onTransferComplete: handleCatInBagTransferComplete,
-  });
-
-  const isRoundComplete = useMemo(() => (
-    totalQuestions > 0
-    && openedQuestionIds.length >= totalQuestions
-    && !isQuestionModalOpen
-  ), [isQuestionModalOpen, openedQuestionIds, totalQuestions]);
-  const isRoundTransitionModalOpen = Boolean(onRoundTransitionConfirm) && isRoundComplete;
-  const hasQuestionsToPick = openedQuestionIds.length < totalQuestions;
-  const activePickerId = hasQuestionsToPick ? currentPickerId : null;
-  const isRoundStartIntroOpen = hasQuestionsToPick
-    && openedQuestionIds.length === 0
-    && !isQuestionModalOpen
-    && !isRoundTransitionModalOpen;
-
-  const setExitModalOpen = (open: boolean) => setIsExitModalOpen(open);
-
-  const exitToSetup = () => {
-    resetRoundTransitionStorage();
-    resetQuestionState();
-    resetScores();
-    onExitToSetup?.();
-  };
-
-  const handleExitConfirm = () => {
-    setExitModalOpen(false);
-    exitToSetup();
-  };
 
   return (
     <>
       <GameShell
-        packTitle={packTitle}
-        questionsProgress={questionsProgress}
-        onExitClick={() => setExitModalOpen(true)}
-        onOpenAllQuestionsClick={openAllQuestions}
-        playersSlot={gamePlayers.map(player => (
+        packTitle={model.gameShell.packTitle}
+        questionsProgress={model.gameShell.questionsProgress}
+        onExitClick={model.gameShell.onExitClick}
+        onOpenAllQuestionsClick={model.gameShell.onOpenAllQuestionsClick}
+        playersSlot={model.gameShell.players.map(player => (
           <PlayerScoreCard
             key={player.id}
             layoutId={`player-card-${player.id}`}
             name={player.name}
             score={player.score}
             avatarUrl={player.avatarUrl}
-            isPicking={player.id === activePickerId}
+            isPicking={player.id === model.gameShell.activePickerId}
           />
         ))}
       >
         <div className="relative h-full w-full flex items-center justify-center">
           <PlayerPickBanner
-            playerName={currentPicker?.name ?? null}
-            isOpen={isRoundStartIntroOpen}
+            playerName={model.pickBanner.playerName}
+            isOpen={model.pickBanner.isOpen}
           />
-          <GameBoard
-            themes={boardThemes}
-            specialTypeByQuestionId={specialTypeByQuestionId}
-            openedQuestionIds={openedQuestionIds}
-            onQuestionSelect={handleBoardQuestionSelect}
-          />
+          <GameBoard {...model.gameBoard} />
         </div>
       </GameShell>
 
       <RayGifBanner
-        open={isCatInBagBannerOpen}
-        onClose={handleCatInBagBannerClose}
+        open={model.catInBagBanner.open}
+        onClose={model.catInBagBanner.onClose}
         autoCloseMs={3000}
       />
 
-      <CatInBagTransferModal
-        open={isCatInBagTransferOpen}
-        chooserName={catInBagChooserName ?? currentPicker?.name ?? null}
-        players={catInBagTransferPlayers}
-        onSelectPlayer={handleCatInBagTransferPlayerSelect}
-      />
+      <CatInBagTransferModal {...model.catInBagTransferModal} />
 
-      <QuestionModal
-        isOpen={isQuestionModalOpen}
-        questionId={modalQuestionId}
-        questionValue={modalQuestion?.value ?? activeQuestion?.value ?? ""}
-        questionText={modalQuestion?.question ?? activeQuestion?.question ?? ""}
-        answerText={modalQuestion?.answers[0] ?? activeQuestion?.answers[0] ?? "Ответ не указан"}
-        players={questionPlayers}
-        phase={modalState?.phase ?? null}
-        remainingMs={modalState?.remainingMs ?? questionTimerDurationMs}
-        timerDurationMs={questionTimerDurationMs}
-        attemptedPlayerIds={modalState?.attemptedPlayerIds ?? []}
-        activePlayerId={modalState?.activePlayerId ?? null}
-        answerInput={modalState?.answerInput ?? ""}
-        onAnswerInputChange={setAnswerInput}
-        onSubmitAnswer={submitAnswer}
-        onMarkAnswerWrong={markAnswerWrong}
-        onContinue={continueAfterWrong}
-      />
+      {model.isCatInBagQuestionTitleVisible ? (
+        <div className="fixed left-1/2 top-4 z-60 -translate-x-1/2 pointer-events-none">
+          <div className="rounded-full border border-slate-200 bg-white/95 px-5 py-2 text-sm font-black uppercase tracking-wide text-slate-900 shadow-md">
+            Кот в мешке
+          </div>
+        </div>
+      ) : null}
 
-      <ExitGameModal
-        isOpen={isExitModalOpen}
-        onCancel={() => setExitModalOpen(false)}
-        onConfirm={handleExitConfirm}
-      />
+      <QuestionModal {...model.questionModal} />
 
-      <RoundTransitionModal
-        isOpen={isRoundTransitionModalOpen}
-        playerScores={gamePlayers.map(player => ({
-          id: player.id,
-          name: player.name,
-          score: player.score,
-        }))}
-        roundNumber={roundIndex + 1}
-        onExitToSetup={() => {
-          exitToSetup();
-        }}
-        onConfirm={() => {
-          onRoundTransitionConfirm?.();
-        }}
-      />
+      <ExitGameModal {...model.exitModal} />
+
+      <RoundTransitionModal {...model.roundTransitionModal} />
     </>
   );
 }
