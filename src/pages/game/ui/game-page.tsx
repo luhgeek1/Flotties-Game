@@ -1,4 +1,5 @@
 import { GameBoard } from "@/entities/game-board";
+import { AuctionModal } from "@/features/auction";
 import { RayGifBanner } from "@/features/special-banner";
 import { CatInBagTransferModal } from "@/features/cat-in-bag/cat-in-bag-transfer";
 import { PlayerScoreCard } from "@/entities/players";
@@ -6,6 +7,7 @@ import { ExitGameModal } from "@/features/exit-game";
 import { PlayerPickBanner } from "@/features/player-pick";
 import { QuestionModal } from "@/features/question-modal";
 import { RoundTransitionModal } from "@/features/round-transition"
+// import 1call from "@/shared/assets/1call.png";
 import { GameShell } from "@/widgets/game-shell";
 
 import { useGamePageModel } from "../model/useGamePageModel";
@@ -49,6 +51,15 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
           <GameBoard {...model.gameBoard} />
         </div>
       </GameShell>
+{/* 
+      <img
+        src={1call}
+        alt=""
+        aria-hidden="true"
+        className="fixed bottom-0 right-0 z-40 h-auto pointer-events-none select-none"
+        style={{ width: "min(60vw, 580px)" }}
+        draggable={false}
+      /> */}
 
       <RayGifBanner
         open={model.catInBagBanner.open}
@@ -63,6 +74,8 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
         specialType="auction"
         autoCloseMs={3000}
       />
+
+      <AuctionModal {...model.auctionModal} />
 
       <CatInBagTransferModal {...model.catInBagTransferModal} />
 

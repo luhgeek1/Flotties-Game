@@ -18,6 +18,7 @@ import {
   gameQuestionFlowStateAtom,
 } from "@/shared/store/gameAtoms";
 import { resetRoundSpecialMapsAtom } from "@/shared/store/specialCIBAtom";
+import { resetAuctionStateAtom } from "@/shared/store/specialAuctionAtom";
 import {
   ROUTE_PATH,
   coerceRoute,
@@ -53,6 +54,7 @@ export function AppRouter() {
   const setIsExitModalOpen = useSetAtom(gameIsExitModalOpenAtom);
   const setRound2StartPickerId = useSetAtom(gameRound2StartPickerIdAtom);
   const resetRoundSpecialMaps = useSetAtom(resetRoundSpecialMapsAtom);
+  const resetAuctionState = useSetAtom(resetAuctionStateAtom);
   const setSetupStep = useSetAtom(setupStepAtom);
 
   const resetQuestionRoundState = useCallback(() => {
@@ -62,7 +64,9 @@ export function AppRouter() {
     setIsExitModalOpen(false);
     setRound2StartPickerId(null);
     resetRoundSpecialMaps();
+    resetAuctionState();
   }, [
+    resetAuctionState,
     resetRoundSpecialMaps,
     setActiveQuestionId,
     setIsExitModalOpen,
