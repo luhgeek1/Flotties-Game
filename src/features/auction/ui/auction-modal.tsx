@@ -14,6 +14,8 @@ type AuctionModalProps = {
   currentBid: number | null;
   leaderPlayerId: string | null;
   players: AuctionPlayer[];
+  isSinglePlayerMode: boolean;
+  excludedPlayersCount: number;
   turnPlayerId: string | null;
   turnPlayerName: string | null;
   turnPlayerBalance: number;
@@ -34,6 +36,8 @@ export function AuctionModal({
   currentBid,
   leaderPlayerId,
   players,
+  isSinglePlayerMode,
+  excludedPlayersCount,
   turnPlayerId,
   turnPlayerName,
   turnPlayerBalance,
@@ -64,7 +68,7 @@ export function AuctionModal({
     [leaderPlayerId, players],
   );
   const canAffordBid = turnPlayerId !== null && minBid !== null;
-  const isOnePlayerLeft = passedPlayerIdSet.size >= Math.max(0, players.length - 1);
+  const isOnePlayerLeft = !isSinglePlayerMode && passedPlayerIdSet.size >= Math.max(0, players.length - 1);
 
   return (
     <AnimatePresence mode="wait">
@@ -163,7 +167,7 @@ export function AuctionModal({
                   <div className="flex items-end justify-between mb-4 px-1">
                     <div>
                       <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        ВАШ ХОД
+                        {isSinglePlayerMode ? "СТАВКА ИГРОКА" : "ВАШ ХОД"}
                       </span>
                       <h3 className="text-3xl font-black text-slate-900 leading-none mt-1">
                         {turnPlayerName ?? "Игрок"}
@@ -181,6 +185,13 @@ export function AuctionModal({
 
                   {canAffordBid ? (
                     <div className="bg-white p-2 space-y-3">
+                      {isSinglePlayerMode ? (
+                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                          <span className="font-bold text-slate-900">К торгам допущен только этот игрок.</span>
+                          {excludedPlayersCount > 0 ? ` Остальные (${excludedPlayersCount}) не допущены.` : ""}
+                        </div>
+                      ) : null}
+
                       <div className="flex gap-3">
                         <Input
                           type="text"
@@ -231,6 +242,7 @@ export function AuctionModal({
                           className="w-auto px-5 h-auto py-3 text-slate-500 hover:text-red-600 hover:bg-red-50 border-2 border-transparent hover:border-red-100"
                           disabled={!turnPlayerId}
                           onClick={onPass}
+                          hidden={isSinglePlayerMode}
                         >
                           Пас
                         </Button>
