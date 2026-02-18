@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useAtom } from "jotai";
 
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
+import { auctionBannerOpenAtom } from "@/shared/store/specialBannerAtom";
 
 import { useAuctionActions } from "./useAuctionActions";
 import { useAuctionDerived } from "./useAuctionDerived";
@@ -26,7 +27,7 @@ export function useAuctionInteraction({
   onAuctionComplete,
   isBlocked = false,
 }: UseAuctionInteractionArgs) {
-  const [isBannerOpen, setIsBannerOpen] = useState(false);
+  const [isBannerOpen, setIsBannerOpen] = useAtom(auctionBannerOpenAtom);
 
   const state = useAuctionState();
   const openerPlayerId = state.openerPlayerId ?? currentPickerId;

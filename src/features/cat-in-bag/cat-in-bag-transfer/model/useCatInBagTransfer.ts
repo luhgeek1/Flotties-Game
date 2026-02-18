@@ -1,7 +1,8 @@
 import { useAtom } from "jotai";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
+import { catInBagBannerOpenAtom } from "@/shared/store/specialBannerAtom";
 import {
   catInBagBidByQuestionIdAtom,
   catInBagBidModalOpenAtom,
@@ -32,7 +33,7 @@ export function useCatInBagTransfer({
   onRegularQuestionSelect,
   onBidComplete,
 }: UseCatInBagTransferArgs) {
-  const [isBannerOpen, setIsBannerOpen] = useState(false);
+  const [isBannerOpen, setIsBannerOpen] = useAtom(catInBagBannerOpenAtom);
   const [isTransferOpen, setIsTransferOpen] = useAtom(catInBagTransferModalOpenAtom);
   const [isBidOpen, setIsBidOpen] = useAtom(catInBagBidModalOpenAtom);
   const [pendingQuestionId, setPendingQuestionId] = useAtom(catInBagPendingQuestionIdAtom);
