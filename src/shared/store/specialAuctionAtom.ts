@@ -1,6 +1,8 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
+import { auctionBannerOpenAtom } from "./specialBannerAtom";
+
 export type AuctionBidByPlayerIdState = Record<string, number>;
 export type AuctionBidByQuestionIdState = Record<string, number>;
 export type AuctionWinnerByQuestionIdState = Record<string, string>;
@@ -81,6 +83,7 @@ export const auctionWinningPlayerByQuestionIdAtom = atomWithStorage<AuctionWinne
 export const resetAuctionFlowAtom = atom(
   null,
   (_get, set) => {
+    set(auctionBannerOpenAtom, false);
     set(auctionModalOpenAtom, false);
     set(auctionPendingQuestionIdAtom, null);
     set(auctionOpenerPlayerIdAtom, null);

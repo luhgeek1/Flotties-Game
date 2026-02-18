@@ -1,6 +1,8 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
+import { catInBagBannerOpenAtom } from "./specialBannerAtom";
+
 export type SpecialQuestionType = "catInBag" | "auction";
 
 export type RoundSpecialCell = {
@@ -73,6 +75,7 @@ export const resetRoundSpecialMapsAtom = atom(
   null,
   (_get, set) => {
     set(roundSpecialMapsAtom, {});
+    set(catInBagBannerOpenAtom, false);
     set(catInBagTransferModalOpenAtom, false);
     set(catInBagBidModalOpenAtom, false);
     set(catInBagPendingQuestionIdAtom, null);
