@@ -57,8 +57,8 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
 
         <div className="grid grid-cols-1 gap-4">
           {questionPacks.map(questionPack => {
-            const roundsCount = questionPack.rounds.length;
-            const themesCount = questionPack.rounds.at(0)?.themes.length ?? 0;
+            const roundsCount = questionPack.rounds.main.length;
+            const themesCount = questionPack.rounds.main.at(0)?.themes.length ?? 0;
 
             return (
               <QuestionPackCard

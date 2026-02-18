@@ -37,11 +37,16 @@ export type QuestionPackRound = {
   themes: QuestionPackTheme[];
 };
 
+export type QuestionPackRounds = {
+  main: QuestionPackRound[];
+  final: QuestionPackSpecialQuestion;
+};
+
 export type QuestionPack = {
   id: string;
   title: string;
   lang: string;
-  rounds: QuestionPackRound[];
+  rounds: QuestionPackRounds;
   special: QuestionPackSpecial;
 };
 

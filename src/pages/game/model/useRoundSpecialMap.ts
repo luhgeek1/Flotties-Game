@@ -12,7 +12,10 @@ function buildRoundSpecialKey(packId: string, roundId: string): string {
 export function useRoundSpecialMap(selectedPack: QuestionPack, roundIndex: number) {
   const [roundSpecialMaps, setRoundSpecialMaps] = useAtom(roundSpecialMapsAtom);
 
-  const activeRound = selectedPack.rounds[roundIndex];
+  const activeRound = selectedPack.rounds.main[roundIndex];
+  if (!activeRound) {
+    throw new Error("НЕТ РАУНДОВ В ПАКЕ");
+  }
   const roundSpecialKey = useMemo(
     () => buildRoundSpecialKey(selectedPack.id, activeRound.id),
     [selectedPack.id, activeRound.id],
