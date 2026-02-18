@@ -29,8 +29,14 @@ export function useAuctionInteraction({
   isBlocked = false,
 }: UseAuctionInteractionArgs) {
   const [isBannerOpen, setIsBannerOpen] = useAtom(auctionBannerOpenAtom);
-  const [isUnavailableModalOpen, setIsUnavailableModalOpen] = useState(false);
-  const [unavailableAuction, setUnavailableAuction] = useState<{ questionId: string; nominal: number } | null>(null);
+  const [isEntryGuardModalOpen, setIsEntryGuardModalOpen] = useState(false);
+  const [entryGuard, setEntryGuard] = useState<{
+    mode: "unavailable" | "limited";
+    questionId: string;
+    nominal: number;
+    eligiblePlayersCount: number;
+    excludedPlayersCount: number;
+  } | null>(null);
 
   const state = useAuctionState();
   const pendingNominal = useMemo(
@@ -69,11 +75,11 @@ export function useAuctionInteraction({
     onAuctionComplete,
     isBlocked,
     isBannerOpen,
-    isUnavailableModalOpen,
+    isEntryGuardModalOpen,
     setIsBannerOpen,
-    setIsUnavailableModalOpen,
-    unavailableAuction,
-    setUnavailableAuction,
+    setIsEntryGuardModalOpen,
+    entryGuard,
+    setEntryGuard,
     state,
     derived,
   });
@@ -81,8 +87,11 @@ export function useAuctionInteraction({
   return {
     isBannerOpen,
     isModalOpen: state.isModalOpen,
-    isUnavailableModalOpen,
-    unavailableNominal: unavailableAuction?.nominal ?? null,
+    isEntryGuardModalOpen,
+    entryGuardMode: entryGuard?.mode ?? null,
+    entryGuardNominal: entryGuard?.nominal ?? null,
+    entryGuardEligiblePlayersCount: entryGuard?.eligiblePlayersCount ?? 0,
+    entryGuardExcludedPlayersCount: entryGuard?.excludedPlayersCount ?? 0,
     nominal: derived.nominal,
     currentBid: derived.currentBid,
     leaderPlayerId: derived.leaderPlayerId,
@@ -103,6 +112,6 @@ export function useAuctionInteraction({
     handleMinBid: actions.handleMinBid,
     handleAllIn: actions.handleAllIn,
     handlePass: actions.handlePass,
-    handleUnavailableContinue: actions.handleUnavailableContinue,
+    handleEntryGuardContinue: actions.handleEntryGuardContinue,
   };
 }

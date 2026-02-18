@@ -5,15 +5,33 @@ import { Button } from "@/shared/components/ui/button";
 
 type AuctionUnavailableModalProps = {
   open: boolean;
+  mode: "unavailable" | "limited";
   nominal: number;
+  eligiblePlayersCount: number;
+  excludedPlayersCount: number;
   onContinue: () => void;
 };
 
 export function AuctionUnavailableModal({
   open,
+  mode,
   nominal,
+  eligiblePlayersCount,
+  excludedPlayersCount,
   onContinue,
 }: AuctionUnavailableModalProps) {
+  const title = mode === "unavailable" ? "Аукцион недоступен" : "Ограниченный аукцион";
+  const summaryText = mode === "unavailable"
+    ? "Ни у одного игрока нет достаточного счёта для старта аукциона."
+    : (
+      eligiblePlayersCount === 1
+        ? `К торгам допущен только этот игрок. Остальные (${excludedPlayersCount}) не допущены.`
+        : `К торгам допущены только ${eligiblePlayersCount} игрока. Остальные (${excludedPlayersCount}) не допущены.`
+    );
+  const detailText = mode === "unavailable"
+    ? `Вопрос будет разыгран в обычном режиме на номинал ${nominal}.`
+    : `Недопущенные игроки имеют счёт ниже номинала ${nominal}.`;
+
   return (
     <AnimatePresence mode="wait">
       {open ? (
@@ -36,17 +54,10 @@ export function AuctionUnavailableModal({
               <AlertCircle size={34} />
             </div>
 
-            <h3 className="text-3xl font-black uppercase tracking-tight text-slate-900">
-              Аукцион недоступен
-            </h3>
+            <h3 className="text-3xl font-black uppercase tracking-tight text-slate-900">{title}</h3>
 
-            <p className="mt-4 text-base leading-relaxed text-slate-600">
-              Ни у одного игрока нет достаточного счёта для старта аукциона.
-            </p>
-            <p className="mt-2 text-base leading-relaxed text-slate-600">
-              Вопрос будет разыгран в обычном режиме на номинал{" "}
-              <span className="font-bold text-slate-900">{nominal}</span>.
-            </p>
+            <p className="mt-4 text-base leading-relaxed text-slate-600">{summaryText}</p>
+            <p className="mt-2 text-base leading-relaxed text-slate-600">{detailText}</p>
 
             <Button
               type="button"

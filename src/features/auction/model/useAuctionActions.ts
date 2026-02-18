@@ -18,11 +18,23 @@ type UseAuctionActionsArgs = {
   onAuctionComplete: (payload: AuctionBidCompletePayload) => void;
   isBlocked: boolean;
   isBannerOpen: boolean;
-  isUnavailableModalOpen: boolean;
+  isEntryGuardModalOpen: boolean;
   setIsBannerOpen: (open: boolean) => void;
-  setIsUnavailableModalOpen: (open: boolean) => void;
-  unavailableAuction: { questionId: string; nominal: number } | null;
-  setUnavailableAuction: (value: { questionId: string; nominal: number } | null) => void;
+  setIsEntryGuardModalOpen: (open: boolean) => void;
+  entryGuard: {
+    mode: "unavailable" | "limited";
+    questionId: string;
+    nominal: number;
+    eligiblePlayersCount: number;
+    excludedPlayersCount: number;
+  } | null;
+  setEntryGuard: (value: {
+    mode: "unavailable" | "limited";
+    questionId: string;
+    nominal: number;
+    eligiblePlayersCount: number;
+    excludedPlayersCount: number;
+  } | null) => void;
   state: {
     isModalOpen: boolean;
     setIsModalOpen: (open: boolean) => void;
@@ -69,11 +81,11 @@ export function useAuctionActions({
   onAuctionComplete,
   isBlocked,
   isBannerOpen,
-  isUnavailableModalOpen,
+  isEntryGuardModalOpen,
   setIsBannerOpen,
-  setIsUnavailableModalOpen,
-  unavailableAuction,
-  setUnavailableAuction,
+  setIsEntryGuardModalOpen,
+  entryGuard,
+  setEntryGuard,
   state,
   derived,
 }: UseAuctionActionsArgs) {
@@ -206,11 +218,13 @@ export function useAuctionActions({
 
   const handleBoardQuestionSelect = (questionId: string) => {
     if (isBlocked) return;
-    if (isBannerOpen || isModalOpen || isUnavailableModalOpen) return;
+    if (isBannerOpen || isModalOpen || isEntryGuardModalOpen) return;
 
     if (specialTypeByQuestionId[questionId] === "auction") {
       const nominal = getQuestionNominal(questionId);
       const eligiblePlayers = players.filter(player => player.score >= nominal);
+      const excludedPlayersCount = Math.max(0, players.length - eligiblePlayers.length);
+      const eligiblePlayersCount = eligiblePlayers.length;
 
       state.setPendingQuestionId(questionId);
       state.setOpenerPlayerId(currentPickerId);
@@ -219,32 +233,39 @@ export function useAuctionActions({
       state.setBidsByPlayerId({});
       state.setPassedPlayerIds([]);
       state.setIsModalOpen(false);
-      setIsUnavailableModalOpen(false);
+      setIsEntryGuardModalOpen(false);
 
-      if (eligiblePlayers.length === 0) {
-        setUnavailableAuction({ questionId, nominal });
-        setIsBannerOpen(true);
-        return;
+      if (eligiblePlayersCount === 0) {
+        setEntryGuard({
+          mode: "unavailable",
+          questionId,
+          nominal,
+          eligiblePlayersCount,
+          excludedPlayersCount,
+        });
+      } else if (eligiblePlayersCount <= 2 && excludedPlayersCount > 0) {
+        setEntryGuard({
+          mode: "limited",
+          questionId,
+          nominal,
+          eligiblePlayersCount,
+          excludedPlayersCount,
+        });
+      } else {
+        setEntryGuard(null);
       }
 
-      setUnavailableAuction(null);
-      const auctionOpenerPlayerId = eligiblePlayers.some(player => player.id === currentPickerId)
-        ? currentPickerId
-        : eligiblePlayers[0].id;
+      const auctionOpenerPlayerId = eligiblePlayersCount > 0 && !eligiblePlayers.some(player => player.id === currentPickerId)
+        ? eligiblePlayers[0].id
+        : currentPickerId;
       state.setOpenerPlayerId(auctionOpenerPlayerId);
-
-      if (eligiblePlayers.length === 1) {
-        setIsBannerOpen(false);
-        state.setIsModalOpen(true);
-        return;
-      }
 
       setIsBannerOpen(true);
       return;
     }
 
-    setUnavailableAuction(null);
-    setIsUnavailableModalOpen(false);
+    setEntryGuard(null);
+    setIsEntryGuardModalOpen(false);
     onNonAuctionQuestionSelect(questionId);
   };
 
@@ -252,42 +273,51 @@ export function useAuctionActions({
     setIsBannerOpen(false);
     if (!pendingQuestionId) return;
 
-    if (unavailableAuction?.questionId === pendingQuestionId) {
-      setIsUnavailableModalOpen(true);
+    if (entryGuard?.questionId === pendingQuestionId) {
+      setIsEntryGuardModalOpen(true);
       return;
     }
 
     setIsModalOpen(true);
     setTurnCursor(0);
   }, [
+    entryGuard,
     pendingQuestionId,
     setIsBannerOpen,
+    setIsEntryGuardModalOpen,
     setIsModalOpen,
-    setIsUnavailableModalOpen,
     setTurnCursor,
-    unavailableAuction,
   ]);
 
-  const handleUnavailableContinue = useCallback(() => {
-    if (!unavailableAuction) return;
+  const handleEntryGuardContinue = useCallback(() => {
+    if (!entryGuard) return;
 
-    state.setWinningBidByQuestionId(prev => ({ ...prev, [unavailableAuction.questionId]: unavailableAuction.nominal }));
-    state.setWinningPlayerByQuestionId(prev => {
-      const next = { ...prev };
-      delete next[unavailableAuction.questionId];
-      return next;
-    });
+    setIsEntryGuardModalOpen(false);
 
-    setUnavailableAuction(null);
-    setIsUnavailableModalOpen(false);
-    state.resetFlow();
-    onNonAuctionQuestionSelect(unavailableAuction.questionId);
+    if (entryGuard.mode === "unavailable") {
+      state.setWinningBidByQuestionId(prev => ({ ...prev, [entryGuard.questionId]: entryGuard.nominal }));
+      state.setWinningPlayerByQuestionId(prev => {
+        const next = { ...prev };
+        delete next[entryGuard.questionId];
+        return next;
+      });
+      setEntryGuard(null);
+      state.resetFlow();
+      onNonAuctionQuestionSelect(entryGuard.questionId);
+      return;
+    }
+
+    setEntryGuard(null);
+    setIsModalOpen(true);
+    setTurnCursor(0);
   }, [
+    entryGuard,
     onNonAuctionQuestionSelect,
-    setIsUnavailableModalOpen,
-    setUnavailableAuction,
+    setEntryGuard,
+    setIsEntryGuardModalOpen,
+    setIsModalOpen,
+    setTurnCursor,
     state,
-    unavailableAuction,
   ]);
 
   return {
@@ -299,6 +329,6 @@ export function useAuctionActions({
     handleBidInputChange,
     handleBoardQuestionSelect,
     handleBannerClose,
-    handleUnavailableContinue,
+    handleEntryGuardContinue,
   };
 }
