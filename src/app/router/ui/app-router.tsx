@@ -17,7 +17,7 @@ import {
   gameRound2StartPickerIdAtom,
   gameQuestionFlowStateAtom,
 } from "@/shared/store/gameAtoms";
-import { resetRoundSpecialMapsAtom } from "@/shared/store/specialAtom";
+import { resetRoundSpecialMapsAtom } from "@/shared/store/specialCIBAtom";
 import {
   ROUTE_PATH,
   coerceRoute,

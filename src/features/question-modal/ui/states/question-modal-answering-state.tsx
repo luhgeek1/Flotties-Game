@@ -55,7 +55,7 @@ export function QuestionModalAnsweringState({
       </div>
 
       <div className="pt-4 flex justify-center">
-        <Button type="button" size="lg" className="w-full max-w-[14rem]" onClick={onSubmitAnswer}>
+        <Button type="button" size="lg" className="w-full max-w-60" onClick={onSubmitAnswer}>
           Ответить
         </Button>
       </div>

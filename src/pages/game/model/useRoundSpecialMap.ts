@@ -3,7 +3,7 @@ import { useEffect, useMemo } from "react";
 
 import { createRoundSpecialMap } from "@/entities/special-map";
 import type { QuestionPack } from "@/shared/api/questionPack";
-import { roundSpecialMapsAtom, type RoundSpecialMap } from "@/shared/store/specialAtom";
+import { roundSpecialMapsAtom, type RoundSpecialMap } from "@/shared/store/specialCIBAtom";
 
 function buildRoundSpecialKey(packId: string, roundId: string): string {
   return `${packId}:${roundId}`;

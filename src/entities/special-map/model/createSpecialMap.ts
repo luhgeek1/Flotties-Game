@@ -1,4 +1,4 @@
-import type { RoundSpecialMap, SpecialQuestionType } from "@/shared/store/specialAtom";
+import type { RoundSpecialMap, SpecialQuestionType } from "@/shared/store/specialCIBAtom";
 
 import type { CreateRoundSpecialMapArgs } from "./types";
 

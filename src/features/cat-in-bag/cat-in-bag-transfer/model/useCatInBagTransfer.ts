@@ -9,7 +9,7 @@ import {
   catInBagPickerPlayerIdAtom,
   catInBagSelectedAnsweringPlayerIdAtom,
   catInBagTransferModalOpenAtom,
-} from "@/shared/store/specialAtom";
+} from "@/shared/store/specialCIBAtom";
 
 import type { CatInBagBidCompletePayload, CatInBagTransferModalMode, CatInBagTransferPlayer } from "./types";
 

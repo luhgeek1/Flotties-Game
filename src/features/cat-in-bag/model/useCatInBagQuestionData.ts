@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
 import type { QuestionModalPlayer } from "@/features/question-modal";
 import type { QuestionPack, QuestionPackQuestion, QuestionPackSpecialQuestion } from "@/shared/api/questionPack";
-import { catInBagBidByQuestionIdAtom, catInBagSelectedAnsweringPlayerIdAtom, type RoundSpecialMap } from "@/shared/store/specialAtom";
+import { catInBagBidByQuestionIdAtom, catInBagSelectedAnsweringPlayerIdAtom, type RoundSpecialMap } from "@/shared/store/specialCIBAtom";
 
 type UseCatInBagQuestionDataArgs = {
   selectedPack: QuestionPack;
