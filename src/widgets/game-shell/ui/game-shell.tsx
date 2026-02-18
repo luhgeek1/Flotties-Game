@@ -1,14 +1,15 @@
 import type { ReactNode } from "react";
-import { LogOut, Sun, Users } from "lucide-react";
+import { Users } from "lucide-react";
 
 import { Button } from "@/shared/components/ui/button";
+import { Header } from "@/widgets/header";
 
 type GameShellProps = {
   packTitle: string;
   questionsProgress: string;
   playersSlot: ReactNode;
   children: ReactNode;
-  onExitClick?: () => void;
+  onExitToSetup?: () => void;
   onOpenAllQuestionsClick?: () => void;
   onThemeToggle?: () => void;
 };
@@ -18,36 +19,24 @@ export function GameShell({
   questionsProgress,
   playersSlot,
   children,
-  onExitClick,
+  onExitToSetup,
   onOpenAllQuestionsClick,
   onThemeToggle,
 }: GameShellProps) {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/30 transition-colors duration-300">
       <div className="flex-1 flex flex-col h-screen overflow-hidden bg-background">
-        <header className="h-16 border-b bg-card/80 backdrop-blur px-6 flex items-center justify-between shrink-0 z-30">
-          <div className="flex items-center gap-4">
-            <Button type="button" variant="ghost" size="icon" title="Exit to setup" onClick={onExitClick}>
-              <LogOut className="w-5 h-5 text-muted-foreground hover:text-destructive transition-colors" />
+        <Header
+          title={packTitle}
+          subtitle={questionsProgress}
+          onExitToSetup={onExitToSetup}
+          onThemeToggle={onThemeToggle}
+          rightSlot={onOpenAllQuestionsClick ? (
+            <Button type="button" variant="outline" size="sm" onClick={onOpenAllQuestionsClick}>
+              Закончить раньше
             </Button>
-
-            <div>
-              <h1 className="font-bold text-xl leading-none">{packTitle}</h1>
-              <span className="text-xs text-muted-foreground">{questionsProgress}</span>
-            </div>
-          </div>
-
-          <div className="flex gap-2">
-            {onOpenAllQuestionsClick ? (
-              <Button type="button" variant="outline" size="sm" onClick={onOpenAllQuestionsClick}>
-                Закончить раньше
-              </Button>
-            ) : null}
-            <Button type="button" variant="ghost" size="icon" title="Toggle theme" onClick={onThemeToggle}>
-              <Sun className="w-5 h-5" />
-            </Button>
-          </div>
-        </header>
+          ) : null}
+        />
 
         <div className="flex-1 flex overflow-hidden">
           <main className="flex-1 overflow-y-auto p-4 md:p-6 flex items-center justify-center">{children}</main>
