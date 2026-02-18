@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
 import { GreenRays } from "./green-rays";
+import specialAuPngUrl from "@/shared/assets/specialAu.png";
+import specialCatPngUrl from "@/shared/assets/specialCat.png";
 
 type SpecialBannerType = "catInBag" | "auction";
 
@@ -16,6 +18,11 @@ const GIF_URL_BY_TYPE: Record<SpecialBannerType, string> = {
 const TITLE_BY_TYPE: Record<SpecialBannerType, string> = {
   catInBag: "КОТ В МЕШКЕ",
   auction: "АУКЦИОН",
+};
+
+const INTRO_IMAGE_BY_TYPE: Record<SpecialBannerType, string> = {
+  catInBag: specialCatPngUrl,
+  auction: specialAuPngUrl,
 };
 
 const COLOR_BY_TYPE: Record<SpecialBannerType, { text: string; ray: string; gradient: string }> = {
@@ -39,6 +46,8 @@ type RayGifBannerProps = {
   autoCloseMs?: number;
 };
 
+const INTRO_MS = 1000;
+
 export function RayGifBanner({
   open,
   onClose,
@@ -46,76 +55,155 @@ export function RayGifBanner({
   gifUrl,
   autoCloseMs = 3000,
 }: RayGifBannerProps) {
+  return (
+    <AnimatePresence>
+      {open ? (
+        <RayGifBannerOpen
+          onClose={onClose}
+          specialType={specialType}
+          gifUrl={gifUrl}
+          autoCloseMs={autoCloseMs}
+        />
+      ) : null}
+    </AnimatePresence>
+  );
+}
+
+type RayGifBannerOpenProps = {
+  onClose: () => void;
+  specialType: SpecialBannerType;
+  gifUrl?: string;
+  autoCloseMs: number;
+};
+
+function RayGifBannerOpen({
+  onClose,
+  specialType,
+  gifUrl,
+  autoCloseMs,
+}: RayGifBannerOpenProps) {
   const title = TITLE_BY_TYPE[specialType];
   const colorTheme = COLOR_BY_TYPE[specialType];
+  const introImageUrl = INTRO_IMAGE_BY_TYPE[specialType];
   const resolvedGifUrl = gifUrl ?? GIF_URL_BY_TYPE[specialType];
   const titleBorderClass = specialType === "auction"
     ? "border-2 border-yellow-200/90"
     : "";
 
-  useEffect(() => {
-    if (!open) return;
+  const [phase, setPhase] = useState<"intro" | "main">("intro");
 
-    const prevOverflow = document.body.style.overflow;
+  const prevOverflowRef = useRef<string | null>(null);
+  const introTimerRef = useRef<number | null>(null);
+  const closeTimerRef = useRef<number | null>(null);
+  const isClosingRef = useRef(false);
+
+  const handleClose = useCallback(() => {
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+
+    if (introTimerRef.current !== null) {
+      window.clearTimeout(introTimerRef.current);
+      introTimerRef.current = null;
+    }
+
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+
+    onClose();
+  }, [onClose]);
+
+  useEffect(() => {
+    prevOverflowRef.current = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    const timer = window.setTimeout(() => onClose(), autoCloseMs);
+    introTimerRef.current = window.setTimeout(() => setPhase("main"), INTRO_MS);
+    closeTimerRef.current = window.setTimeout(() => handleClose(), INTRO_MS + autoCloseMs);
 
     return () => {
-      document.body.style.overflow = prevOverflow;
-      window.clearTimeout(timer);
+      document.body.style.overflow = prevOverflowRef.current ?? "";
+
+      if (introTimerRef.current !== null) {
+        window.clearTimeout(introTimerRef.current);
+        introTimerRef.current = null;
+      }
+
+      if (closeTimerRef.current !== null) {
+        window.clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
     };
-  }, [open, autoCloseMs, onClose]);
+  }, [autoCloseMs, handleClose]);
 
   return (
-    <AnimatePresence>
-      {open ? (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          onClick={onClose}
-        >
-          <motion.div
-            className="absolute inset-0 bg-white/40 backdrop-blur-md"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          />
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      onClick={handleClose}
+    >
+      <motion.div
+        className="absolute inset-0 bg-white/40 backdrop-blur-md"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      />
 
-          <GreenRays color={colorTheme.ray} />
+      <GreenRays color={colorTheme.ray} />
 
-          <motion.div
-            className="relative z-10 p-4 flex flex-col items-center gap-8"
-            initial={{ scale: 0.45, opacity: 0, y: 36, filter: "blur(10px)" }}
-            animate={{ scale: 1, opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ scale: 1.06, opacity: 0, y: -16, filter: "blur(6px)" }}
-            transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
-            onClick={event => event.stopPropagation()}
-          >
-            <h2 className={`text-4xl sm:text-5xl font-black tracking-wide ${colorTheme.text} text-center drop-shadow-lg bg-white px-6 py-3 rounded-xl ${titleBorderClass}`}>
-              {title}
-            </h2>
+      <motion.div
+        className="relative z-10 p-4 flex flex-col items-center gap-8"
+        initial={{ scale: 0.45, opacity: 0, y: 36, filter: "blur(10px)" }}
+        animate={{ scale: 1, opacity: 1, y: 0, filter: "blur(0px)" }}
+        exit={{ scale: 1.06, opacity: 0, y: -16, filter: "blur(6px)" }}
+        transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
+        onClick={event => event.stopPropagation()}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          {phase === "intro" ? (
+            <motion.img
+              key="intro"
+              src={introImageUrl}
+              alt="Special reveal intro"
+              className="w-auto object-contain select-none cursor-pointer"
+              style={{ maxWidth: "90vw", maxHeight: 520 }}
+              initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -6, filter: "blur(6px)" }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              draggable={false}
+              onClick={handleClose}
+            />
+          ) : (
+            <motion.div
+              key="main"
+              className="flex flex-col items-center gap-8"
+              initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -6, filter: "blur(6px)" }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <h2 className={`text-4xl sm:text-5xl font-black tracking-wide ${colorTheme.text} text-center drop-shadow-lg bg-white px-6 py-3 rounded-xl ${titleBorderClass}`}>
+                {title}
+              </h2>
 
-            <div className="relative group cursor-pointer" onClick={onClose}>
-              <div
-                className="absolute -inset-1 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"
-                style={{ backgroundImage: colorTheme.gradient }}
-              />
-
-              <img
-                src={resolvedGifUrl}
-                alt="Reveal GIF"
-                className="relative rounded-lg shadow-2xl w-auto object-contain border-4 border-white/20"
-                style={{ maxWidth: "90vw", maxHeight: 500 }}
-              />
-            </div>
-          </motion.div>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
+              <div className="cursor-pointer" onClick={handleClose}>
+                <img
+                  src={resolvedGifUrl}
+                  alt="Reveal GIF"
+                  className="w-auto object-contain select-none"
+                  style={{ maxWidth: "90vw", maxHeight: 500 }}
+                  draggable={false}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
   );
 }
