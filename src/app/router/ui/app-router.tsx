@@ -3,6 +3,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { GamePage, GamePage2R } from "@/pages/game";
 import { FinalPrepairingPage } from "@/pages/final-prepairing";
+import { FinalStartThemePage } from "@/pages/final";
 import { SetupPage } from "@/pages/setup";
 import {
   MIN_PLAYERS_TO_START_GAME,
@@ -181,6 +182,22 @@ export function AppRouter() {
   if (route === "finalprepairing") {
     return (
       <FinalPrepairingPage
+        onConfirmFinalQuestion={() => navigateTo("finalstarttheme", {
+          replace: true,
+          round2Access: "unlock",
+        })}
+        onExitToSetup={() => navigateTo("setup", {
+          round2Access: "lock",
+          resetQuestionState: true,
+          resetSetupStep: true,
+        })}
+      />
+    );
+  }
+
+  if (route === "finalstarttheme") {
+    return (
+      <FinalStartThemePage
         onExitToSetup={() => navigateTo("setup", {
           round2Access: "lock",
           resetQuestionState: true,
