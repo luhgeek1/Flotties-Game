@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { useCatInBagInteraction, useCatInBagQuestionData } from "@/features/cat-in-bag/model";
 import { usePlayerPick } from "@/features/player-pick";
@@ -86,7 +86,7 @@ export function useGamePageModel({
     bidQuestionTheme: catInBagBidQuestionTheme,
     transferPlayers: catInBagTransferPlayers,
     bidOptions: catInBagBidOptions,
-    handleBoardQuestionSelect,
+    handleBoardQuestionSelect: handleCatInBagBoardQuestionSelect,
     handleBannerClose: handleCatInBagBannerClose,
     handleTransferPlayerSelect: handleCatInBagTransferPlayerSelect,
     handleBidSelect: handleCatInBagBidSelect,
@@ -103,6 +103,29 @@ export function useGamePageModel({
     isQuestionModalOpen,
     modalQuestionId,
   });
+
+  const [isAuctionBannerOpen, setIsAuctionBannerOpen] = useState(false);
+
+  const handleAuctionBannerClose = useCallback(() => {
+    setIsAuctionBannerOpen(false);
+  }, []);
+
+  const handleBoardQuestionSelect = useCallback((questionId: string) => {
+    if (isCatInBagBannerOpen || isCatInBagTransferOpen || isAuctionBannerOpen) return;
+
+    if (specialTypeByQuestionId[questionId] === "auction") {
+      setIsAuctionBannerOpen(true);
+      return;
+    }
+
+    handleCatInBagBoardQuestionSelect(questionId);
+  }, [
+    handleCatInBagBoardQuestionSelect,
+    isAuctionBannerOpen,
+    isCatInBagBannerOpen,
+    isCatInBagTransferOpen,
+    specialTypeByQuestionId,
+  ]);
 
   const questionsProgress = `Questions: ${openedQuestionIds.length}/${totalQuestions}`;
 
@@ -174,6 +197,10 @@ export function useGamePageModel({
     catInBagBanner: {
       open: isCatInBagBannerOpen,
       onClose: handleCatInBagBannerClose,
+    },
+    auctionBanner: {
+      open: isAuctionBannerOpen,
+      onClose: handleAuctionBannerClose,
     },
     catInBagTransferModal: {
       open: isCatInBagTransferOpen,

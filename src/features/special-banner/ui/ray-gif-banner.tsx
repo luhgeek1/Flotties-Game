@@ -3,11 +3,38 @@ import { AnimatePresence, motion } from "motion/react";
 
 import { GreenRays } from "./green-rays";
 
+type SpecialBannerType = "catInBag" | "auction";
+
 const DEFAULT_CAT_IN_BAG_GIF_URL = "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnR5dnZ6cG1reGpydmhwZHQ0MG1ib29rbzZlemMxdjk1N2g5ZDc4cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9KeOUp3sIqL6w/giphy.gif";
+const DEFAULT_AUCTION_GIF_URL = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGV3aHBmejBlc2FvM2ZqYjhtamtydHU0dDkxcmcxZzJpZGZsc2l3diZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT5LMESHbV1KLGMsq4/giphy.gif";
+
+const GIF_URL_BY_TYPE: Record<SpecialBannerType, string> = {
+  catInBag: DEFAULT_CAT_IN_BAG_GIF_URL,
+  auction: DEFAULT_AUCTION_GIF_URL,
+};
+
+const TITLE_BY_TYPE: Record<SpecialBannerType, string> = {
+  catInBag: "КОТ В МЕШКЕ",
+  auction: "АУКЦИОН",
+};
+
+const COLOR_BY_TYPE: Record<SpecialBannerType, { text: string; ray: string; gradient: string }> = {
+  catInBag: {
+    text: "text-green-950",
+    ray: "#004225",
+    gradient: "linear-gradient(to right, #166534, #16a34a)",
+  },
+  auction: {
+    text: "text-yellow-950",
+    ray: "#fde047",
+    gradient: "linear-gradient(to right, #fbbf24, #fde047)",
+  },
+};
 
 type RayGifBannerProps = {
   open: boolean;
   onClose: () => void;
+  specialType?: SpecialBannerType;
   gifUrl?: string;
   autoCloseMs?: number;
 };
@@ -15,9 +42,17 @@ type RayGifBannerProps = {
 export function RayGifBanner({
   open,
   onClose,
-  gifUrl = DEFAULT_CAT_IN_BAG_GIF_URL,
+  specialType = "catInBag",
+  gifUrl,
   autoCloseMs = 3000,
 }: RayGifBannerProps) {
+  const title = TITLE_BY_TYPE[specialType];
+  const colorTheme = COLOR_BY_TYPE[specialType];
+  const resolvedGifUrl = gifUrl ?? GIF_URL_BY_TYPE[specialType];
+  const titleBorderClass = specialType === "auction"
+    ? "border-2 border-yellow-200/90"
+    : "";
+
   useEffect(() => {
     if (!open) return;
 
@@ -51,7 +86,7 @@ export function RayGifBanner({
             transition={{ duration: 0.5, ease: "easeOut" }}
           />
 
-          <GreenRays />
+          <GreenRays color={colorTheme.ray} />
 
           <motion.div
             className="relative z-10 p-4 flex flex-col items-center gap-8"
@@ -61,18 +96,18 @@ export function RayGifBanner({
             transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
             onClick={event => event.stopPropagation()}
           >
-            <h2 className="text-4xl sm:text-5xl font-black tracking-wide text-green-950 text-center drop-shadow-lg bg-white px-6 py-3 rounded-xl">
-              КОТ В МЕШКЕ
+            <h2 className={`text-4xl sm:text-5xl font-black tracking-wide ${colorTheme.text} text-center drop-shadow-lg bg-white px-6 py-3 rounded-xl ${titleBorderClass}`}>
+              {title}
             </h2>
 
             <div className="relative group cursor-pointer" onClick={onClose}>
               <div
                 className="absolute -inset-1 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"
-                style={{ backgroundImage: "linear-gradient(to right, #166534, #16a34a)" }}
+                style={{ backgroundImage: colorTheme.gradient }}
               />
 
               <img
-                src={gifUrl}
+                src={resolvedGifUrl}
                 alt="Reveal GIF"
                 className="relative rounded-lg shadow-2xl w-auto object-contain border-4 border-white/20"
                 style={{ maxWidth: "90vw", maxHeight: 500 }}

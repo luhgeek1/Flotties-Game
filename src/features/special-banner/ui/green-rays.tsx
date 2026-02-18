@@ -1,8 +1,12 @@
 import { motion } from "motion/react";
 
-const RAY_COLOR = "#004225";
+const DEFAULT_RAY_COLOR = "#004225";
 
-export function GreenRays() {
+type GreenRaysProps = {
+  color?: string;
+};
+
+export function GreenRays({ color = DEFAULT_RAY_COLOR }: GreenRaysProps) {
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0">
       <motion.div
@@ -16,7 +20,7 @@ export function GreenRays() {
           background: `repeating-conic-gradient(
             from 0deg,
             transparent 0deg 15deg,
-            ${RAY_COLOR} 15deg 30deg
+            ${color} 15deg 30deg
           )`,
           maskImage: "radial-gradient(circle, black 20%, transparent 70%)",
           WebkitMaskImage: "radial-gradient(circle, black 20%, transparent 70%)",
@@ -36,7 +40,7 @@ export function GreenRays() {
         style={{
           width: 500,
           height: 500,
-          backgroundColor: RAY_COLOR,
+          backgroundColor: color,
         }}
       />
     </div>

@@ -1,5 +1,5 @@
 import { GameBoard } from "@/entities/game-board";
-import { RayGifBanner } from "@/features/cat-in-bag/cat-in-bag-banner";
+import { RayGifBanner } from "@/features/special-banner";
 import { CatInBagTransferModal } from "@/features/cat-in-bag/cat-in-bag-transfer";
 import { PlayerScoreCard } from "@/entities/players";
 import { ExitGameModal } from "@/features/exit-game";
@@ -53,6 +53,14 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
       <RayGifBanner
         open={model.catInBagBanner.open}
         onClose={model.catInBagBanner.onClose}
+        specialType="catInBag"
+        autoCloseMs={3000}
+      />
+
+      <RayGifBanner
+        open={model.auctionBanner.open}
+        onClose={model.auctionBanner.onClose}
+        specialType="auction"
         autoCloseMs={3000}
       />
 
