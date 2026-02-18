@@ -1,8 +1,8 @@
-import { LogOut, Sun } from "lucide-react";
 import { motion } from "motion/react";
 
 import doFinalImage from "@/shared/assets/dofinal.png";
 import { Button } from "@/shared/components/ui/button";
+import { Header } from "@/widgets/header";
 
 type FinalPrepairingPageProps = {
   onExitToSetup?: () => void;
@@ -15,22 +15,12 @@ export function FinalPrepairingPage({
 }: FinalPrepairingPageProps) {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/30 transition-colors duration-300">
-      <header className="h-16 border-b bg-card/80 backdrop-blur px-6 flex items-center justify-between shrink-0 z-30">
-        <div className="flex items-center gap-4">
-          <Button type="button" variant="ghost" size="icon" title="Exit to setup" onClick={onExitToSetup}>
-            <LogOut className="w-5 h-5 text-muted-foreground hover:text-destructive transition-colors" />
-          </Button>
-
-          <div>
-            <h1 className="font-bold text-xl leading-none">FinalPrepairing</h1>
-            <span className="text-xs text-muted-foreground">Подготовка к финалу</span>
-          </div>
-        </div>
-
-        <Button type="button" variant="ghost" size="icon" title="Toggle theme" disabled>
-          <Sun className="w-5 h-5 opacity-45" />
-        </Button>
-      </header>
+      <Header
+        title="FinalPrepairing"
+        subtitle="Подготовка к финалу"
+        onExitToSetup={onExitToSetup}
+        isThemeToggleDisabled
+      />
 
       <main className="relative flex-1 overflow-hidden">
         <motion.section

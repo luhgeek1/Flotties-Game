@@ -3,7 +3,6 @@ import { AuctionModal, AuctionUnavailableModal } from "@/features/auction";
 import { RayGifBanner } from "@/features/special-banner";
 import { CatInBagTransferModal } from "@/features/cat-in-bag/cat-in-bag-transfer";
 import { PlayerScoreCard } from "@/entities/players";
-import { ExitGameModal } from "@/features/exit-game";
 import { PlayerPickBanner } from "@/features/player-pick";
 import { QuestionModal } from "@/features/question-modal";
 import { RoundTransitionModal } from "@/features/round-transition"
@@ -30,7 +29,7 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
       <GameShell
         packTitle={model.gameShell.packTitle}
         questionsProgress={model.gameShell.questionsProgress}
-        onExitClick={model.gameShell.onExitClick}
+        onExitToSetup={model.gameShell.onExitToSetup}
         onOpenAllQuestionsClick={model.gameShell.onOpenAllQuestionsClick}
         playersSlot={model.gameShell.players.map(player => (
           <PlayerScoreCard
@@ -90,8 +89,6 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
       ) : null}
 
       <QuestionModal {...model.questionModal} />
-
-      <ExitGameModal {...model.exitModal} />
 
       <RoundTransitionModal {...model.roundTransitionModal} />
     </>

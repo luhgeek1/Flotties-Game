@@ -1,12 +1,10 @@
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import { useAuctionInteraction, useAuctionQuestionData } from "@/features/auction/model";
 import { useCatInBagInteraction, useCatInBagQuestionData } from "@/features/cat-in-bag/model";
 import { usePlayerPick } from "@/features/player-pick";
-import { gameIsExitModalOpenAtom } from "@/shared/store/gameAtoms";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
-import { resetRoundTransitionStorageAtom } from "@/shared/store/round-transition-storage";
 import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 
 import { useGameBoardData } from "./useGameBoardData";
@@ -28,10 +26,7 @@ export function useGamePageModel({
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
 
-  const [isExitModalOpen, setIsExitModalOpen] = useAtom(gameIsExitModalOpenAtom);
-  const resetRoundTransitionStorage = useSetAtom(resetRoundTransitionStorageAtom);
-
-  const { gamePlayers, questionPlayers, resetScores, changePlayerScore } = useGamePlayers(selectedPlayerIds);
+  const { gamePlayers, questionPlayers, changePlayerScore } = useGamePlayers(selectedPlayerIds);
   const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack, roundIndex);
   const { roundSpecialMap } = useRoundSpecialMap(selectedPack, roundIndex);
   const {
@@ -71,7 +66,6 @@ export function useGamePageModel({
     continueAfterWrong,
     openedQuestionIds,
     openAllQuestions,
-    resetQuestionState,
   } = useQuestionState({
     questionsById: questionsByIdWithAuction,
     players: questionPlayersForState,
@@ -151,25 +145,9 @@ export function useGamePageModel({
     && !isQuestionModalOpen
     && !isRoundTransitionModalOpen;
 
-  const handleExitClick = useCallback(() => {
-    setIsExitModalOpen(true);
-  }, [setIsExitModalOpen]);
-
-  const handleExitCancel = useCallback(() => {
-    setIsExitModalOpen(false);
-  }, [setIsExitModalOpen]);
-
-  const exitToSetup = useCallback(() => {
-    resetRoundTransitionStorage();
-    resetQuestionState();
-    resetScores();
+  const navigateToSetup = useCallback(() => {
     onExitToSetup?.();
-  }, [onExitToSetup, resetQuestionState, resetRoundTransitionStorage, resetScores]);
-
-  const handleExitConfirm = useCallback(() => {
-    setIsExitModalOpen(false);
-    exitToSetup();
-  }, [exitToSetup, setIsExitModalOpen]);
+  }, [onExitToSetup]);
 
   const handleRoundTransitionConfirm = useCallback(() => {
     if (onRoundTransitionConfirm) {
@@ -177,8 +155,8 @@ export function useGamePageModel({
       return;
     }
 
-    exitToSetup();
-  }, [exitToSetup, onRoundTransitionConfirm]);
+    navigateToSetup();
+  }, [navigateToSetup, onRoundTransitionConfirm]);
 
   const roundTransitionPlayerScores = useMemo(
     () => gamePlayers.map(player => ({
@@ -195,7 +173,7 @@ export function useGamePageModel({
       questionsProgress,
       players: gamePlayers,
       activePickerId,
-      onExitClick: handleExitClick,
+      onExitToSetup: navigateToSetup,
       onOpenAllQuestionsClick: openAllQuestions,
     },
     pickBanner: {
@@ -275,17 +253,12 @@ export function useGamePageModel({
       onSubmitAnswer: submitAnswer,
       onContinue: continueAfterWrong,
     },
-    exitModal: {
-      isOpen: isExitModalOpen,
-      onCancel: handleExitCancel,
-      onConfirm: handleExitConfirm,
-    },
     roundTransitionModal: {
       isOpen: isRoundTransitionModalOpen,
       playerScores: roundTransitionPlayerScores,
       roundNumber: roundIndex + 1,
       hasNextRound,
-      onExitToSetup: exitToSetup,
+      onExitToSetup: navigateToSetup,
       onConfirm: handleRoundTransitionConfirm,
     },
   };
