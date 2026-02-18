@@ -1,21 +1,14 @@
 import { LogOut, Sun } from "lucide-react";
-import { useAtomValue } from "jotai";
+import { motion } from "motion/react";
 
+import closeEyesRuImage from "@/shared/assets/closeEyesRu.png";
 import { Button } from "@/shared/components/ui/button";
-import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
 
-import { TopicReveal } from "./topic-reveal";
-
-type FinalStartThemePageProps = {
+type FinalCloseEyesPageProps = {
   onExitToSetup?: () => void;
-  onNext?: () => void;
 };
 
-export function FinalStartThemePage({ onExitToSetup, onNext }: FinalStartThemePageProps) {
-  const selectedPack = useAtomValue(selectedQuestionPackAtom);
-  const finalTheme = selectedPack.rounds.final.theme;
-  const packTitle = selectedPack.title;
-
+export function FinalCloseEyesPage({ onExitToSetup }: FinalCloseEyesPageProps) {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/30 transition-colors duration-300">
       <header className="h-16 border-b bg-card/80 backdrop-blur px-6 flex items-center justify-between shrink-0 z-30">
@@ -25,8 +18,8 @@ export function FinalStartThemePage({ onExitToSetup, onNext }: FinalStartThemePa
           </Button>
 
           <div>
-            <h1 className="font-bold text-xl leading-none">{packTitle}</h1>
-            <span className="text-xs text-muted-foreground">Объявление темы</span>
+            <h1 className="font-bold text-xl leading-none">фвы</h1>
+            <span className="text-xs text-muted-foreground">Секретные ставки</span>
           </div>
         </div>
 
@@ -35,8 +28,16 @@ export function FinalStartThemePage({ onExitToSetup, onNext }: FinalStartThemePa
         </Button>
       </header>
 
-      <main className="flex flex-1 items-center justify-center p-4 md:p-8">
-        <TopicReveal topic={finalTheme} onNext={() => onNext?.()} />
+      <main className="relative flex-1 overflow-hidden">
+        <motion.img
+          src={closeEyesRuImage}
+          alt="Close eyes instruction"
+          className="pointer-events-none select-none absolute bottom-0 left-1/2 h-auto w-[min(88vw,700px)] -translate-x-1/2"
+          initial={{ y: 140, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+          draggable={false}
+        />
       </main>
     </div>
   );
