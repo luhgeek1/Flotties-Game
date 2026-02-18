@@ -1,9 +1,10 @@
-export type AppRoute = "setup" | "game" | "game2r";
+export type AppRoute = "setup" | "game" | "game2r" | "finalprepairing";
 
 export const ROUTE_PATH = {
   setup: "/",
   game: "/game",
   game2r: "/game2r",
+  finalprepairing: "/final-prepairing",
 } satisfies Record<AppRoute, string>;
 
 export function resolveRoute(pathname: string): AppRoute {
@@ -13,6 +14,10 @@ export function resolveRoute(pathname: string): AppRoute {
 
   if (pathname === ROUTE_PATH.game2r) {
     return "game2r";
+  }
+
+  if (pathname === ROUTE_PATH.finalprepairing) {
+    return "finalprepairing";
   }
 
   return "setup";
@@ -31,11 +36,14 @@ export function coerceRoute({
   isRound2Unlocked,
   canEnterGame,
 }: CoerceRouteArgs): AppRoute {
-  if ((requestedRoute === "game" || requestedRoute === "game2r") && !canEnterGame) {
+  if (
+    (requestedRoute === "game" || requestedRoute === "game2r" || requestedRoute === "finalprepairing")
+    && !canEnterGame
+  ) {
     return "setup";
   }
 
-  if (requestedRoute === "game2r" && !isRound2Unlocked) {
+  if ((requestedRoute === "game2r" || requestedRoute === "finalprepairing") && !isRound2Unlocked) {
     return currentRoute;
   }
 

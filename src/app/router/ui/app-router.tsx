@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { GamePage, GamePage2R } from "@/pages/game";
+import { FinalPrepairingPage } from "@/pages/final-prepairing";
 import { SetupPage } from "@/pages/setup";
 import {
   MIN_PLAYERS_TO_START_GAME,
@@ -161,11 +162,32 @@ export function AppRouter() {
   }
 
   if (route === "game2r") {
-    return <GamePage2R onExitToSetup={() => navigateTo("setup", {
-      round2Access: "lock",
-      resetQuestionState: true,
-      resetSetupStep: true,
-    })} />;
+    return (
+      <GamePage2R
+        onExitToSetup={() => navigateTo("setup", {
+          round2Access: "lock",
+          resetQuestionState: true,
+          resetSetupStep: true,
+        })}
+        onRoundTransitionConfirm={() => navigateTo("finalprepairing", {
+          replace: true,
+          resetQuestionState: true,
+          round2Access: "unlock",
+        })}
+      />
+    );
+  }
+
+  if (route === "finalprepairing") {
+    return (
+      <FinalPrepairingPage
+        onExitToSetup={() => navigateTo("setup", {
+          round2Access: "lock",
+          resetQuestionState: true,
+          resetSetupStep: true,
+        })}
+      />
+    );
   }
 
   return <SetupPage onStartGame={() => navigateTo("game", {
