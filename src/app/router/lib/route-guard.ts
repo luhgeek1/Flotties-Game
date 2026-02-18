@@ -1,4 +1,4 @@
-export type AppRoute = "setup" | "game" | "game2r" | "finalprepairing" | "finalstarttheme";
+export type AppRoute = "setup" | "game" | "game2r" | "finalprepairing" | "finalstarttheme" | "finalcloseeyes";
 
 export const ROUTE_PATH = {
   setup: "/",
@@ -6,6 +6,7 @@ export const ROUTE_PATH = {
   game2r: "/game2r",
   finalprepairing: "/final-prepairing",
   finalstarttheme: "/final-start-theme",
+  finalcloseeyes: "/final-close-eyes",
 } satisfies Record<AppRoute, string>;
 
 export function resolveRoute(pathname: string): AppRoute {
@@ -23,6 +24,10 @@ export function resolveRoute(pathname: string): AppRoute {
 
   if (pathname === ROUTE_PATH.finalstarttheme) {
     return "finalstarttheme";
+  }
+
+  if (pathname === ROUTE_PATH.finalcloseeyes) {
+    return "finalcloseeyes";
   }
 
   return "setup";
@@ -45,7 +50,8 @@ export function coerceRoute({
     (requestedRoute === "game"
       || requestedRoute === "game2r"
       || requestedRoute === "finalprepairing"
-      || requestedRoute === "finalstarttheme")
+      || requestedRoute === "finalstarttheme"
+      || requestedRoute === "finalcloseeyes")
     && !canEnterGame
   ) {
     return "setup";
@@ -54,7 +60,8 @@ export function coerceRoute({
   if (
     (requestedRoute === "game2r"
       || requestedRoute === "finalprepairing"
-      || requestedRoute === "finalstarttheme")
+      || requestedRoute === "finalstarttheme"
+      || requestedRoute === "finalcloseeyes")
     && !isRound2Unlocked
   ) {
     return currentRoute;
