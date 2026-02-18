@@ -67,7 +67,9 @@ export function useAuctionActions({
   state,
   derived,
 }: UseAuctionActionsArgs) {
-  const finalizeAuction = useCallback(({
+  const { isModalOpen, pendingQuestionId, setIsModalOpen, setTurnCursor } = state;
+
+  const finalizeAuction = ({
     questionId,
     bidsByPlayerId,
     passedPlayerIds,
@@ -90,21 +92,14 @@ export function useAuctionActions({
 
     state.resetFlow();
     onAuctionComplete({ questionId, targetPlayerId: result.winnerId, bid: result.winningBid });
-  }, [
-    derived.nominal,
-    derived.orderPlayerIds,
-    onAuctionComplete,
-    openerPlayerId,
-    players,
-    state,
-  ]);
+  };
 
-  const advanceTurn = useCallback((nextPassedIds: string[]) => {
+  const advanceTurn = (nextPassedIds: string[]) => {
     const nextPassedSet = new Set(nextPassedIds);
     state.setTurnCursor(prev => resolveNextAuctionCursor(derived.orderPlayerIds, prev, nextPassedSet));
-  }, [derived.orderPlayerIds, state]);
+  };
 
-  const placeBid = useCallback((bid: number) => {
+  const placeBid = (bid: number) => {
     const turnPlayerId = derived.turnPlayerId;
     if (!turnPlayerId) return;
     if (!state.pendingQuestionId) return;
@@ -128,18 +123,9 @@ export function useAuctionActions({
 
     state.setBidInput("");
     advanceTurn(state.passedPlayerIds);
-  }, [
-    advanceTurn,
-    derived.isLeaderAllIn,
-    derived.leaderBalance,
-    derived.leaderBid,
-    derived.nominal,
-    derived.turnPlayerBalance,
-    derived.turnPlayerId,
-    state,
-  ]);
+  };
 
-  const handlePass = useCallback(() => {
+  const handlePass = () => {
     const turnPlayerId = derived.turnPlayerId;
     if (!turnPlayerId) return;
     if (!state.pendingQuestionId) return;
@@ -173,38 +159,31 @@ export function useAuctionActions({
     }
 
     advanceTurn(nextPassedIds);
-  }, [
-    advanceTurn,
-    derived.orderPlayerIds,
-    derived.passedPlayerIdSet,
-    derived.turnPlayerId,
-    finalizeAuction,
-    state,
-  ]);
+  };
 
-  const handleSubmitBid = useCallback(() => {
+  const handleSubmitBid = () => {
     if (!derived.isInputBidValid || derived.parsedBidInput === null) return;
     placeBid(derived.parsedBidInput);
-  }, [derived.isInputBidValid, derived.parsedBidInput, placeBid]);
+  };
 
-  const handleMinBid = useCallback(() => {
+  const handleMinBid = () => {
     if (derived.minBid === null) return;
     placeBid(derived.minBid);
-  }, [derived.minBid, placeBid]);
+  };
 
-  const handleAllIn = useCallback(() => {
+  const handleAllIn = () => {
     if (!derived.turnPlayerId) return;
     if (derived.turnPlayerBalance <= 0) return;
     placeBid(derived.turnPlayerBalance);
-  }, [derived.turnPlayerBalance, derived.turnPlayerId, placeBid]);
+  };
 
   const handleBidInputChange = (value: string) => {
     state.setBidInput(value);
   };
 
-  const handleBoardQuestionSelect = useCallback((questionId: string) => {
+  const handleBoardQuestionSelect = (questionId: string) => {
     if (isBlocked) return;
-    if (isBannerOpen || state.isModalOpen) return;
+    if (isBannerOpen || isModalOpen) return;
 
     if (specialTypeByQuestionId[questionId] === "auction") {
       state.setPendingQuestionId(questionId);
@@ -219,23 +198,15 @@ export function useAuctionActions({
     }
 
     onNonAuctionQuestionSelect(questionId);
-  }, [
-    currentPickerId,
-    isBannerOpen,
-    isBlocked,
-    onNonAuctionQuestionSelect,
-    setIsBannerOpen,
-    specialTypeByQuestionId,
-    state,
-  ]);
+  };
 
   const handleBannerClose = useCallback(() => {
     setIsBannerOpen(false);
-    if (!state.pendingQuestionId) return;
+    if (!pendingQuestionId) return;
 
-    state.setIsModalOpen(true);
-    state.setTurnCursor(0);
-  }, [setIsBannerOpen, state]);
+    setIsModalOpen(true);
+    setTurnCursor(0);
+  }, [pendingQuestionId, setIsBannerOpen, setIsModalOpen, setTurnCursor]);
 
   return {
     placeBid,
