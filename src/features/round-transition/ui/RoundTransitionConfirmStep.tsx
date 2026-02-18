@@ -23,10 +23,10 @@ export function RoundTransitionConfirmStep({
     : `Раунд ${roundNumber} завершен!`
   const description = hasNextRound
     ? `Вы показали отличные результаты. Готовы перейти к ${roundNumber + 1} раунду?`
-    : "Игра завершена. Проверьте финальную статистику и вернитесь в меню."
+    : "Оооооооооо...ГОТОВЫ К ФИНАЛУУУУУУ???"
   const confirmLabel = hasNextRound
     ? `${roundNumber + 1} раунд`
-    : "Завершить игру"
+    : "Финал"
 
   return (
     <motion.div
@@ -65,7 +65,7 @@ export function RoundTransitionConfirmStep({
             className="flex-1 h-12"
             onClick={onConfirm}
           >
-            {confirmLabel} <ArrowRight className="ml-2 size-5" />
+            {confirmLabel} <ArrowRight className=" size-5" />
           </Button>
         </div>
       </div>

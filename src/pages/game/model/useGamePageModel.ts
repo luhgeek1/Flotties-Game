@@ -142,7 +142,7 @@ export function useGamePageModel({
     && openedQuestionIds.length >= totalQuestions
     && !isQuestionModalOpen
   ), [isQuestionModalOpen, openedQuestionIds, totalQuestions]);
-  const hasNextRound = Boolean(onRoundTransitionConfirm);
+  const hasNextRound = roundIndex === 0 && Boolean(onRoundTransitionConfirm);
   const isRoundTransitionModalOpen = isRoundComplete && (hasNextRound || roundIndex > 0);
   const hasQuestionsToPick = openedQuestionIds.length < totalQuestions;
   const activePickerId = hasQuestionsToPick ? currentPickerId : null;
