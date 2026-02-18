@@ -1,5 +1,5 @@
 import { GameBoard } from "@/entities/game-board";
-import { AuctionModal } from "@/features/auction";
+import { AuctionModal, AuctionUnavailableModal } from "@/features/auction";
 import { RayGifBanner } from "@/features/special-banner";
 import { CatInBagTransferModal } from "@/features/cat-in-bag/cat-in-bag-transfer";
 import { PlayerScoreCard } from "@/entities/players";
@@ -74,6 +74,8 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
         specialType="auction"
         autoCloseMs={3000}
       />
+
+      <AuctionUnavailableModal {...model.auctionGuardModal} />
 
       <AuctionModal {...model.auctionModal} />
 

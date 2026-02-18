@@ -49,16 +49,16 @@ export function useGamePageModel({
     questionPlayers,
   });
 
-  const { questionsByIdWithAuction } = useAuctionQuestionData({
+  const { questionsByIdWithAuction, isSingleAttemptAuctionQuestion } = useAuctionQuestionData({
     selectedPack,
     roundSpecialMap,
     questionsById: questionsByIdWithCatInBag,
   });
 
   const isSingleAttemptQuestion = useCallback((questionId: string) => (
-    specialTypeByQuestionId[questionId] === "auction"
+    isSingleAttemptAuctionQuestion(questionId)
     || isCatInBagSingleAttemptQuestion(questionId)
-  ), [isCatInBagSingleAttemptQuestion, specialTypeByQuestionId]);
+  ), [isCatInBagSingleAttemptQuestion, isSingleAttemptAuctionQuestion]);
   const {
     activeQuestion,
     activeQuestionId,
@@ -216,6 +216,8 @@ export function useGamePageModel({
       currentBid: auction.currentBid,
       leaderPlayerId: auction.leaderPlayerId,
       players: auction.players,
+      isSinglePlayerMode: auction.isSinglePlayerMode,
+      excludedPlayersCount: auction.excludedPlayersCount,
       turnPlayerId: auction.turnPlayerId,
       turnPlayerName: auction.turnPlayerName,
       turnPlayerBalance: auction.turnPlayerBalance,
@@ -228,6 +230,14 @@ export function useGamePageModel({
       onMinBid: auction.handleMinBid,
       onAllIn: auction.handleAllIn,
       onPass: auction.handlePass,
+    },
+    auctionGuardModal: {
+      open: auction.isEntryGuardModalOpen,
+      mode: auction.entryGuardMode ?? "unavailable",
+      nominal: auction.entryGuardNominal ?? auction.nominal,
+      eligiblePlayersCount: auction.entryGuardEligiblePlayersCount,
+      excludedPlayersCount: auction.entryGuardExcludedPlayersCount,
+      onContinue: auction.handleEntryGuardContinue,
     },
     catInBagTransferModal: {
       open: isCatInBagTransferOpen,
