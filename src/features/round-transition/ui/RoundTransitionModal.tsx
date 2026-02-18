@@ -18,11 +18,13 @@ import { RoundTransitionScoreStep } from "./RoundTransitionScoreStep"
 export function RoundTransitionModal({
   isOpen,
   roundNumber,
+  hasNextRound,
   ...props
 }: RoundTransitionModalProps) {
   const model = useRoundTransitionModel({
     isOpen,
     roundNumber,
+    hasNextRound,
     ...props,
   })
 
@@ -98,6 +100,7 @@ export function RoundTransitionModal({
                 <RoundTransitionConfirmStep
                   key="confirm"
                   roundNumber={roundNumber}
+                  hasNextRound={hasNextRound}
                   onConfirm={model.handleConfirm}
                   onExitToSetup={model.handleExitToSetup}
                 />

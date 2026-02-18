@@ -10,6 +10,7 @@ export type RoundTransitionModalProps = {
   isOpen: boolean
   playerScores: RoundTransitionModalPlayerScore[]
   roundNumber: number
+  hasNextRound: boolean
   onConfirm?: () => void
   onExitToSetup?: () => void
 }

@@ -142,7 +142,8 @@ export function useGamePageModel({
     && openedQuestionIds.length >= totalQuestions
     && !isQuestionModalOpen
   ), [isQuestionModalOpen, openedQuestionIds, totalQuestions]);
-  const isRoundTransitionModalOpen = Boolean(onRoundTransitionConfirm) && isRoundComplete;
+  const hasNextRound = Boolean(onRoundTransitionConfirm);
+  const isRoundTransitionModalOpen = isRoundComplete && (hasNextRound || roundIndex > 0);
   const hasQuestionsToPick = openedQuestionIds.length < totalQuestions;
   const activePickerId = hasQuestionsToPick ? currentPickerId : null;
   const isRoundStartIntroOpen = hasQuestionsToPick
@@ -171,8 +172,13 @@ export function useGamePageModel({
   }, [exitToSetup, setIsExitModalOpen]);
 
   const handleRoundTransitionConfirm = useCallback(() => {
-    onRoundTransitionConfirm?.();
-  }, [onRoundTransitionConfirm]);
+    if (onRoundTransitionConfirm) {
+      onRoundTransitionConfirm();
+      return;
+    }
+
+    exitToSetup();
+  }, [exitToSetup, onRoundTransitionConfirm]);
 
   const roundTransitionPlayerScores = useMemo(
     () => gamePlayers.map(player => ({
@@ -278,6 +284,7 @@ export function useGamePageModel({
       isOpen: isRoundTransitionModalOpen,
       playerScores: roundTransitionPlayerScores,
       roundNumber: roundIndex + 1,
+      hasNextRound,
       onExitToSetup: exitToSetup,
       onConfirm: handleRoundTransitionConfirm,
     },

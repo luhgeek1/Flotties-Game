@@ -7,15 +7,27 @@ import { roundTransitionStepVariants } from "../model/constants"
 
 type RoundTransitionConfirmStepProps = {
   roundNumber: number
+  hasNextRound: boolean
   onConfirm: () => void
   onExitToSetup: () => void
 }
 
 export function RoundTransitionConfirmStep({
   roundNumber,
+  hasNextRound,
   onConfirm,
   onExitToSetup,
 }: RoundTransitionConfirmStepProps) {
+  const title = hasNextRound
+    ? `Раунд ${roundNumber} пройден!`
+    : `Раунд ${roundNumber} завершен!`
+  const description = hasNextRound
+    ? `Вы показали отличные результаты. Готовы перейти к ${roundNumber + 1} раунду?`
+    : "Игра завершена. Проверьте финальную статистику и вернитесь в меню."
+  const confirmLabel = hasNextRound
+    ? `${roundNumber + 1} раунд`
+    : "Завершить игру"
+
   return (
     <motion.div
       variants={roundTransitionStepVariants}
@@ -30,9 +42,9 @@ export function RoundTransitionConfirmStep({
         </div>
 
         <div className="space-y-4 max-w-lg">
-          <h3 className="text-2xl font-bold">Раунд {roundNumber} пройден!</h3>
+          <h3 className="text-2xl font-bold">{title}</h3>
           <p className="text-muted-foreground text-lg">
-            Вы показали отличные результаты. Готовы ли вы увеличить сложность и перейти ко второму раунду?
+            {description}
           </p>
         </div>
 
@@ -53,7 +65,7 @@ export function RoundTransitionConfirmStep({
             className="flex-1 h-12"
             onClick={onConfirm}
           >
-            {roundNumber + 1} раунд <ArrowRight className="ml-2 size-5" />
+            {confirmLabel} <ArrowRight className="ml-2 size-5" />
           </Button>
         </div>
       </div>
