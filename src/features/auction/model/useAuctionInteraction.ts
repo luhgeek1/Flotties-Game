@@ -1,4 +1,5 @@
 import { useAtom } from "jotai";
+import { useMemo, useState } from "react";
 
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
 import { auctionBannerOpenAtom } from "@/shared/store/specialBannerAtom";
@@ -28,12 +29,27 @@ export function useAuctionInteraction({
   isBlocked = false,
 }: UseAuctionInteractionArgs) {
   const [isBannerOpen, setIsBannerOpen] = useAtom(auctionBannerOpenAtom);
+  const [isUnavailableModalOpen, setIsUnavailableModalOpen] = useState(false);
+  const [unavailableAuction, setUnavailableAuction] = useState<{ questionId: string; nominal: number } | null>(null);
 
   const state = useAuctionState();
+  const pendingNominal = useMemo(
+    () => (state.pendingQuestionId ? getQuestionNominal(state.pendingQuestionId) : 0),
+    [getQuestionNominal, state.pendingQuestionId],
+  );
+  const eligiblePlayers = useMemo(() => (
+    state.pendingQuestionId
+      ? players.filter(player => player.score >= pendingNominal)
+      : players
+  ), [pendingNominal, players, state.pendingQuestionId]);
   const openerPlayerId = state.openerPlayerId ?? currentPickerId;
+  const isSinglePlayerMode = state.isModalOpen && eligiblePlayers.length === 1;
+  const excludedPlayersCount = state.pendingQuestionId
+    ? Math.max(0, players.length - eligiblePlayers.length)
+    : 0;
 
   const derived = useAuctionDerived({
-    players,
+    players: eligiblePlayers,
     pendingQuestionId: state.pendingQuestionId,
     getQuestionNominal,
     openerPlayerId,
@@ -44,15 +60,20 @@ export function useAuctionInteraction({
   });
 
   const actions = useAuctionActions({
-    players,
+    players: eligiblePlayers,
     currentPickerId,
     openerPlayerId,
     specialTypeByQuestionId,
+    getQuestionNominal,
     onNonAuctionQuestionSelect,
     onAuctionComplete,
     isBlocked,
     isBannerOpen,
+    isUnavailableModalOpen,
     setIsBannerOpen,
+    setIsUnavailableModalOpen,
+    unavailableAuction,
+    setUnavailableAuction,
     state,
     derived,
   });
@@ -60,10 +81,14 @@ export function useAuctionInteraction({
   return {
     isBannerOpen,
     isModalOpen: state.isModalOpen,
+    isUnavailableModalOpen,
+    unavailableNominal: unavailableAuction?.nominal ?? null,
     nominal: derived.nominal,
     currentBid: derived.currentBid,
     leaderPlayerId: derived.leaderPlayerId,
-    players,
+    players: eligiblePlayers,
+    isSinglePlayerMode,
+    excludedPlayersCount,
     turnPlayerId: derived.turnPlayerId,
     turnPlayerName: derived.turnPlayerName,
     turnPlayerBalance: derived.turnPlayerBalance,
@@ -78,5 +103,6 @@ export function useAuctionInteraction({
     handleMinBid: actions.handleMinBid,
     handleAllIn: actions.handleAllIn,
     handlePass: actions.handlePass,
+    handleUnavailableContinue: actions.handleUnavailableContinue,
   };
 }

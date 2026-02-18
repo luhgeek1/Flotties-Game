@@ -1,8 +1,8 @@
 import { useAtomValue } from "jotai";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import type { QuestionPack, QuestionPackQuestion, QuestionPackSpecialQuestion } from "@/shared/api/questionPack";
-import { auctionWinningBidByQuestionIdAtom } from "@/shared/store/specialAuctionAtom";
+import { auctionWinningBidByQuestionIdAtom, auctionWinningPlayerByQuestionIdAtom } from "@/shared/store/specialAuctionAtom";
 import type { RoundSpecialMap } from "@/shared/store/specialCIBAtom";
 
 type UseAuctionQuestionDataArgs = {
@@ -17,6 +17,7 @@ export function useAuctionQuestionData({
   questionsById,
 }: UseAuctionQuestionDataArgs) {
   const auctionWinningBidByQuestionId = useAtomValue(auctionWinningBidByQuestionIdAtom);
+  const auctionWinningPlayerByQuestionId = useAtomValue(auctionWinningPlayerByQuestionIdAtom);
 
   const auctionSpecialQuestionById = useMemo(() => {
     const next = new Map<string, QuestionPackSpecialQuestion>();
@@ -33,7 +34,7 @@ export function useAuctionQuestionData({
       if (specialCell.type !== "auction") return;
 
       const winningBid = auctionWinningBidByQuestionId[questionId];
-      if (!winningBid) return;
+      if (winningBid === undefined) return;
 
       const specialQuestion = auctionSpecialQuestionById.get(specialCell.specialQuestionId);
       if (!specialQuestion) return;
@@ -52,8 +53,12 @@ export function useAuctionQuestionData({
     return next;
   }, [auctionSpecialQuestionById, auctionWinningBidByQuestionId, questionsById, roundSpecialMap]);
 
+  const isSingleAttemptAuctionQuestion = useCallback((questionId: string) => (
+    Boolean(auctionWinningPlayerByQuestionId[questionId])
+  ), [auctionWinningPlayerByQuestionId]);
+
   return {
     questionsByIdWithAuction,
+    isSingleAttemptAuctionQuestion,
   };
 }
-

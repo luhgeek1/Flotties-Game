@@ -12,8 +12,10 @@ export function resolveAuctionOrderPlayerIds(
   openerPlayerId: string,
 ): string[] {
   const ids = players.map(player => player.id);
+  if (ids.length === 0) return [];
 
   const openerIndex = ids.indexOf(openerPlayerId);
+  if (openerIndex < 0) return ids;
 
   return [...ids.slice(openerIndex), ...ids.slice(0, openerIndex)];
 }
@@ -41,6 +43,8 @@ export function resolveAuctionTurnPlayerId(
   cursor: number,
   passedPlayerIdSet: ReadonlySet<string>,
 ): string | null {
+  if (orderPlayerIds.length === 0) return null;
+
   let index = cursor % orderPlayerIds.length;
 
   for (let attempt = 0; attempt < orderPlayerIds.length; attempt += 1) {
@@ -57,6 +61,8 @@ export function resolveNextAuctionCursor(
   cursor: number,
   passedPlayerIdSet: ReadonlySet<string>,
 ): number {
+  if (orderPlayerIds.length === 0) return 0;
+
   let index = (cursor + 1) % orderPlayerIds.length;
 
   for (let attempt = 0; attempt < orderPlayerIds.length; attempt += 1) {

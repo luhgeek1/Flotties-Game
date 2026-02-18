@@ -13,11 +13,16 @@ type UseAuctionActionsArgs = {
   currentPickerId: string;
   openerPlayerId: string;
   specialTypeByQuestionId: GameBoardSpecialTypeByQuestionId;
+  getQuestionNominal: (questionId: string) => number;
   onNonAuctionQuestionSelect: (questionId: string) => void;
   onAuctionComplete: (payload: AuctionBidCompletePayload) => void;
   isBlocked: boolean;
   isBannerOpen: boolean;
+  isUnavailableModalOpen: boolean;
   setIsBannerOpen: (open: boolean) => void;
+  setIsUnavailableModalOpen: (open: boolean) => void;
+  unavailableAuction: { questionId: string; nominal: number } | null;
+  setUnavailableAuction: (value: { questionId: string; nominal: number } | null) => void;
   state: {
     isModalOpen: boolean;
     setIsModalOpen: (open: boolean) => void;
@@ -59,11 +64,16 @@ export function useAuctionActions({
   currentPickerId,
   openerPlayerId,
   specialTypeByQuestionId,
+  getQuestionNominal,
   onNonAuctionQuestionSelect,
   onAuctionComplete,
   isBlocked,
   isBannerOpen,
+  isUnavailableModalOpen,
   setIsBannerOpen,
+  setIsUnavailableModalOpen,
+  unavailableAuction,
+  setUnavailableAuction,
   state,
   derived,
 }: UseAuctionActionsArgs) {
@@ -101,8 +111,9 @@ export function useAuctionActions({
 
   const placeBid = (bid: number) => {
     const turnPlayerId = derived.turnPlayerId;
+    const questionId = state.pendingQuestionId;
     if (!turnPlayerId) return;
-    if (!state.pendingQuestionId) return;
+    if (!questionId) return;
 
     const minAllowed = resolveMinBid({
       nominal: derived.nominal,
@@ -116,16 +127,28 @@ export function useAuctionActions({
     if (bid > derived.turnPlayerBalance) return;
     if (derived.isLeaderAllIn && bid !== derived.turnPlayerBalance) return;
 
-    state.setBidsByPlayerId(prev => ({
-      ...prev,
+    const nextBidsByPlayerId = {
+      ...state.bidsByPlayerId,
       [turnPlayerId]: bid,
-    }));
-
+    };
+    state.setBidsByPlayerId(nextBidsByPlayerId);
     state.setBidInput("");
+
+    if (derived.orderPlayerIds.length <= 1) {
+      finalizeAuction({
+        questionId,
+        bidsByPlayerId: nextBidsByPlayerId,
+        passedPlayerIds: state.passedPlayerIds,
+      });
+      return;
+    }
+
     advanceTurn(state.passedPlayerIds);
   };
 
   const handlePass = () => {
+    if (derived.orderPlayerIds.length <= 1) return;
+
     const turnPlayerId = derived.turnPlayerId;
     if (!turnPlayerId) return;
     if (!state.pendingQuestionId) return;
@@ -183,9 +206,12 @@ export function useAuctionActions({
 
   const handleBoardQuestionSelect = (questionId: string) => {
     if (isBlocked) return;
-    if (isBannerOpen || isModalOpen) return;
+    if (isBannerOpen || isModalOpen || isUnavailableModalOpen) return;
 
     if (specialTypeByQuestionId[questionId] === "auction") {
+      const nominal = getQuestionNominal(questionId);
+      const eligiblePlayers = players.filter(player => player.score >= nominal);
+
       state.setPendingQuestionId(questionId);
       state.setOpenerPlayerId(currentPickerId);
       state.setTurnCursor(0);
@@ -193,10 +219,32 @@ export function useAuctionActions({
       state.setBidsByPlayerId({});
       state.setPassedPlayerIds([]);
       state.setIsModalOpen(false);
+      setIsUnavailableModalOpen(false);
+
+      if (eligiblePlayers.length === 0) {
+        setUnavailableAuction({ questionId, nominal });
+        setIsBannerOpen(true);
+        return;
+      }
+
+      setUnavailableAuction(null);
+      const auctionOpenerPlayerId = eligiblePlayers.some(player => player.id === currentPickerId)
+        ? currentPickerId
+        : eligiblePlayers[0].id;
+      state.setOpenerPlayerId(auctionOpenerPlayerId);
+
+      if (eligiblePlayers.length === 1) {
+        setIsBannerOpen(false);
+        state.setIsModalOpen(true);
+        return;
+      }
+
       setIsBannerOpen(true);
       return;
     }
 
+    setUnavailableAuction(null);
+    setIsUnavailableModalOpen(false);
     onNonAuctionQuestionSelect(questionId);
   };
 
@@ -204,9 +252,43 @@ export function useAuctionActions({
     setIsBannerOpen(false);
     if (!pendingQuestionId) return;
 
+    if (unavailableAuction?.questionId === pendingQuestionId) {
+      setIsUnavailableModalOpen(true);
+      return;
+    }
+
     setIsModalOpen(true);
     setTurnCursor(0);
-  }, [pendingQuestionId, setIsBannerOpen, setIsModalOpen, setTurnCursor]);
+  }, [
+    pendingQuestionId,
+    setIsBannerOpen,
+    setIsModalOpen,
+    setIsUnavailableModalOpen,
+    setTurnCursor,
+    unavailableAuction,
+  ]);
+
+  const handleUnavailableContinue = useCallback(() => {
+    if (!unavailableAuction) return;
+
+    state.setWinningBidByQuestionId(prev => ({ ...prev, [unavailableAuction.questionId]: unavailableAuction.nominal }));
+    state.setWinningPlayerByQuestionId(prev => {
+      const next = { ...prev };
+      delete next[unavailableAuction.questionId];
+      return next;
+    });
+
+    setUnavailableAuction(null);
+    setIsUnavailableModalOpen(false);
+    state.resetFlow();
+    onNonAuctionQuestionSelect(unavailableAuction.questionId);
+  }, [
+    onNonAuctionQuestionSelect,
+    setIsUnavailableModalOpen,
+    setUnavailableAuction,
+    state,
+    unavailableAuction,
+  ]);
 
   return {
     placeBid,
@@ -217,5 +299,6 @@ export function useAuctionActions({
     handleBidInputChange,
     handleBoardQuestionSelect,
     handleBannerClose,
+    handleUnavailableContinue,
   };
 }
