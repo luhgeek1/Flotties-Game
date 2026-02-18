@@ -9,18 +9,9 @@ import {
   MIN_PLAYERS_TO_START_GAME,
   setupSelectedPackIdAtom,
   setupSelectedPlayerIdsAtom,
-  setupStepAtom,
 } from "@/shared/store/setupAtoms";
-import {
-  gameActiveQuestionIdAtom,
-  gameIsExitModalOpenAtom,
-  gameOpenedQuestionIdsAtom,
-  gameRound2UnlockedAtom,
-  gameRound2StartPickerIdAtom,
-  gameQuestionFlowStateAtom,
-} from "@/shared/store/gameAtoms";
-import { resetRoundSpecialMapsAtom } from "@/shared/store/specialCIBAtom";
-import { resetAuctionStateAtom } from "@/shared/store/specialAuctionAtom";
+import { gameRound2UnlockedAtom } from "@/shared/store/gameAtoms";
+import { resetGameRoundStateAtom, resetGameSessionAtom } from "@/shared/store/reset-game-session";
 import {
   ROUTE_PATH,
   coerceRoute,
@@ -31,8 +22,7 @@ import {
 
 type NavigateOptions = {
   replace?: boolean;
-  resetQuestionState?: boolean;
-  resetSetupStep?: boolean;
+  resetState?: "none" | "round" | "session";
   round2Access?: "lock" | "unlock" | "keep";
 };
 
@@ -50,32 +40,8 @@ export function AppRouter() {
   const [route, setRoute] = useState<AppRoute>(
     () => getInitialRoute(window.location.pathname, isRound2Unlocked, canEnterGame),
   );
-  const setActiveQuestionId = useSetAtom(gameActiveQuestionIdAtom);
-  const setOpenedQuestionIds = useSetAtom(gameOpenedQuestionIdsAtom);
-  const setQuestionFlowState = useSetAtom(gameQuestionFlowStateAtom);
-  const setIsExitModalOpen = useSetAtom(gameIsExitModalOpenAtom);
-  const setRound2StartPickerId = useSetAtom(gameRound2StartPickerIdAtom);
-  const resetRoundSpecialMaps = useSetAtom(resetRoundSpecialMapsAtom);
-  const resetAuctionState = useSetAtom(resetAuctionStateAtom);
-  const setSetupStep = useSetAtom(setupStepAtom);
-
-  const resetQuestionRoundState = useCallback(() => {
-    setActiveQuestionId(null);
-    setOpenedQuestionIds([]);
-    setQuestionFlowState(null);
-    setIsExitModalOpen(false);
-    setRound2StartPickerId(null);
-    resetRoundSpecialMaps();
-    resetAuctionState();
-  }, [
-    resetAuctionState,
-    resetRoundSpecialMaps,
-    setActiveQuestionId,
-    setIsExitModalOpen,
-    setOpenedQuestionIds,
-    setQuestionFlowState,
-    setRound2StartPickerId,
-  ]);
+  const resetGameRoundState = useSetAtom(resetGameRoundStateAtom);
+  const resetGameSession = useSetAtom(resetGameSessionAtom);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -120,12 +86,10 @@ export function AppRouter() {
       canEnterGame,
     });
 
-    if (options?.resetQuestionState) {
-      resetQuestionRoundState();
-    }
-
-    if (options?.resetSetupStep) {
-      setSetupStep("players");
+    if (options?.resetState === "session") {
+      resetGameSession();
+    } else if (options?.resetState === "round") {
+      resetGameRoundState();
     }
 
     if (nextIsRound2Unlocked !== isRound2Unlocked) {
@@ -143,19 +107,18 @@ export function AppRouter() {
     }
 
     setRoute(guardedRoute);
-  }, [canEnterGame, isRound2Unlocked, resetQuestionRoundState, route, setIsRound2Unlocked, setSetupStep]);
+  }, [canEnterGame, isRound2Unlocked, resetGameRoundState, resetGameSession, route, setIsRound2Unlocked]);
 
   if (route === "game") {
     return (
       <GamePage
         onExitToSetup={() => navigateTo("setup", {
           round2Access: "lock",
-          resetQuestionState: true,
-          resetSetupStep: true,
+          resetState: "session",
         })}
         onRoundTransitionConfirm={() => navigateTo("game2r", {
           replace: true,
-          resetQuestionState: true,
+          resetState: "round",
           round2Access: "unlock",
         })}
       />
@@ -167,12 +130,11 @@ export function AppRouter() {
       <GamePage2R
         onExitToSetup={() => navigateTo("setup", {
           round2Access: "lock",
-          resetQuestionState: true,
-          resetSetupStep: true,
+          resetState: "session",
         })}
         onRoundTransitionConfirm={() => navigateTo("finalprepairing", {
           replace: true,
-          resetQuestionState: true,
+          resetState: "round",
           round2Access: "unlock",
         })}
       />
@@ -188,8 +150,7 @@ export function AppRouter() {
         })}
         onExitToSetup={() => navigateTo("setup", {
           round2Access: "lock",
-          resetQuestionState: true,
-          resetSetupStep: true,
+          resetState: "session",
         })}
       />
     );
@@ -204,8 +165,7 @@ export function AppRouter() {
         })}
         onExitToSetup={() => navigateTo("setup", {
           round2Access: "lock",
-          resetQuestionState: true,
-          resetSetupStep: true,
+          resetState: "session",
         })}
       />
     );
@@ -216,8 +176,7 @@ export function AppRouter() {
       <FinalCloseEyesPage
         onExitToSetup={() => navigateTo("setup", {
           round2Access: "lock",
-          resetQuestionState: true,
-          resetSetupStep: true,
+          resetState: "session",
         })}
       />
     );
@@ -225,6 +184,6 @@ export function AppRouter() {
 
   return <SetupPage onStartGame={() => navigateTo("game", {
     round2Access: "lock",
-    resetQuestionState: true,
+    resetState: "session",
   })} />;
 }
