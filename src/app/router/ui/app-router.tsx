@@ -3,7 +3,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { GamePage, GamePage2R } from "@/pages/game";
 import { FinalPrepairingPage } from "@/pages/final-prepairing";
-import { FinalCloseEyesPage, FinalStartThemePage } from "@/pages/final";
+import { FinalBidPage, FinalCloseEyesPage, FinalStartThemePage } from "@/pages/final";
 import { SetupPage } from "@/pages/setup";
 import {
   MIN_PLAYERS_TO_START_GAME,
@@ -174,6 +174,25 @@ export function AppRouter() {
   if (route === "finalcloseeyes") {
     return (
       <FinalCloseEyesPage
+        onReady={() => navigateTo("finalbid", {
+          replace: true,
+          round2Access: "unlock",
+        })}
+        onExitToSetup={() => navigateTo("setup", {
+          round2Access: "lock",
+          resetState: "session",
+        })}
+      />
+    );
+  }
+
+  if (route === "finalbid") {
+    return (
+      <FinalBidPage
+        onConfirmBid={() => navigateTo("finalcloseeyes", {
+          replace: true,
+          round2Access: "unlock",
+        })}
         onExitToSetup={() => navigateTo("setup", {
           round2Access: "lock",
           resetState: "session",
