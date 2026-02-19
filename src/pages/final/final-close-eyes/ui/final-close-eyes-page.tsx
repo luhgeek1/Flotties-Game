@@ -77,8 +77,16 @@ export function FinalCloseEyesPage({
                 exit={{ y: 20, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-black text-white">
-                  <User size={32} />
+                <div className="mx-auto mb-6 flex h-26 w-26 items-center justify-center overflow-hidden rounded-full bg-black text-white">
+                  {model.currentAnswererAvatarUrl ? (
+                    <img
+                      src={model.currentAnswererAvatarUrl}
+                      alt={model.currentAnswererName}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <User size={32} />
+                  )}
                 </div>
 
                 <h2 className="mb-2 text-2xl font-bold text-black">

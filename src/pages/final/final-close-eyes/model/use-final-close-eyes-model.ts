@@ -14,6 +14,7 @@ export function useFinalCloseEyesModel({ onReady }: UseFinalCloseEyesModelArgs =
   const { currentPlayer } = useFinalPlayerQueue();
   const setActivePlayerId = useSetAtom(finalActivePlayerIdAtom);
   const currentAnswererName = currentPlayer?.name ?? "Игрок";
+  const currentAnswererAvatarUrl = currentPlayer?.avatarUrl ?? null;
 
   const handleReadyClick = useCallback(() => {
     if (!currentPlayer) return;
@@ -25,6 +26,7 @@ export function useFinalCloseEyesModel({ onReady }: UseFinalCloseEyesModelArgs =
   return {
     packTitle: selectedPack.title,
     currentAnswererName,
+    currentAnswererAvatarUrl,
     onReadyClick: handleReadyClick,
   };
 }
