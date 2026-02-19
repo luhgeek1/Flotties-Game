@@ -1,6 +1,7 @@
 import { useAtom, useSetAtom } from "jotai";
 import { ChevronRight, Plus } from "lucide-react";
 import { motion } from "motion/react";
+import { useState } from "react";
 
 import {
   PLAYER_SELECTION_KEY_CODES,
@@ -13,6 +14,7 @@ import {
   AddPlayerModal,
   type AddPlayerValues,
 } from "@/features/add-player-modal";
+import { ExitGameModal } from "@/features/exit-game";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import {
@@ -34,6 +36,7 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
   const [selectedPlayerIds, setSelectedPlayerIds] = useAtom(setupSelectedPlayerIdsAtom);
   const [isAddPlayerModalOpen, setIsAddPlayerModalOpen] = useAtom(setupAddPlayerModalIsOpenAtom);
   const setAddPlayerModalState = useSetAtom(setupAddPlayerModalStateAtom);
+  const [deleteCandidateId, setDeleteCandidateId] = useState<PlayerId | null>(null);
 
   const togglePlayerSelection = (playerId: PlayerId) => {
     setSelectedPlayerIds(prevSelected => {
@@ -86,6 +89,24 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
     ]);
   };
 
+  const handleRequestDeletePlayer = (playerId: PlayerId) => {
+    setDeleteCandidateId(playerId);
+  };
+
+  const handleCancelDeletePlayer = () => {
+    setDeleteCandidateId(null);
+  };
+
+  const handleConfirmDeletePlayer = () => {
+    if (!deleteCandidateId) return;
+
+    setPlayers(prevPlayers => prevPlayers.filter(player => player.id !== deleteCandidateId));
+    setSelectedPlayerIds(prevSelected => prevSelected.filter(playerId => playerId !== deleteCandidateId));
+    setDeleteCandidateId(null);
+  };
+
+  const deleteCandidate = players.find(player => player.id === deleteCandidateId) ?? null;
+
   const selectedPlayersCount = selectedPlayerIds.length;
   const canContinue = selectedPlayersCount === PLAYERS_TO_START_GAME;
 
@@ -133,6 +154,7 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
                 isDisabled={isDisabled}
                 onToggle={() => togglePlayerSelection(player.id)}
                 onEdit={() => handleOpenEditPlayerModal(player.id)}
+                onDelete={() => handleRequestDeletePlayer(player.id)}
               />
             );
           })}
@@ -163,6 +185,16 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
         onSave={handleSavePlayer}
         presetAvatars={ADD_PLAYER_PRESET_AVATARS}
         bannerOptions={ADD_PLAYER_BANNER_OPTIONS}
+      />
+
+      <ExitGameModal
+        isOpen={deleteCandidate !== null}
+        title="Удалить игрока?"
+        description={`Игрок «${deleteCandidate?.name ?? ""}» будет удален из списка.`}
+        cancelLabel="Отмена"
+        confirmLabel="Удалить"
+        onCancel={handleCancelDeletePlayer}
+        onConfirm={handleConfirmDeletePlayer}
       />
     </SetupShell>
   );
