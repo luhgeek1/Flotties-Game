@@ -14,18 +14,18 @@ export function SetupShell({ children }: SetupShellProps) {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/30 transition-colors duration-300">
-      <div className="flex-1 flex flex-col p-4 md:p-8 max-w-2xl mx-auto w-full relative">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          title="Переключить тему"
-          onClick={toggleTheme}
-          className="absolute right-4 top-4 z-20 rounded-full bg-card/70 backdrop-blur hover:bg-card md:right-8 md:top-8"
-        >
-          {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        title="Переключить тему"
+        onClick={toggleTheme}
+        className="fixed right-4 top-4 z-30 rounded-full border border-border bg-card/70 backdrop-blur hover:bg-card md:right-8 md:top-8"
+      >
+        {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      </Button>
 
+      <div className="flex-1 flex flex-col p-4 md:p-8 max-w-2xl mx-auto w-full relative">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
