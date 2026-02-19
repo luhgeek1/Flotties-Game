@@ -1,7 +1,6 @@
 import { useAtom } from "jotai";
 import { ChevronRight, Plus } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
 
 import {
   PLAYER_SELECTION_KEY_CODES,
@@ -17,6 +16,7 @@ import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import {
   PLAYERS_TO_START_GAME,
+  setupAddPlayerModalIsOpenAtom,
   setupPlayersAtom,
   setupSelectedPlayerIdsAtom,
 } from "@/shared/store/setupAtoms";
@@ -29,7 +29,7 @@ type PlayersSetupScreenProps = {
 export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
   const [players, setPlayers] = useAtom(setupPlayersAtom);
   const [selectedPlayerIds, setSelectedPlayerIds] = useAtom(setupSelectedPlayerIdsAtom);
-  const [isAddPlayerModalOpen, setIsAddPlayerModalOpen] = useState(false);
+  const [isAddPlayerModalOpen, setIsAddPlayerModalOpen] = useAtom(setupAddPlayerModalIsOpenAtom);
 
   const togglePlayerSelection = (playerId: PlayerId) => {
     setSelectedPlayerIds(prevSelected => {

@@ -10,6 +10,7 @@ import {
 
 export type SetupStep = "players" | "packs";
 export type SetupAddPlayerModalState = {
+  isOpen: boolean;
   nickname: string;
   avatar: string | null;
   banner: string | null;
@@ -24,6 +25,7 @@ const ADD_PLAYER_MODAL_STATE_STORAGE_KEY = "setup-add-player-modal-state";
 
 export const PLAYERS_TO_START_GAME = 3;
 export const INITIAL_SETUP_ADD_PLAYER_MODAL_STATE: SetupAddPlayerModalState = {
+  isOpen: false,
   nickname: "",
   avatar: null,
   banner: null,
@@ -63,6 +65,16 @@ export const setupAddPlayerModalStateAtom = atomWithStorage<SetupAddPlayerModalS
   INITIAL_SETUP_ADD_PLAYER_MODAL_STATE,
   undefined,
   { getOnInit: true },
+);
+
+export const setupAddPlayerModalIsOpenAtom = atom(
+  get => get(setupAddPlayerModalStateAtom).isOpen,
+  (_get, set, isOpen: boolean) => {
+    set(setupAddPlayerModalStateAtom, prev => ({
+      ...prev,
+      isOpen,
+    }));
+  },
 );
 
 export const resetSetupAddPlayerModalStateAtom = atom(
