@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
+import { ExitGameModal } from "@/features/exit-game";
 import { GamePage, GamePage2R } from "@/pages/game";
 import { FinalPrepairingPage } from "@/pages/final-prepairing";
 import { FinalBidPage, FinalCloseEyesPage, FinalQuestionPage, FinalResultsPage, FinalStartThemePage } from "@/pages/final";
@@ -33,6 +34,10 @@ function resolveRound2Access(current: boolean, mode: NavigateOptions["round2Acce
   return current;
 }
 
+function isGameFlowRoute(route: AppRoute): boolean {
+  return route !== "setup";
+}
+
 export function AppRouter() {
   const [isRound2Unlocked, setIsRound2Unlocked] = useAtom(gameRound2UnlockedAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
@@ -44,11 +49,24 @@ export function AppRouter() {
   const resetGameRoundState = useSetAtom(resetGameRoundStateAtom);
   const resetGameSession = useSetAtom(resetGameSessionAtom);
   const prepareFinalAnswersStage = useSetAtom(prepareFinalAnswersStageAtom);
+  const [isHistoryExitModalOpen, setIsHistoryExitModalOpen] = useState(false);
 
   useEffect(() => {
     const handlePopState = () => {
+      const requestedRoute = resolveRoute(window.location.pathname);
+
+      if (isGameFlowRoute(route) && requestedRoute !== route) {
+        const currentPath = ROUTE_PATH[route];
+        if (window.location.pathname !== currentPath) {
+          window.history.pushState(null, "", currentPath);
+        }
+
+        setIsHistoryExitModalOpen(true);
+        return;
+      }
+
       const nextRoute = coerceRoute({
-        requestedRoute: resolveRoute(window.location.pathname),
+        requestedRoute,
         currentRoute: route,
         isRound2Unlocked,
         canEnterGame,
@@ -80,6 +98,8 @@ export function AppRouter() {
     nextRoute: AppRoute,
     options?: NavigateOptions,
   ) => {
+    setIsHistoryExitModalOpen(false);
+
     const nextIsRound2Unlocked = resolveRound2Access(isRound2Unlocked, options?.round2Access);
     const guardedRoute = coerceRoute({
       requestedRoute: nextRoute,
@@ -111,158 +131,161 @@ export function AppRouter() {
     setRoute(guardedRoute);
   }, [canEnterGame, isRound2Unlocked, resetGameRoundState, resetGameSession, route, setIsRound2Unlocked]);
 
-  if (route === "game") {
-    return (
-      <GamePage
-        onExitToSetup={() => navigateTo("setup", {
-          round2Access: "lock",
-          resetState: "session",
-        })}
-        onRoundTransitionConfirm={() => navigateTo("game2r", {
-          replace: true,
-          resetState: "round",
-          round2Access: "unlock",
-        })}
-      />
-    );
-  }
+  const handleExitToSetup = useCallback(() => {
+    navigateTo("setup", {
+      replace: true,
+      round2Access: "lock",
+      resetState: "session",
+    });
+  }, [navigateTo]);
 
-  if (route === "game2r") {
-    return (
-      <GamePage2R
-        onExitToSetup={() => navigateTo("setup", {
-          round2Access: "lock",
-          resetState: "session",
-        })}
-        onRoundTransitionConfirm={() => navigateTo("finalprepairing", {
-          replace: true,
-          resetState: "round",
-          round2Access: "unlock",
-        })}
-      />
-    );
-  }
+  const handleHistoryExitCancel = useCallback(() => {
+    setIsHistoryExitModalOpen(false);
+  }, []);
 
-  if (route === "finalprepairing") {
-    return (
-      <FinalPrepairingPage
-        onConfirmFinalQuestion={() => navigateTo("finalstarttheme", {
-          replace: true,
-          round2Access: "unlock",
-        })}
-        onExitToSetup={() => navigateTo("setup", {
-          round2Access: "lock",
-          resetState: "session",
-        })}
-      />
-    );
-  }
+  const handleHistoryExitConfirm = useCallback(() => {
+    handleExitToSetup();
+  }, [handleExitToSetup]);
 
-  if (route === "finalstarttheme") {
-    return (
-      <FinalStartThemePage
-        onNext={() => navigateTo("finalcloseeyes", {
-          replace: true,
-          round2Access: "unlock",
-        })}
-        onExitToSetup={() => navigateTo("setup", {
-          round2Access: "lock",
-          resetState: "session",
-        })}
-      />
-    );
-  }
+  const renderRoute = () => {
+    if (route === "game") {
+      return (
+        <GamePage
+          onExitToSetup={handleExitToSetup}
+          onRoundTransitionConfirm={() => navigateTo("game2r", {
+            replace: true,
+            resetState: "round",
+            round2Access: "unlock",
+          })}
+        />
+      );
+    }
 
-  if (route === "finalcloseeyes") {
-    return (
-      <FinalCloseEyesPage
-        mode="WAGER"
-        onReady={() => navigateTo("finalbid", {
-          replace: true,
-          round2Access: "unlock",
-        })}
-        onExitToSetup={() => navigateTo("setup", {
-          round2Access: "lock",
-          resetState: "session",
-        })}
-      />
-    );
-  }
+    if (route === "game2r") {
+      return (
+        <GamePage2R
+          onExitToSetup={handleExitToSetup}
+          onRoundTransitionConfirm={() => navigateTo("finalprepairing", {
+            replace: true,
+            resetState: "round",
+            round2Access: "unlock",
+          })}
+        />
+      );
+    }
 
-  if (route === "finalbid") {
-    return (
-      <FinalBidPage
-        onConfirmBid={() => navigateTo("finalcloseeyes", {
-          replace: true,
-          round2Access: "unlock",
-        })}
-        onAllBidsDone={() => {
-          prepareFinalAnswersStage();
-          navigateTo("finalcloseeyesquestion", {
+    if (route === "finalprepairing") {
+      return (
+        <FinalPrepairingPage
+          onConfirmFinalQuestion={() => navigateTo("finalstarttheme", {
             replace: true,
             round2Access: "unlock",
-          });
-        }}
-        onExitToSetup={() => navigateTo("setup", {
-          round2Access: "lock",
-          resetState: "session",
-        })}
-      />
-    );
-  }
+          })}
+          onExitToSetup={handleExitToSetup}
+        />
+      );
+    }
 
-  if (route === "finalcloseeyesquestion") {
+    if (route === "finalstarttheme") {
+      return (
+        <FinalStartThemePage
+          onNext={() => navigateTo("finalcloseeyes", {
+            replace: true,
+            round2Access: "unlock",
+          })}
+          onExitToSetup={handleExitToSetup}
+        />
+      );
+    }
+
+    if (route === "finalcloseeyes") {
+      return (
+        <FinalCloseEyesPage
+          mode="WAGER"
+          onReady={() => navigateTo("finalbid", {
+            replace: true,
+            round2Access: "unlock",
+          })}
+          onExitToSetup={handleExitToSetup}
+        />
+      );
+    }
+
+    if (route === "finalbid") {
+      return (
+        <FinalBidPage
+          onConfirmBid={() => navigateTo("finalcloseeyes", {
+            replace: true,
+            round2Access: "unlock",
+          })}
+          onAllBidsDone={() => {
+            prepareFinalAnswersStage();
+            navigateTo("finalcloseeyesquestion", {
+              replace: true,
+              round2Access: "unlock",
+            });
+          }}
+          onExitToSetup={handleExitToSetup}
+        />
+      );
+    }
+
+    if (route === "finalcloseeyesquestion") {
+      return (
+        <FinalCloseEyesPage
+          mode="ANSWER"
+          onReady={() => navigateTo("finalquestion", {
+            replace: true,
+            round2Access: "unlock",
+          })}
+          onExitToSetup={handleExitToSetup}
+        />
+      );
+    }
+
+    if (route === "finalquestion") {
+      return (
+        <FinalQuestionPage
+          onConfirmAnswer={() => navigateTo("finalcloseeyesquestion", {
+            replace: true,
+            round2Access: "unlock",
+          })}
+          onAllAnswersDone={() => navigateTo("finalresults", {
+            replace: true,
+            round2Access: "unlock",
+          })}
+          onExitToSetup={handleExitToSetup}
+        />
+      );
+    }
+
+    if (route === "finalresults") {
+      return (
+        <FinalResultsPage
+          onReset={handleExitToSetup}
+          onExitToSetup={handleExitToSetup}
+        />
+      );
+    }
+
     return (
-      <FinalCloseEyesPage
-        mode="ANSWER"
-        onReady={() => navigateTo("finalquestion", {
-          replace: true,
-          round2Access: "unlock",
-        })}
-        onExitToSetup={() => navigateTo("setup", {
+      <SetupPage
+        onStartGame={() => navigateTo("game", {
           round2Access: "lock",
           resetState: "session",
         })}
       />
     );
-  }
+  };
 
-  if (route === "finalquestion") {
-    return (
-      <FinalQuestionPage
-        onConfirmAnswer={() => navigateTo("finalcloseeyesquestion", {
-          replace: true,
-          round2Access: "unlock",
-        })}
-        onAllAnswersDone={() => navigateTo("finalresults", {
-          replace: true,
-          round2Access: "unlock",
-        })}
-        onExitToSetup={() => navigateTo("setup", {
-          round2Access: "lock",
-          resetState: "session",
-        })}
+  return (
+    <>
+      {renderRoute()}
+      <ExitGameModal
+        isOpen={isHistoryExitModalOpen}
+        onCancel={handleHistoryExitCancel}
+        onConfirm={handleHistoryExitConfirm}
       />
-    );
-  }
-
-  if (route === "finalresults") {
-    return (
-      <FinalResultsPage
-        onReset={() => navigateTo("setup", {
-          round2Access: "lock",
-          resetState: "session",
-        })}
-        onExitToSetup={() => navigateTo("setup", {
-          round2Access: "lock",
-          resetState: "session",
-        })}
-      />
-    );
-  }
-
-  return <SetupPage onStartGame={() => navigateTo("game", {
-    round2Access: "lock",
-    resetState: "session",
-  })} />;
+    </>
+  );
 }
