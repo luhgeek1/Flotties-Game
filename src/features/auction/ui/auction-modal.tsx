@@ -2,6 +2,7 @@ import { AlertCircle, Gavel } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useMemo } from "react";
 
+import { PlayerAvatar } from "@/entities/players";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { cn } from "@/shared/lib/utils";
@@ -115,11 +116,9 @@ export function AuctionModal({
                         ЛИДЕР
                       </span>
                       <div className="flex items-center space-x-2 bg-slate-100 pr-3 pl-1 py-0.5 rounded-full">
-                        <img
-                          src={leaderPlayer.avatarUrl}
-                          className="w-5 h-5 rounded-full"
-                          alt={leaderPlayer.name}
-                        />
+                        <div className="w-5 h-5 rounded-full overflow-hidden">
+                          <PlayerAvatar value={leaderPlayer.avatarUrl} alt={leaderPlayer.name} />
+                        </div>
                         <span className="text-sm font-bold text-slate-900">
                           {leaderPlayer.name}
                         </span>
@@ -146,7 +145,7 @@ export function AuctionModal({
                             isFolded ? "opacity-20 grayscale" : "",
                           )}
                         >
-                          <img src={player.avatarUrl} alt={player.name} className="w-full h-full object-cover" />
+                          <PlayerAvatar value={player.avatarUrl} alt={player.name} />
                         </div>
                         <div
                           className={cn(

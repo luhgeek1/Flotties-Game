@@ -5,7 +5,7 @@ import { resolveSelectedPlayers } from "@/entities/players";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
 import { gamePlayerScoresAtom } from "@/shared/store/gameAtoms";
 import { finalBidByPlayerIdAtom, finalAnswerByPlayerIdAtom } from "@/shared/store/finalAtom";
-import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 import { finalResultsStateAtom, type FinalResultsPlayerState } from "@/shared/store/finalResultsAtom";
 
 type UseFinalResultsModelArgs = {
@@ -42,6 +42,7 @@ function sleep(ms: number): Promise<void> {
 
 export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {}) {
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
+  const setupPlayers = useAtomValue(setupPlayersAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const playerScores = useAtomValue(gamePlayerScoresAtom);
   const finalBids = useAtomValue(finalBidByPlayerIdAtom);
@@ -51,7 +52,7 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
   const basePlayers = useMemo<DisplayPlayer[]>(() => {
     const correctAnswer = selectedPack.rounds.final.answers[0] ?? "";
 
-    return resolveSelectedPlayers(selectedPlayerIds).map(player => {
+    return resolveSelectedPlayers(setupPlayers, selectedPlayerIds).map(player => {
       const wager = finalBids[player.id] ?? 0;
       const answer = finalAnswers[player.id] ?? "";
       const initialScore = playerScores[player.id] ?? 0;
@@ -69,7 +70,7 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
         isRevealed: false,
       };
     });
-  }, [finalAnswers, finalBids, playerScores, selectedPack.rounds.final.answers, selectedPlayerIds]);
+  }, [finalAnswers, finalBids, playerScores, selectedPack.rounds.final.answers, selectedPlayerIds, setupPlayers]);
 
   const sourceKey = useMemo(() => JSON.stringify({
     packId: selectedPack.id,

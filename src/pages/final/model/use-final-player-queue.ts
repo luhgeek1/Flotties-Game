@@ -6,20 +6,21 @@ import {
   finalActivePlayerIdAtom,
   finalCurrentPlayerIndexAtom,
 } from "@/shared/store/finalAtom";
-import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 
 type UseFinalPlayerQueueArgs = {
   preferActivePlayer?: boolean;
 };
 
 export function useFinalPlayerQueue({ preferActivePlayer = false }: UseFinalPlayerQueueArgs = {}) {
+  const setupPlayers = useAtomValue(setupPlayersAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useAtom(finalCurrentPlayerIndexAtom);
   const [activePlayerId, setActivePlayerId] = useAtom(finalActivePlayerIdAtom);
 
   const playersQueue = useMemo(
-    () => resolveSelectedPlayers(selectedPlayerIds),
-    [selectedPlayerIds],
+    () => resolveSelectedPlayers(setupPlayers, selectedPlayerIds),
+    [selectedPlayerIds, setupPlayers],
   );
 
   const boundedPlayerIndex = Math.min(currentPlayerIndex, playersQueue.length - 1);

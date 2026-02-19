@@ -6,7 +6,11 @@ import { QuestionPackCard } from "@/entities/question-pack";
 import { Button } from "@/shared/components/ui/button";
 import { questionPacksAtom } from "@/shared/store/questionAtom";
 import { cn } from "@/shared/lib/utils";
-import { setupSelectedPackIdAtom } from "@/shared/store/setupAtoms";
+import {
+  PLAYERS_TO_START_GAME,
+  setupSelectedPackIdAtom,
+  setupSelectedPlayerIdsAtom,
+} from "@/shared/store/setupAtoms";
 import { SetupShell } from "@/widgets/setup-shell";
 
 type PacksSetupScreenProps = {
@@ -16,6 +20,7 @@ type PacksSetupScreenProps = {
 
 export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
   const questionPacks = useAtomValue(questionPacksAtom);
+  const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const [selectedPackId, setSelectedPackId] = useAtom(setupSelectedPackIdAtom);
 
   //выбор пака
@@ -29,7 +34,7 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
     });
   };
 
-  const canStart = selectedPackId !== null;
+  const canStart = selectedPackId !== null && selectedPlayerIds.length === PLAYERS_TO_START_GAME;
 
   return (
     <SetupShell>

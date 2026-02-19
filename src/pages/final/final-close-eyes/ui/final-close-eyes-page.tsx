@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "motion/react";
-import { EyeOff, User } from "lucide-react";
+import { EyeOff } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { PlayerAvatar } from "@/entities/players";
 import closeEyesRuImage from "@/shared/assets/closeEyesRu.png";
 import { Button } from "@/shared/components/ui/button";
 import { Header } from "@/widgets/header";
@@ -78,15 +79,12 @@ export function FinalCloseEyesPage({
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="mx-auto mb-6 flex h-26 w-26 items-center justify-center overflow-hidden rounded-full bg-black text-white">
-                  {model.currentAnswererAvatarUrl ? (
-                    <img
-                      src={model.currentAnswererAvatarUrl}
-                      alt={model.currentAnswererName}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <User size={32} />
-                  )}
+                  <PlayerAvatar
+                    value={model.currentAnswererAvatarUrl}
+                    alt={model.currentAnswererName}
+                    className="text-white"
+                    emojiClassName="text-4xl"
+                  />
                 </div>
 
                 <h2 className="mb-2 text-2xl font-bold text-black">

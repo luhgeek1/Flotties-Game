@@ -1,4 +1,4 @@
-import { User } from "lucide-react";
+import { PlayerAvatar } from "@/entities/players";
 
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
@@ -24,11 +24,12 @@ export function QuestionModalAnsweringState({
     <div className="mx-auto w-full max-w-2xl space-y-8 animate-in slide-in-from-bottom-10">
       <div className="flex items-center justify-center gap-4 mb-4">
         <div className="w-16 h-16 rounded-full border border-border overflow-hidden bg-background flex items-center justify-center">
-          {playerAvatarUrl ? (
-            <img src={playerAvatarUrl} alt={playerName} className="h-full w-full object-cover" />
-          ) : (
-            <User className="w-8 h-8 text-primary" />
-          )}
+          <PlayerAvatar
+            value={playerAvatarUrl}
+            alt={playerName}
+            className="text-primary"
+            emojiClassName="text-3xl"
+          />
         </div>
 
         <div className="text-left">

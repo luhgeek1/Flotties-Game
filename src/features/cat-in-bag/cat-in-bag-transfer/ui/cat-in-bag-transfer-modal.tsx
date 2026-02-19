@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useMemo } from "react";
 
+import { PlayerAvatar } from "@/entities/players";
 import { cn } from "@/shared/lib/utils";
 import type { CatInBagTransferModalMode, CatInBagTransferPlayer } from "../model";
 
@@ -88,11 +89,7 @@ export function CatInBagTransferModal({
                         )}
                       >
                         <div className="mx-auto h-20 w-20 overflow-hidden rounded-full border border-slate-300 bg-slate-200">
-                          <img
-                            src={player.avatarUrl}
-                            alt={player.name}
-                            className="h-full w-full object-cover grayscale"
-                          />
+                          <PlayerAvatar value={player.avatarUrl} alt={player.name} className="grayscale" />
                         </div>
 
                         <div className="mt-5 text-[38px] font-black leading-none tracking-tight text-slate-900">

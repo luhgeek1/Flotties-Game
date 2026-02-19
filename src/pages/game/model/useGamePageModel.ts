@@ -5,7 +5,7 @@ import { useAuctionInteraction, useAuctionQuestionData } from "@/features/auctio
 import { useCatInBagInteraction, useCatInBagQuestionData } from "@/features/cat-in-bag/model";
 import { usePlayerPick } from "@/features/player-pick";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
-import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 
 import { useGameBoardData } from "./useGameBoardData";
 import { useGamePlayers } from "./useGamePlayers";
@@ -24,9 +24,10 @@ export function useGamePageModel({
   roundIndex,
 }: UseGamePageModelArgs) {
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
+  const setupPlayers = useAtomValue(setupPlayersAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
 
-  const { gamePlayers, questionPlayers, changePlayerScore } = useGamePlayers(selectedPlayerIds);
+  const { gamePlayers, questionPlayers, changePlayerScore } = useGamePlayers(setupPlayers, selectedPlayerIds);
   const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack, roundIndex);
   const { roundSpecialMap } = useRoundSpecialMap(selectedPack, roundIndex);
   const {
