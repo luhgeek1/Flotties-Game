@@ -38,6 +38,7 @@ export function useFinalPlayerQueue({ preferActivePlayer = false }: UseFinalPlay
   }, [playersQueue.length, setCurrentPlayerIndex]);
 
   return {
+    playersQueue,
     currentPlayer,
     currentPlayerIndex,
     setCurrentPlayerIndex,
