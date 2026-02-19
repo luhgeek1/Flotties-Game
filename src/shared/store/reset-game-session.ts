@@ -10,6 +10,7 @@ import {
   gameRound2UnlockedAtom,
 } from "./gameAtoms";
 import { resetFinalStateAtom } from "./finalAtom";
+import { resetFinalResultsStateAtom } from "./finalResultsAtom";
 import { resetRoundTransitionStorageAtom } from "./round-transition-storage";
 import { setupStepAtom } from "./setupAtoms";
 import { resetAuctionStateAtom } from "./specialAuctionAtom";
@@ -26,6 +27,7 @@ export const resetGameRoundStateAtom = atom(
     set(resetRoundSpecialMapsAtom);
     set(resetAuctionStateAtom);
     set(resetFinalStateAtom);
+    set(resetFinalResultsStateAtom);
   },
 );
 
