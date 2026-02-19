@@ -1,38 +1,26 @@
-import { useAtomValue } from "jotai";
-import { useCallback, useMemo, useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback } from "react";
 
-import { resolveSelectedPlayers } from "@/entities/players";
-import { resolveCurrentPickerId } from "@/features/player-pick";
+import { finalActivePlayerIdAtom } from "@/shared/store/finalAtom";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
-import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { useFinalPlayerQueue } from "@/pages/final/model/use-final-player-queue";
 
-export function useFinalCloseEyesModel() {
+type UseFinalCloseEyesModelArgs = {
+  onReadyToBid?: () => void;
+};
+
+export function useFinalCloseEyesModel({ onReadyToBid }: UseFinalCloseEyesModelArgs = {}) {
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
-  const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
-  const [answererStep, setAnswererStep] = useState(0);
-
-  const playersQueue = useMemo(
-    () => resolveSelectedPlayers(selectedPlayerIds),
-    [selectedPlayerIds],
-  );
-
-  const currentAnswererId = useMemo(
-    () => resolveCurrentPickerId({
-      players: playersQueue,
-      roundStartPickerId: playersQueue[0]?.id ?? null,
-      completedPicksCount: answererStep,
-    }),
-    [answererStep, playersQueue],
-  );
-
-  const currentAnswererName = useMemo(
-    () => playersQueue.find(player => player.id === currentAnswererId)?.name ?? playersQueue[0]?.name ?? "Игрок",
-    [currentAnswererId, playersQueue],
-  );
+  const { currentPlayer } = useFinalPlayerQueue();
+  const setActivePlayerId = useSetAtom(finalActivePlayerIdAtom);
+  const currentAnswererName = currentPlayer?.name ?? "Игрок";
 
   const handleReadyClick = useCallback(() => {
-    setAnswererStep(prev => Math.min(prev + 1, playersQueue.length - 1));
-  }, [playersQueue.length]);
+    if (!currentPlayer) return;
+
+    setActivePlayerId(currentPlayer.id);
+    onReadyToBid?.();
+  }, [currentPlayer, onReadyToBid, setActivePlayerId]);
 
   return {
     packTitle: selectedPack.title,

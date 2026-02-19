@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { EyeOff, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import closeEyesRuImage from "@/shared/assets/closeEyesRu.png";
 import { Button } from "@/shared/components/ui/button";
@@ -9,23 +9,32 @@ import { useFinalCloseEyesModel } from "../model/use-final-close-eyes-model";
 
 type FinalCloseEyesPageProps = {
   onExitToSetup?: () => void;
+  onReady?: () => void;
 };
 
-export function FinalCloseEyesPage({ onExitToSetup }: FinalCloseEyesPageProps) {
-  const model = useFinalCloseEyesModel();
+export function FinalCloseEyesPage({ onExitToSetup, onReady }: FinalCloseEyesPageProps) {
+  const model = useFinalCloseEyesModel({ onReadyToBid: onReady });
   const mode = "WAGER" as const;
-  const [isIntroVisible, setIsIntroVisible] = useState(true);
-  const [isCardVisible, setIsCardVisible] = useState(false);
+  const [isCardVisible, setIsCardVisible] = useState(true);
+  const [isOutroImageVisible, setIsOutroImageVisible] = useState(false);
+  const outroTimerRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setIsIntroVisible(false);
-    }, 1000);
-
-    return () => {
-      window.clearTimeout(timer);
-    };
+  useEffect(() => () => {
+    if (outroTimerRef.current !== null) {
+      window.clearTimeout(outroTimerRef.current);
+    }
   }, []);
+
+  const handleReadyClick = () => {
+    if (isOutroImageVisible) return;
+
+    setIsCardVisible(false);
+    setIsOutroImageVisible(true);
+
+    outroTimerRef.current = window.setTimeout(() => {
+      setIsOutroImageVisible(false);
+    }, 1000);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/30 transition-colors duration-300">
@@ -37,10 +46,10 @@ export function FinalCloseEyesPage({ onExitToSetup }: FinalCloseEyesPageProps) {
       />
 
       <main className="relative flex-1 overflow-hidden">
-        <AnimatePresence onExitComplete={() => setIsCardVisible(true)}>
-          {isIntroVisible ? (
+        <AnimatePresence onExitComplete={() => model.onReadyClick()}>
+          {isOutroImageVisible ? (
             <motion.img
-              key="close-eyes-intro"
+              key="close-eyes-outro"
               src={closeEyesRuImage}
               alt="Close eyes instruction"
               className="pointer-events-none select-none absolute bottom-0 left-1/2 h-auto w-[min(94vw,920px)] -translate-x-1/2"
@@ -82,7 +91,7 @@ export function FinalCloseEyesPage({ onExitToSetup }: FinalCloseEyesPageProps) {
                     Остальные игроки должны отвернуться.
                   </div>
 
-                  <Button type="button" size="lg" onClick={model.onReadyClick} className="w-full">
+                  <Button type="button" size="lg" onClick={handleReadyClick} className="w-full">
                     Я готов
                   </Button>
                 </div>
