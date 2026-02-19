@@ -28,7 +28,6 @@ export function QuestionModalAnsweringState({
             value={playerAvatarUrl}
             alt={playerName}
             className="text-primary"
-            emojiClassName="text-3xl"
           />
         </div>
 

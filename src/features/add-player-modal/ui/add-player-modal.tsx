@@ -34,16 +34,6 @@ const item = {
   },
 };
 
-function isImageAvatar(value: string) {
-  return (
-    value.startsWith("data:image")
-    || value.startsWith("blob:")
-    || value.startsWith("http://")
-    || value.startsWith("https://")
-    || value.startsWith("/")
-  );
-}
-
 export function AddPlayerModal({
   isOpen,
   onClose,
@@ -69,7 +59,6 @@ export function AddPlayerModal({
     isOpen,
     onClose,
     onSave,
-    bannerOptions,
   });
 
   return (
@@ -83,24 +72,13 @@ export function AddPlayerModal({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={`
-                w-32 h-32 rounded-[2rem] flex items-center justify-center text-5xl transition-all border-4 overflow-hidden shadow-sm relative
-                ${isImageAvatar(avatar) ? "border-slate-900" : "border-white ring-4 ring-slate-100 group-hover:ring-slate-200"}
-                ${isImageAvatar(avatar) ? "" : "bg-slate-50"}
+                w-32 h-32 rounded-[2rem] flex items-center justify-center transition-all border-4 overflow-hidden shadow-sm relative
+                border-slate-900 bg-slate-50
               `}
             >
-              {isImageAvatar(avatar) ? (
-                <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
-              ) : (
-                <span>{avatar}</span>
-              )}
+              <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
 
               <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 flex items-center justify-center transition-all duration-200">
-                <motion.div
-                  initial={false}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all drop-shadow-sm"
-                >
-                </motion.div>
               </div>
             </motion.button>
 
@@ -134,15 +112,12 @@ export function AddPlayerModal({
                   whileHover={{ scale: 1.06 }}
                   whileTap={{ scale: 0.98 }}
                   className={`
-                    w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all border-2 relative
+                    w-12 h-12 rounded-full flex items-center justify-center transition-all border-2 relative overflow-hidden
                     ${isSelected ? "border-slate-900 ring-1 ring-slate-900 scale-110 z-10" : "border-transparent hover:bg-slate-100"}
                     bg-transparent
                   `}
                 >
-                  {option.type === "emoji" ? option.value : null}
-                  {option.type === "image" ? (
-                    <img src={option.value} alt="Preset avatar" className="h-full w-full object-cover rounded-full" />
-                  ) : null}
+                  <img src={option.value} alt="Preset avatar" className="h-full w-full object-cover rounded-full" />
                 </motion.button>
               );
             })}

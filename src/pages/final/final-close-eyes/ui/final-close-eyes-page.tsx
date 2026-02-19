@@ -83,7 +83,6 @@ export function FinalCloseEyesPage({
                     value={model.currentAnswererAvatarUrl}
                     alt={model.currentAnswererName}
                     className="text-white"
-                    emojiClassName="text-4xl"
                   />
                 </div>
 

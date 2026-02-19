@@ -12,8 +12,8 @@ export type SetupStep = "players" | "packs";
 export type SetupAddPlayerModalState = {
   isOpen: boolean;
   nickname: string;
-  avatar: string | null;
-  banner: string | null;
+  avatar: string;
+  banner: string;
   error: string;
 };
 
@@ -27,8 +27,8 @@ export const PLAYERS_TO_START_GAME = 3;
 export const INITIAL_SETUP_ADD_PLAYER_MODAL_STATE: SetupAddPlayerModalState = {
   isOpen: false,
   nickname: "",
-  avatar: null,
-  banner: null,
+  avatar: DEFAULT_SETUP_PLAYERS[0]?.avatarUrl ?? "",
+  banner: DEFAULT_SETUP_PLAYERS[0]?.banner ?? "bg-white",
   error: "",
 };
 

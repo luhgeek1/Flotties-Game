@@ -7,7 +7,6 @@ type PlayerAvatarProps = {
   value: string | null;
   alt: string;
   className?: string;
-  emojiClassName?: string;
   fallback?: ReactNode;
 };
 
@@ -25,13 +24,14 @@ export function PlayerAvatar({
   value,
   alt,
   className,
-  emojiClassName,
   fallback,
 }: PlayerAvatarProps) {
+  const fallbackNode = fallback ?? <User className="w-6 h-6" />;
+
   if (!value) {
     return (
       <div className={cn("h-full w-full flex items-center justify-center", className)}>
-        {fallback ?? <User className="w-6 h-6" />}
+        {fallbackNode}
       </div>
     );
   }
@@ -41,8 +41,8 @@ export function PlayerAvatar({
   }
 
   return (
-    <div className={cn("h-full w-full flex items-center justify-center text-2xl", className, emojiClassName)}>
-      {value}
+    <div className={cn("h-full w-full flex items-center justify-center", className)}>
+      {fallbackNode}
     </div>
   );
 }

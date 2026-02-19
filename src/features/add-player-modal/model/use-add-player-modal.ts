@@ -2,32 +2,24 @@ import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useRef, type ChangeEvent } from "react";
 
 import { resetSetupAddPlayerModalStateAtom, setupAddPlayerModalStateAtom } from "@/shared/store/setupAtoms";
-import {
-  DEFAULT_ADD_PLAYER_AVATAR,
-  type AddPlayerValues,
-  type BannerOption,
-} from "./defaults";
+import type { AddPlayerValues } from "./defaults";
 
 type UseAddPlayerModalArgs = {
   isOpen: boolean;
   onClose: () => void;
   onSave: (values: AddPlayerValues) => void;
-  bannerOptions: BannerOption[];
 };
 
 export function useAddPlayerModal({
   isOpen,
   onClose,
   onSave,
-  bannerOptions,
 }: UseAddPlayerModalArgs) {
-  const defaultBanner = bannerOptions[0]?.value ?? "bg-white";
-
   const [modalState, setModalState] = useAtom(setupAddPlayerModalStateAtom);
   const resetModalState = useSetAtom(resetSetupAddPlayerModalStateAtom);
   const nickname = modalState.nickname;
-  const avatar = modalState.avatar ?? DEFAULT_ADD_PLAYER_AVATAR;
-  const banner = modalState.banner ?? defaultBanner;
+  const avatar = modalState.avatar;
+  const banner = modalState.banner;
   const error = modalState.error;
 
   const fileRef = useRef<HTMLInputElement>(null);
