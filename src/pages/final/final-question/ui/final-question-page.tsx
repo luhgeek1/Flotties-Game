@@ -10,16 +10,19 @@ import { useFinalQuestionModel } from "../model/use-final-question-model";
 type FinalQuestionPageProps = {
   onExitToSetup?: () => void;
   onConfirmAnswer?: () => void;
+  onAllAnswersDone?: () => void;
 };
 
 const FINAL_ANSWER_TIMER_DURATION_MS = 30_000;
+const FINAL_COMPLETE_SCREEN_DURATION_MS = 3000;
 
-export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer }: FinalQuestionPageProps) {
+export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer, onAllAnswersDone }: FinalQuestionPageProps) {
   const model = useFinalQuestionModel({ onConfirmAnswer });
   const [isLeaving, setIsLeaving] = useState(false);
   const [remainingMs, setRemainingMs] = useState(FINAL_ANSWER_TIMER_DURATION_MS);
   const [isTimeoutModalOpen, setIsTimeoutModalOpen] = useState(false);
   const leaveTimerRef = useRef<number | null>(null);
+  const allAnswersDoneTimerRef = useRef<number | null>(null);
   const timerIntervalRef = useRef<number | null>(null);
   const timeoutTimerRef = useRef<number | null>(null);
   const timeoutAtRef = useRef<number | null>(null);
@@ -41,6 +44,16 @@ export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer }: FinalQuest
       model.onTimeoutAnswer();
     }, 260);
   }, [isLeaving, model]);
+
+  useEffect(() => {
+    if (!model.isAllPlayersAnswerDone || !onAllAnswersDone || allAnswersDoneTimerRef.current !== null) {
+      return;
+    }
+
+    allAnswersDoneTimerRef.current = window.setTimeout(() => {
+      onAllAnswersDone();
+    }, FINAL_COMPLETE_SCREEN_DURATION_MS);
+  }, [model.isAllPlayersAnswerDone, onAllAnswersDone]);
 
   useEffect(() => {
     if (!model.currentPlayerId || model.isAllPlayersAnswerDone || isLeaving) return;
@@ -82,6 +95,10 @@ export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer }: FinalQuest
   useEffect(() => () => {
     if (leaveTimerRef.current !== null) {
       window.clearTimeout(leaveTimerRef.current);
+    }
+
+    if (allAnswersDoneTimerRef.current !== null) {
+      window.clearTimeout(allAnswersDoneTimerRef.current);
     }
 
     if (timerIntervalRef.current !== null) {
