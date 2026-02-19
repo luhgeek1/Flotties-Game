@@ -5,7 +5,7 @@ import { prepareFinalAnswersStageAtom } from "@/shared/store/finalAtom";
 import { gameRound2UnlockedAtom } from "@/shared/store/gameAtoms";
 import { resetGameRoundStateAtom, resetGameSessionAtom } from "@/shared/store/reset-game-session";
 import {
-  MIN_PLAYERS_TO_START_GAME,
+  PLAYERS_TO_START_GAME,
   setupSelectedPackIdAtom,
   setupSelectedPlayerIdsAtom,
 } from "@/shared/store/setupAtoms";
@@ -38,7 +38,7 @@ export function useAppNavigation() {
   const [isRound2Unlocked, setIsRound2Unlocked] = useAtom(gameRound2UnlockedAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const selectedPackId = useAtomValue(setupSelectedPackIdAtom);
-  const canEnterGame = selectedPlayerIds.length >= MIN_PLAYERS_TO_START_GAME && selectedPackId !== null;
+  const canEnterGame = selectedPlayerIds.length === PLAYERS_TO_START_GAME && selectedPackId !== null;
   const [route, setRoute] = useState<AppRoute>(() => {
     const routeLockRoute = readRouteLockRoute();
 
