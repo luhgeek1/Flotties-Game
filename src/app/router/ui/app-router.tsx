@@ -3,7 +3,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { GamePage, GamePage2R } from "@/pages/game";
 import { FinalPrepairingPage } from "@/pages/final-prepairing";
-import { FinalBidPage, FinalCloseEyesPage, FinalStartThemePage } from "@/pages/final";
+import { FinalBidPage, FinalCloseEyesPage, FinalQuestionPage, FinalStartThemePage } from "@/pages/final";
 import { SetupPage } from "@/pages/setup";
 import {
   MIN_PLAYERS_TO_START_GAME,
@@ -11,6 +11,7 @@ import {
   setupSelectedPlayerIdsAtom,
 } from "@/shared/store/setupAtoms";
 import { gameRound2UnlockedAtom } from "@/shared/store/gameAtoms";
+import { prepareFinalAnswersStageAtom } from "@/shared/store/finalAtom";
 import { resetGameRoundStateAtom, resetGameSessionAtom } from "@/shared/store/reset-game-session";
 import {
   ROUTE_PATH,
@@ -42,6 +43,7 @@ export function AppRouter() {
   );
   const resetGameRoundState = useSetAtom(resetGameRoundStateAtom);
   const resetGameSession = useSetAtom(resetGameSessionAtom);
+  const prepareFinalAnswersStage = useSetAtom(prepareFinalAnswersStageAtom);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -174,6 +176,7 @@ export function AppRouter() {
   if (route === "finalcloseeyes") {
     return (
       <FinalCloseEyesPage
+        mode="WAGER"
         onReady={() => navigateTo("finalbid", {
           replace: true,
           round2Access: "unlock",
@@ -190,6 +193,44 @@ export function AppRouter() {
     return (
       <FinalBidPage
         onConfirmBid={() => navigateTo("finalcloseeyes", {
+          replace: true,
+          round2Access: "unlock",
+        })}
+        onAllBidsDone={() => {
+          prepareFinalAnswersStage();
+          navigateTo("finalcloseeyesquestion", {
+            replace: true,
+            round2Access: "unlock",
+          });
+        }}
+        onExitToSetup={() => navigateTo("setup", {
+          round2Access: "lock",
+          resetState: "session",
+        })}
+      />
+    );
+  }
+
+  if (route === "finalcloseeyesquestion") {
+    return (
+      <FinalCloseEyesPage
+        mode="ANSWER"
+        onReady={() => navigateTo("finalquestion", {
+          replace: true,
+          round2Access: "unlock",
+        })}
+        onExitToSetup={() => navigateTo("setup", {
+          round2Access: "lock",
+          resetState: "session",
+        })}
+      />
+    );
+  }
+
+  if (route === "finalquestion") {
+    return (
+      <FinalQuestionPage
+        onConfirmAnswer={() => navigateTo("finalcloseeyesquestion", {
           replace: true,
           round2Access: "unlock",
         })}
