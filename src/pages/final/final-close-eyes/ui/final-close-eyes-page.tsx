@@ -72,30 +72,30 @@ export function FinalCloseEyesPage({
             <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-4">
               <motion.section
                 key={model.currentAnswererName}
-                className="pointer-events-auto w-full max-w-md rounded-xl border border-neutral-200 bg-neutral-50 p-8 text-center shadow-lg"
+                className="pointer-events-auto w-full max-w-md rounded-xl border border-neutral-200 bg-neutral-50 p-8 text-center shadow-lg dark:border-slate-700 dark:bg-slate-900/95 dark:shadow-black/40"
                 initial={{ y: -80, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 20, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="mx-auto mb-6 flex h-26 w-26 items-center justify-center overflow-hidden rounded-full bg-black text-white">
+                <div className="mx-auto mb-6 flex h-26 w-26 items-center justify-center overflow-hidden rounded-full bg-black text-white dark:bg-slate-100 dark:text-slate-900">
                   <PlayerAvatar
                     value={model.currentAnswererAvatarUrl}
                     alt={model.currentAnswererName}
-                    className="text-white"
+                    className="text-white dark:text-slate-900"
                   />
                 </div>
 
-                <h2 className="mb-2 text-2xl font-bold text-black">
+                <h2 className="mb-2 text-2xl font-bold text-black dark:text-slate-100">
                   Ход игрока: {model.currentAnswererName}
                 </h2>
 
-                <p className="mb-8 text-neutral-500">
+                <p className="mb-8 text-neutral-500 dark:text-slate-300">
                   {mode === "WAGER" ? "Сделайте вашу ставку секретно." : "Ответьте на вопрос секретно."}
                 </p>
 
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-center gap-2 rounded-md bg-rose-50 p-3 text-sm font-medium text-rose-600">
+                  <div className="flex items-center justify-center gap-2 rounded-md bg-rose-50 p-3 text-sm font-medium text-rose-600 dark:border dark:border-rose-800/50 dark:bg-rose-950/50 dark:text-rose-300">
                     <EyeOff size={16} />
                     Остальные игроки должны отвернуться.
                   </div>

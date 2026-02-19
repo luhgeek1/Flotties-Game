@@ -30,19 +30,19 @@ export function Modal({ isOpen, onClose, title, children, contentClassName }: Mo
             exit={{ scale: 0.96, opacity: 0, y: 14 }}
             transition={{ duration: 0.2 }}
             className={cn(
-              "w-full max-w-md rounded-3xl border border-slate-200 shadow-2xl p-6 md:p-7 max-h-[90vh] overflow-y-auto",
+              "w-full max-w-md rounded-3xl border shadow-2xl p-6 md:p-7 max-h-[90vh] overflow-y-auto bg-card text-card-foreground",
               contentClassName,
             )}
             onClick={event => event.stopPropagation()}
           >
             <div className="flex items-center justify-between gap-3 mb-4">
-              <h3 className="text-xl font-black text-slate-900">{title}</h3>
+              <h3 className="text-xl font-black">{title}</h3>
 
               <Button
                 type="button"
                 size="icon"
                 variant="ghost"
-                className="h-8 w-8 text-slate-500 hover:text-slate-900"
+                className="h-8 w-8 text-current/60 hover:text-current"
                 onClick={onClose}
               >
                 <X className="h-4 w-4" />

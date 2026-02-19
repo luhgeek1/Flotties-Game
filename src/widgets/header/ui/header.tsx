@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
-import { LogOut, Sun } from "lucide-react";
+import { LogOut, Moon, Sun } from "lucide-react";
 
 import { ExitGameModal } from "@/features/exit-game";
 import { Button } from "@/shared/components/ui/button";
+import { useTheme } from "@/shared/lib/use-theme";
 
 type HeaderProps = {
   title: string;
@@ -22,6 +23,7 @@ export function Header({
   isThemeToggleDisabled = false,
   rightSlot,
 }: HeaderProps) {
+  const { isDark, toggleTheme } = useTheme();
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
   const handleExitClick = useCallback(() => {
@@ -36,6 +38,8 @@ export function Header({
     setIsExitModalOpen(false);
     onExitToSetup?.();
   }, [onExitToSetup]);
+
+  const handleThemeToggle = onThemeToggle ?? toggleTheme;
 
   return (
     <>
@@ -57,11 +61,15 @@ export function Header({
             type="button"
             variant="ghost"
             size="icon"
-            title="Toggle theme"
+            title="Переключить тему"
             disabled={isThemeToggleDisabled}
-            onClick={onThemeToggle}
+            onClick={handleThemeToggle}
           >
-            <Sun className={isThemeToggleDisabled ? "w-5 h-5 opacity-45" : "w-5 h-5"} />
+            {isDark ? (
+              <Sun className={isThemeToggleDisabled ? "w-5 h-5 opacity-45" : "w-5 h-5"} />
+            ) : (
+              <Moon className={isThemeToggleDisabled ? "w-5 h-5 opacity-45" : "w-5 h-5"} />
+            )}
           </Button>
         </div>
       </header>

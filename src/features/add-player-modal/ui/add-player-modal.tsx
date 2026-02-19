@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "motion/react";
 import type { PlayerId } from "@/entities/players";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
+import { useTheme } from "@/shared/lib/use-theme";
+import { cn } from "@/shared/lib/utils";
 
 import type { AddPlayerValues, AvatarOption, BannerOption } from "../model/defaults";
 import { useAddPlayerModal } from "../model/use-add-player-modal";
@@ -62,11 +64,25 @@ export function AddPlayerModal({
     onClose,
     onSave,
   });
+  const { isDark } = useTheme();
 
   const modalTitle = editingPlayerId ? "Редактирование игрока" : "Новый игрок";
+  const isDefaultBanner = banner === "bg-white";
+  const isDarkDefaultBanner = isDark && isDefaultBanner;
+  const resolvedBannerClassName = banner
+    ? isDefaultBanner ? `${banner} dark:bg-slate-800` : banner
+    : "bg-background";
 
   return (
-    <Modal isOpen={isOpen} onClose={close} title={modalTitle} contentClassName={banner}>
+    <Modal
+      isOpen={isOpen}
+      onClose={close}
+      title={modalTitle}
+      contentClassName={cn(
+        resolvedBannerClassName,
+        isDarkDefaultBanner ? "border-slate-700 text-slate-100" : "border-slate-200 text-slate-900",
+      )}
+    >
       <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
         <motion.div variants={item} className="flex flex-col items-center gap-6 pt-2">
           <div className="relative">
@@ -75,10 +91,10 @@ export function AddPlayerModal({
               onClick={triggerUpload}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`
-                w-32 h-32 rounded-[2rem] flex items-center justify-center transition-all border-4 overflow-hidden shadow-sm relative
-                border-slate-900 bg-slate-50
-              `}
+              className={cn(
+                "w-32 h-32 rounded-[2rem] flex items-center justify-center transition-all border-4 overflow-hidden shadow-sm relative",
+                isDarkDefaultBanner ? "border-slate-200 bg-slate-900/40" : "border-slate-900 bg-slate-50",
+              )}
             >
               <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
             </motion.button>
@@ -88,7 +104,12 @@ export function AddPlayerModal({
               onClick={triggerUpload}
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
-              className="absolute -bottom-2 -right-2 bg-slate-900 text-white rounded-full p-2 shadow-lg border-4 border-white"
+              className={cn(
+                "absolute -bottom-2 -right-2 rounded-full p-2 shadow-lg border-4",
+                isDarkDefaultBanner
+                  ? "bg-slate-100 text-slate-900 border-slate-800"
+                  : "bg-slate-900 text-white border-white",
+              )}
             >
               <Plus size={16} strokeWidth={3} />
             </motion.button>
@@ -112,11 +133,16 @@ export function AddPlayerModal({
                   onClick={() => setAvatar(option.value)}
                   whileHover={{ scale: 1.06 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`
-                    w-12 h-12 rounded-full flex items-center justify-center transition-all border-2 relative overflow-hidden
-                    ${isSelected ? "border-slate-900 ring-1 ring-slate-900 scale-110 z-10" : "border-transparent hover:bg-slate-100"}
-                    bg-transparent
-                  `}
+                  className={cn(
+                    "w-12 h-12 rounded-full flex items-center justify-center transition-all border-2 relative overflow-hidden bg-transparent",
+                    isSelected
+                      ? isDarkDefaultBanner
+                        ? "border-slate-100 ring-1 ring-slate-100 scale-110 z-10"
+                        : "border-slate-900 ring-1 ring-slate-900 scale-110 z-10"
+                      : isDarkDefaultBanner
+                        ? "border-transparent hover:bg-slate-700/70"
+                        : "border-transparent hover:bg-slate-100",
+                  )}
                 >
                   <img src={option.value} alt="Preset avatar" className="h-full w-full object-cover rounded-full" />
                 </motion.button>
@@ -126,19 +152,28 @@ export function AddPlayerModal({
         </motion.div>
 
         <motion.div variants={item} className="space-y-3">
-          <label htmlFor="nickname" className="text-sm font-semibold text-slate-900 block">
+          <label htmlFor="nickname" className="text-sm font-semibold text-current block">
             Никнейм
           </label>
 
           <div className="relative">
-            <UserCircle2 className="absolute left-3 top-2.5 h-5 w-5 text-slate-400" />
+            <UserCircle2 className={cn(
+              "absolute left-3 top-2.5 h-5 w-5",
+              isDarkDefaultBanner ? "text-slate-300" : "text-slate-400",
+            )}
+            />
             <Input
               ref={inputRef}
               id="nickname"
               placeholder="Введите имя..."
               value={nickname}
               onChange={event => onNicknameChange(event.target.value)}
-              className="pl-10 border-slate-200 bg-white/90 focus-visible:border-slate-900 focus-visible:ring-slate-900/20"
+              className={cn(
+                "pl-10",
+                isDarkDefaultBanner
+                  ? "border-slate-600 bg-slate-900/45 text-slate-100 placeholder:text-slate-300 focus-visible:border-slate-100 focus-visible:ring-slate-100/20"
+                  : "border-slate-200 bg-white/90 text-slate-900 placeholder:text-slate-400 focus-visible:border-slate-900 focus-visible:ring-slate-900/20",
+              )}
               onKeyDown={event => {
                 if (event.key === "Enter") {
                   submit();
@@ -162,7 +197,7 @@ export function AddPlayerModal({
         </motion.div>
 
         <motion.div variants={item} className="space-y-3">
-          <label className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+          <label className="text-sm font-semibold text-current flex items-center gap-2">
             <Palette size={16} />
             Оформление
           </label>
@@ -170,6 +205,12 @@ export function AddPlayerModal({
           <div className="grid grid-cols-5 gap-2">
             {bannerOptions.map(option => {
               const isSelected = banner === option.value;
+              const isDefaultOption = option.value === "bg-white";
+              const isDarkDefaultOption = isDark && isDefaultOption;
+              const optionBannerClassName = isDefaultOption
+                ? `${option.value} dark:bg-slate-800`
+                : option.value;
+
               return (
                 <motion.button
                   key={option.id}
@@ -178,18 +219,28 @@ export function AddPlayerModal({
                   onClick={() => setBanner(option.value)}
                   whileHover={{ scale: 1.06 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`
-                    h-10 rounded-lg border-2 transition-all
-                    ${option.value}
-                    ${isSelected ? "border-slate-900 ring-1 ring-slate-900 shadow-sm" : "border-transparent hover:border-slate-300"}
-                  `}
+                  className={cn(
+                    "h-10 rounded-lg border-2 transition-all",
+                    optionBannerClassName,
+                    isSelected
+                      ? isDarkDefaultOption
+                        ? "border-slate-100 ring-1 ring-slate-100 shadow-sm"
+                        : "border-slate-900 ring-1 ring-slate-900 shadow-sm"
+                      : isDarkDefaultOption
+                        ? "border-transparent hover:border-slate-500"
+                        : "border-transparent hover:border-slate-300",
+                  )}
                 >
                   {isSelected ? (
                     <motion.div
                       layoutId="selectedBannerDot"
                       className="w-full h-full flex items-center justify-center"
                     >
-                      <div className="w-2 h-2 bg-slate-900 rounded-full" />
+                      <div className={cn(
+                        "w-2 h-2 rounded-full",
+                        isDarkDefaultOption ? "bg-slate-100" : "bg-slate-900",
+                      )}
+                      />
                     </motion.div>
                   ) : null}
                 </motion.button>
@@ -199,12 +250,27 @@ export function AddPlayerModal({
         </motion.div>
 
         <motion.div variants={item} className="flex gap-3 pt-4">
-          <Button variant="outline" className="flex-1" onClick={close}>
+          <Button
+            variant="outline"
+            className={cn(
+              "flex-1",
+              isDarkDefaultBanner ? "border-slate-500 text-slate-100 hover:bg-slate-700/50 hover:text-slate-100" : "",
+            )}
+            onClick={close}
+          >
             Отмена
           </Button>
 
           <motion.div className="flex-1" whileHover={{ y: -1 }} whileTap={{ y: 0 }}>
-            <Button className="w-full bg-slate-900 hover:bg-slate-800" onClick={submit}>
+            <Button
+              className={cn(
+                "w-full",
+                isDarkDefaultBanner
+                  ? "bg-slate-100 text-slate-900 hover:bg-slate-200"
+                  : "bg-slate-900 text-white hover:bg-slate-800",
+              )}
+              onClick={submit}
+            >
               Сохранить
             </Button>
           </motion.div>

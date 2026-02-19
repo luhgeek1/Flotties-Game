@@ -22,6 +22,6 @@ export const DEFAULT_SETUP_PLAYERS: SetupPlayer[] = [
     id: "p3",
     name: "Игрок 3",
     avatarUrl: DEFAULT_PLAYER_AVATAR_URL,
-    banner: "bbg-white",
+    banner: "bg-white",
   },
 ];

@@ -1,14 +1,31 @@
 import type { ReactNode } from "react";
+import { Moon, Sun } from "lucide-react";
 import { motion } from "motion/react";
+
+import { Button } from "@/shared/components/ui/button";
+import { useTheme } from "@/shared/lib/use-theme";
 
 type SetupShellProps = {
   children: ReactNode;
 };
 
 export function SetupShell({ children }: SetupShellProps) {
+  const { isDark, toggleTheme } = useTheme();
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/30 transition-colors duration-300">
       <div className="flex-1 flex flex-col p-4 md:p-8 max-w-2xl mx-auto w-full relative">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          title="Переключить тему"
+          onClick={toggleTheme}
+          className="absolute right-4 top-4 z-20 rounded-full bg-card/70 backdrop-blur hover:bg-card md:right-8 md:top-8"
+        >
+          {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </Button>
+
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

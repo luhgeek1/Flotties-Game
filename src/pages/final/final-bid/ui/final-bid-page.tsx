@@ -67,14 +67,14 @@ export function FinalBidPage({ onExitToSetup, onConfirmBid, onAllBidsDone }: Fin
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <motion.section
-                className="z-10 flex w-full max-w-2xl -translate-x-14 translate-y-20 flex-col items-center gap-4 rounded-2xl border border-neutral-200 bg-white/90 px-12 py-10 text-center shadow-md backdrop-blur-sm md:-translate-x-70 md:translate-y-50"
+                className="z-10 flex w-full max-w-2xl -translate-x-14 translate-y-20 flex-col items-center gap-4 rounded-2xl border border-neutral-200 bg-white/90 px-12 py-10 text-center shadow-md backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/95 dark:shadow-black/30 md:-translate-x-70 md:translate-y-50"
                 initial={{ x: -160, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: 80, y: 20, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
               >
-                <h2 className="text-3xl font-bold text-black md:text-4xl">Ставки приняты</h2>
-                <p className="text-base text-neutral-500">
+                <h2 className="text-3xl font-bold text-black dark:text-slate-100 md:text-4xl">Ставки приняты</h2>
+                <p className="text-base text-neutral-500 dark:text-slate-300">
                   Все игроки сделали секретные ставки.
                 </p>
               </motion.section>
@@ -103,20 +103,20 @@ export function FinalBidPage({ onExitToSetup, onConfirmBid, onAllBidsDone }: Fin
             >
               <div className="mb-12 space-y-2">
                 <h1 className="text-3xl font-bold md:text-4xl">Сделайте вашу ставку</h1>
-                <p className="text-lg text-neutral-500">
-                  Текущий счет: <span className="font-bold text-black">{model.currentScore}</span>
+                <p className="text-lg text-neutral-500 dark:text-slate-300">
+                  Текущий счет: <span className="font-bold text-black dark:text-slate-100">{model.currentScore}</span>
                 </p>
               </div>
 
               <div className="w-full max-w-2xl space-y-3 text-left">
-                <div className="text-lg font-semibold text-neutral-700">Сумма ставки</div>
+                <div className="text-lg font-semibold text-neutral-700 dark:text-slate-200">Сумма ставки</div>
 
                 <input
                   type="number"
                   value={model.bidInput}
                   onChange={event => model.onBidInputChange(event.target.value)}
                   placeholder={`Введите сумму (1 - ${model.currentScore})`}
-                  className="h-14 w-full rounded-xl border border-neutral-300 px-5 text-lg text-neutral-700 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-black"
+                  className="h-14 w-full rounded-xl border border-neutral-300 px-5 text-lg text-neutral-700 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-black dark:border-slate-600 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:ring-slate-200"
                 />
               </div>
 
@@ -124,7 +124,7 @@ export function FinalBidPage({ onExitToSetup, onConfirmBid, onAllBidsDone }: Fin
                 type="button"
                 onClick={handleConfirm}
                 disabled={model.isConfirmDisabled || isLeaving}
-                className="mt-9 h-16 w-full max-w-xl rounded-2xl bg-black text-xl font-bold text-white shadow-lg transition active:scale-95 hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-55"
+                className="mt-9 h-16 w-full max-w-xl rounded-2xl bg-black text-xl font-bold text-white shadow-lg transition active:scale-95 hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-55 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
               >
                 Подтвердить ставку
               </button>

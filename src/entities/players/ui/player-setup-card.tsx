@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 
 import { Button } from "@/shared/components/ui/button";
 import { formatKeyCode } from "@/shared/lib/format-key-code";
+import { useTheme } from "@/shared/lib/use-theme";
 import { cn } from "@/shared/lib/utils";
 import { PlayerAvatar } from "./player-avatar";
 
@@ -33,8 +34,14 @@ export function PlayerSetupCard({
   onEdit,
   onDelete,
 }: PlayerSetupCardProps) {
+  const { isDark } = useTheme();
   const currentStatus = isSelected ? status : "Не участвует";
   const canToggle = Boolean(onToggle) && !isDisabled;
+  const isDefaultBanner = banner === "bg-white";
+  const isDarkDefaultBanner = isDark && isDefaultBanner;
+  const resolvedBannerClassName = banner
+    ? isDefaultBanner ? `${banner} dark:bg-slate-800` : banner
+    : "bg-background";
 
   return (
     <motion.div
@@ -43,8 +50,12 @@ export function PlayerSetupCard({
       className={cn(
         "flex items-center justify-between rounded-xl border-2 p-3 transition-all duration-200",
         canToggle ? "cursor-pointer" : "cursor-default",
-        isSelected ? "border-primary shadow-md" : "border-border shadow-sm",
-        banner ?? "bg-background",
+        isSelected
+          ? "border-primary shadow-md"
+          : isDarkDefaultBanner
+            ? "border-border shadow-sm"
+            : "border-slate-200 shadow-sm",
+        resolvedBannerClassName,
         !isSelected && isDisabled ? "opacity-45 grayscale" : "",
       )}
     >
@@ -52,7 +63,11 @@ export function PlayerSetupCard({
         <div
           className={cn(
             "relative h-10 w-10 rounded-xl overflow-hidden border transition-colors",
-            isSelected ? "border-primary/60" : "border-border"
+            isSelected
+              ? "border-primary/60"
+              : isDarkDefaultBanner
+                ? "border-border"
+                : "border-slate-300",
           )}
         >
           <PlayerAvatar value={avatarUrl} alt={name} />
@@ -64,13 +79,32 @@ export function PlayerSetupCard({
         </div>
 
         <div className="flex flex-col">
-          <span className={cn("text-base font-bold", isSelected ? "text-primary" : "text-foreground")}>
+          <span
+            className={cn(
+              "text-base font-bold",
+              isDarkDefaultBanner
+                ? isSelected ? "text-primary" : "text-foreground"
+                : "text-slate-900",
+            )}
+          >
             {name}
           </span>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">{currentStatus}</span>
+            <span className={cn(
+              "text-xs",
+              isDarkDefaultBanner ? "text-muted-foreground" : "text-slate-600",
+            )}
+            >
+              {currentStatus}
+            </span>
             {isSelected && keyCode ? (
-              <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 text-[11px] font-semibold uppercase leading-none text-muted-foreground">
+              <kbd className={cn(
+                "rounded border px-1.5 py-0.5 text-[11px] font-semibold uppercase leading-none",
+                isDarkDefaultBanner
+                  ? "border-border bg-muted text-muted-foreground"
+                  : "border-slate-300 bg-slate-100 text-slate-600",
+              )}
+              >
                 {formatKeyCode(keyCode)}
               </kbd>
             ) : null}
@@ -88,7 +122,10 @@ export function PlayerSetupCard({
             event.stopPropagation();
             onEdit?.();
           }}
-          className="h-9 w-9 text-muted-foreground hover:text-primary"
+          className={cn(
+            "h-9 w-9",
+            isDarkDefaultBanner ? "text-muted-foreground hover:text-primary" : "text-slate-500 hover:text-slate-900",
+          )}
         >
           <Pencil className="h-4 w-4" />
         </Button>
@@ -102,7 +139,10 @@ export function PlayerSetupCard({
             event.stopPropagation();
             onDelete?.();
           }}
-          className="h-9 w-9 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+          className={cn(
+            "h-9 w-9 hover:bg-destructive/10 hover:text-destructive",
+            isDarkDefaultBanner ? "text-muted-foreground" : "text-slate-500",
+          )}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
