@@ -65,7 +65,7 @@ export function AddPlayerModal({
     <Modal isOpen={isOpen} onClose={close} title="Новый игрок" contentClassName={banner}>
       <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
         <motion.div variants={item} className="flex flex-col items-center gap-6 pt-2">
-          <div className="relative group">
+          <div className="relative">
             <motion.button
               type="button"
               onClick={triggerUpload}
@@ -77,9 +77,6 @@ export function AddPlayerModal({
               `}
             >
               <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
-
-              <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 flex items-center justify-center transition-all duration-200">
-              </div>
             </motion.button>
 
             <motion.button

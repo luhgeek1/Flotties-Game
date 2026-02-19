@@ -1,5 +1,5 @@
 import { useAtom, useSetAtom } from "jotai";
-import { useEffect, useRef, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
 import { resetSetupAddPlayerModalStateAtom, setupAddPlayerModalStateAtom } from "@/shared/store/setupAtoms";
 import type { AddPlayerValues } from "./defaults";
@@ -17,10 +17,10 @@ export function useAddPlayerModal({
 }: UseAddPlayerModalArgs) {
   const [modalState, setModalState] = useAtom(setupAddPlayerModalStateAtom);
   const resetModalState = useSetAtom(resetSetupAddPlayerModalStateAtom);
+  const [error, setError] = useState("");
   const nickname = modalState.nickname;
   const avatar = modalState.avatar;
   const banner = modalState.banner;
-  const error = modalState.error;
 
   const fileRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -45,12 +45,9 @@ export function useAddPlayerModal({
     setModalState(prev => ({ ...prev, banner: value }));
   };
 
-  const setError = (value: string) => {
-    setModalState(prev => ({ ...prev, error: value }));
-  };
-
   const reset = () => {
     resetModalState();
+    setError("");
     const fileInput = fileRef.current;
     if (fileInput) {
       fileInput.value = "";
