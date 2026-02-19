@@ -6,10 +6,10 @@ import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
 import { useFinalPlayerQueue } from "@/pages/final/model/use-final-player-queue";
 
 type UseFinalCloseEyesModelArgs = {
-  onReadyToBid?: () => void;
+  onReady?: () => void;
 };
 
-export function useFinalCloseEyesModel({ onReadyToBid }: UseFinalCloseEyesModelArgs = {}) {
+export function useFinalCloseEyesModel({ onReady }: UseFinalCloseEyesModelArgs = {}) {
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
   const { currentPlayer } = useFinalPlayerQueue();
   const setActivePlayerId = useSetAtom(finalActivePlayerIdAtom);
@@ -19,8 +19,8 @@ export function useFinalCloseEyesModel({ onReadyToBid }: UseFinalCloseEyesModelA
     if (!currentPlayer) return;
 
     setActivePlayerId(currentPlayer.id);
-    onReadyToBid?.();
-  }, [currentPlayer, onReadyToBid, setActivePlayerId]);
+    onReady?.();
+  }, [currentPlayer, onReady, setActivePlayerId]);
 
   return {
     packTitle: selectedPack.title,

@@ -21,7 +21,7 @@ export function QuestionModalAnsweringState({
   onSubmitAnswer,
 }: QuestionModalAnsweringStateProps) {
   return (
-    <div className="w-full max-w-2xl space-y-8 animate-in slide-in-from-bottom-10">
+    <div className="mx-auto w-full max-w-2xl space-y-8 animate-in slide-in-from-bottom-10">
       <div className="flex items-center justify-center gap-4 mb-4">
         <div className="w-16 h-16 rounded-full border border-border overflow-hidden bg-background flex items-center justify-center">
           {playerAvatarUrl ? (

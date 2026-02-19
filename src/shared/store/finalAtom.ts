@@ -5,11 +5,15 @@ import type { PlayerId } from "@/entities/players";
 
 export type FinalBidInputByPlayerIdState = Partial<Record<PlayerId, string>>;
 export type FinalBidByPlayerIdState = Partial<Record<PlayerId, number>>;
+export type FinalAnswerInputByPlayerIdState = Partial<Record<PlayerId, string>>;
+export type FinalAnswerByPlayerIdState = Partial<Record<PlayerId, string>>;
 
 const FINAL_CURRENT_PLAYER_INDEX_STORAGE_KEY = "final-current-player-index";
 const FINAL_ACTIVE_PLAYER_ID_STORAGE_KEY = "final-active-player-id";
 const FINAL_BID_INPUT_BY_PLAYER_ID_STORAGE_KEY = "final-bid-input-by-player-id";
 const FINAL_BID_BY_PLAYER_ID_STORAGE_KEY = "final-bid-by-player-id";
+const FINAL_ANSWER_INPUT_BY_PLAYER_ID_STORAGE_KEY = "final-answer-input-by-player-id";
+const FINAL_ANSWER_BY_PLAYER_ID_STORAGE_KEY = "final-answer-by-player-id";
 
 export const finalCurrentPlayerIndexAtom = atomWithStorage<number>(
   FINAL_CURRENT_PLAYER_INDEX_STORAGE_KEY,
@@ -39,6 +43,30 @@ export const finalBidByPlayerIdAtom = atomWithStorage<FinalBidByPlayerIdState>(
   { getOnInit: true },
 );
 
+export const finalAnswerInputByPlayerIdAtom = atomWithStorage<FinalAnswerInputByPlayerIdState>(
+  FINAL_ANSWER_INPUT_BY_PLAYER_ID_STORAGE_KEY,
+  {},
+  undefined,
+  { getOnInit: true },
+);
+
+export const finalAnswerByPlayerIdAtom = atomWithStorage<FinalAnswerByPlayerIdState>(
+  FINAL_ANSWER_BY_PLAYER_ID_STORAGE_KEY,
+  {},
+  undefined,
+  { getOnInit: true },
+);
+
+export const prepareFinalAnswersStageAtom = atom(
+  null,
+  (_get, set) => {
+    set(finalCurrentPlayerIndexAtom, 0);
+    set(finalActivePlayerIdAtom, null);
+    set(finalAnswerInputByPlayerIdAtom, {});
+    set(finalAnswerByPlayerIdAtom, {});
+  },
+);
+
 export const resetFinalStateAtom = atom(
   null,
   (_get, set) => {
@@ -46,5 +74,7 @@ export const resetFinalStateAtom = atom(
     set(finalActivePlayerIdAtom, null);
     set(finalBidInputByPlayerIdAtom, {});
     set(finalBidByPlayerIdAtom, {});
+    set(finalAnswerInputByPlayerIdAtom, {});
+    set(finalAnswerByPlayerIdAtom, {});
   },
 );

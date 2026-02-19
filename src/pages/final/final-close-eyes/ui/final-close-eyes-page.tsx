@@ -10,11 +10,15 @@ import { useFinalCloseEyesModel } from "../model/use-final-close-eyes-model";
 type FinalCloseEyesPageProps = {
   onExitToSetup?: () => void;
   onReady?: () => void;
+  mode?: "WAGER" | "ANSWER";
 };
 
-export function FinalCloseEyesPage({ onExitToSetup, onReady }: FinalCloseEyesPageProps) {
-  const model = useFinalCloseEyesModel({ onReadyToBid: onReady });
-  const mode = "WAGER" as const;
+export function FinalCloseEyesPage({
+  onExitToSetup,
+  onReady,
+  mode = "WAGER",
+}: FinalCloseEyesPageProps) {
+  const model = useFinalCloseEyesModel({ onReady });
   const [isCardVisible, setIsCardVisible] = useState(true);
   const [isOutroImageVisible, setIsOutroImageVisible] = useState(false);
   const outroTimerRef = useRef<number | null>(null);
@@ -40,7 +44,7 @@ export function FinalCloseEyesPage({ onExitToSetup, onReady }: FinalCloseEyesPag
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/30 transition-colors duration-300">
       <Header
         title={model.packTitle}
-        subtitle="Секретные ставки"
+        subtitle={mode === "WAGER" ? "Секретные ставки" : "Секретные ответы"}
         onExitToSetup={onExitToSetup}
         isThemeToggleDisabled
       />
