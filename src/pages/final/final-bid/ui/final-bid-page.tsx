@@ -8,12 +8,14 @@ import { useFinalBidModel } from "../model/use-final-bid-model";
 type FinalBidPageProps = {
   onExitToSetup?: () => void;
   onConfirmBid?: () => void;
+  onAllBidsDone?: () => void;
 };
 
-export function FinalBidPage({ onExitToSetup, onConfirmBid }: FinalBidPageProps) {
+export function FinalBidPage({ onExitToSetup, onConfirmBid, onAllBidsDone }: FinalBidPageProps) {
   const model = useFinalBidModel({ onConfirmBid });
   const [isLeaving, setIsLeaving] = useState(false);
   const leaveTimerRef = useRef<number | null>(null);
+  const allBidsDoneTimerRef = useRef<number | null>(null);
 
   const handleConfirm = useCallback(() => {
     if (model.isConfirmDisabled || isLeaving) return;
@@ -24,9 +26,23 @@ export function FinalBidPage({ onExitToSetup, onConfirmBid }: FinalBidPageProps)
     }, 260);
   }, [isLeaving, model]);
 
+  useEffect(() => {
+    if (!model.isAllPlayersBidDone || !onAllBidsDone || allBidsDoneTimerRef.current !== null) {
+      return;
+    }
+
+    allBidsDoneTimerRef.current = window.setTimeout(() => {
+      onAllBidsDone();
+    }, 3000);
+  }, [model.isAllPlayersBidDone, onAllBidsDone]);
+
   useEffect(() => () => {
     if (leaveTimerRef.current !== null) {
       window.clearTimeout(leaveTimerRef.current);
+    }
+
+    if (allBidsDoneTimerRef.current !== null) {
+      window.clearTimeout(allBidsDoneTimerRef.current);
     }
   }, []);
 
