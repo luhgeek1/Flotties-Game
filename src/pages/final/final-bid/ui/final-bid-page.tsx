@@ -70,6 +70,7 @@ export function FinalBidPage({ onExitToSetup, onConfirmBid, onAllBidsDone }: Fin
                 className="z-10 flex w-full max-w-2xl -translate-x-14 translate-y-20 flex-col items-center gap-4 rounded-2xl border border-neutral-200 bg-white/90 px-12 py-10 text-center shadow-md backdrop-blur-sm md:-translate-x-70 md:translate-y-50"
                 initial={{ x: -160, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
+                exit={{ x: 80, y: 20, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
               >
                 <h2 className="text-3xl font-bold text-black md:text-4xl">Ставки приняты</h2>
@@ -84,6 +85,7 @@ export function FinalBidPage({ onExitToSetup, onConfirmBid, onAllBidsDone }: Fin
                 className="pointer-events-none select-none fixed bottom-0 right-0 z-0 h-auto w-[min(46vw,560px)] origin-bottom-right scale-[1.9]"
                 initial={{ y: 240, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 240, opacity: 0 }}
                 transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
                 draggable={false}
               />
