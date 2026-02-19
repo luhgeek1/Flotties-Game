@@ -14,6 +14,7 @@ export type SetupAddPlayerModalState = {
   nickname: string;
   avatar: string;
   banner: string;
+  editingPlayerId: PlayerId | null;
 };
 
 const STEP_STORAGE_KEY = "setup-step";
@@ -28,6 +29,7 @@ export const INITIAL_SETUP_ADD_PLAYER_MODAL_STATE: SetupAddPlayerModalState = {
   nickname: "",
   avatar: DEFAULT_SETUP_PLAYERS[0]?.avatarUrl ?? "",
   banner: DEFAULT_SETUP_PLAYERS[0]?.banner ?? "bg-white",
+  editingPlayerId: null,
 };
 
 export const setupStepAtom = atomWithStorage<SetupStep>(

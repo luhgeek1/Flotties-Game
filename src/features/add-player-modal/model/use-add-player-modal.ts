@@ -1,13 +1,18 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
-import { resetSetupAddPlayerModalStateAtom, setupAddPlayerModalStateAtom } from "@/shared/store/setupAtoms";
+import type { PlayerId } from "@/entities/players";
+import {
+  setupPlayersAtom,
+  resetSetupAddPlayerModalStateAtom,
+  setupAddPlayerModalStateAtom,
+} from "@/shared/store/setupAtoms";
 import type { AddPlayerValues } from "./defaults";
 
 type UseAddPlayerModalArgs = {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (values: AddPlayerValues) => void;
+  onSave: (values: AddPlayerValues, editingPlayerId: PlayerId | null) => void;
 };
 
 export function useAddPlayerModal({
@@ -15,12 +20,14 @@ export function useAddPlayerModal({
   onClose,
   onSave,
 }: UseAddPlayerModalArgs) {
+  const [players] = useAtom(setupPlayersAtom);
   const [modalState, setModalState] = useAtom(setupAddPlayerModalStateAtom);
   const resetModalState = useSetAtom(resetSetupAddPlayerModalStateAtom);
   const [error, setError] = useState("");
   const nickname = modalState.nickname;
   const avatar = modalState.avatar;
   const banner = modalState.banner;
+  const editingPlayerId = modalState.editingPlayerId;
 
   const fileRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -36,6 +43,20 @@ export function useAddPlayerModal({
       window.clearTimeout(timeoutId);
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || !editingPlayerId) return;
+
+    const editingPlayer = players.find(player => player.id === editingPlayerId);
+    if (!editingPlayer) return;
+
+    setModalState(prev => ({
+      ...prev,
+      nickname: editingPlayer.name,
+      avatar: editingPlayer.avatarUrl,
+      banner: editingPlayer.banner,
+    }));
+  }, [isOpen, editingPlayerId, players, setModalState]);
 
   const setAvatar = (value: string) => {
     setModalState(prev => ({ ...prev, avatar: value }));
@@ -87,7 +108,7 @@ export function useAddPlayerModal({
       return;
     }
 
-    onSave({ nickname: trimmedNickname, avatar, banner });
+    onSave({ nickname: trimmedNickname, avatar, banner }, editingPlayerId);
     close();
   };
 
@@ -102,6 +123,7 @@ export function useAddPlayerModal({
     nickname,
     avatar,
     banner,
+    editingPlayerId,
     error,
     fileRef,
     inputRef,

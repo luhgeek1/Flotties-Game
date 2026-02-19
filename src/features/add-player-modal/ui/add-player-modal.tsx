@@ -1,6 +1,7 @@
 import { Palette, Plus, UserCircle2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
+import type { PlayerId } from "@/entities/players";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 
@@ -11,7 +12,7 @@ import { Modal } from "./modal";
 type AddPlayerModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (values: AddPlayerValues) => void;
+  onSave: (values: AddPlayerValues, editingPlayerId: PlayerId | null) => void;
   presetAvatars: AvatarOption[];
   bannerOptions: BannerOption[];
 };
@@ -45,6 +46,7 @@ export function AddPlayerModal({
     nickname,
     avatar,
     banner,
+    editingPlayerId,
     error,
     fileRef,
     inputRef,
@@ -61,8 +63,10 @@ export function AddPlayerModal({
     onSave,
   });
 
+  const modalTitle = editingPlayerId ? "Редактирование игрока" : "Новый игрок";
+
   return (
-    <Modal isOpen={isOpen} onClose={close} title="Новый игрок" contentClassName={banner}>
+    <Modal isOpen={isOpen} onClose={close} title={modalTitle} contentClassName={banner}>
       <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
         <motion.div variants={item} className="flex flex-col items-center gap-6 pt-2">
           <div className="relative">

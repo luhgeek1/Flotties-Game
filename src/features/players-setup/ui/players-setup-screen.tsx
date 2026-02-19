@@ -1,4 +1,4 @@
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { ChevronRight, Plus } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -11,12 +11,15 @@ import {
   ADD_PLAYER_BANNER_OPTIONS,
   ADD_PLAYER_PRESET_AVATARS,
   AddPlayerModal,
+  type AddPlayerValues,
 } from "@/features/add-player-modal";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import {
+  INITIAL_SETUP_ADD_PLAYER_MODAL_STATE,
   PLAYERS_TO_START_GAME,
   setupAddPlayerModalIsOpenAtom,
+  setupAddPlayerModalStateAtom,
   setupPlayersAtom,
   setupSelectedPlayerIdsAtom,
 } from "@/shared/store/setupAtoms";
@@ -30,6 +33,7 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
   const [players, setPlayers] = useAtom(setupPlayersAtom);
   const [selectedPlayerIds, setSelectedPlayerIds] = useAtom(setupSelectedPlayerIdsAtom);
   const [isAddPlayerModalOpen, setIsAddPlayerModalOpen] = useAtom(setupAddPlayerModalIsOpenAtom);
+  const setAddPlayerModalState = useSetAtom(setupAddPlayerModalStateAtom);
 
   const togglePlayerSelection = (playerId: PlayerId) => {
     setSelectedPlayerIds(prevSelected => {
@@ -45,7 +49,32 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
     });
   };
 
-  const handleAddPlayer = (values: { nickname: string; avatar: string; banner: string }) => {
+  const handleOpenAddPlayerModal = () => {
+    setAddPlayerModalState({
+      ...INITIAL_SETUP_ADD_PLAYER_MODAL_STATE,
+      isOpen: true,
+    });
+  };
+
+  const handleOpenEditPlayerModal = (playerId: PlayerId) => {
+    setAddPlayerModalState(prev => ({
+      ...prev,
+      isOpen: true,
+      editingPlayerId: playerId,
+    }));
+  };
+
+  const handleSavePlayer = (values: AddPlayerValues, editingPlayerId: PlayerId | null) => {
+    if (editingPlayerId) {
+      setPlayers(prevPlayers => prevPlayers.map(player => (player.id === editingPlayerId ? {
+        ...player,
+        name: values.nickname,
+        avatarUrl: values.avatar,
+        banner: values.banner,
+      } : player)));
+      return;
+    }
+
     setPlayers(prevPlayers => [
       ...prevPlayers,
       {
@@ -80,7 +109,7 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
             type="button"
             variant="ghost"
             className="h-10 gap-2 px-4 text-primary hover:bg-primary/10 hover:text-primary/80"
-            onClick={() => setIsAddPlayerModalOpen(true)}
+            onClick={handleOpenAddPlayerModal}
           >
             <Plus className="h-4 w-4" /> Добавить
           </Button>
@@ -103,6 +132,7 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
                 isSelected={isSelected}
                 isDisabled={isDisabled}
                 onToggle={() => togglePlayerSelection(player.id)}
+                onEdit={() => handleOpenEditPlayerModal(player.id)}
               />
             );
           })}
@@ -130,7 +160,7 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
       <AddPlayerModal
         isOpen={isAddPlayerModalOpen}
         onClose={() => setIsAddPlayerModalOpen(false)}
-        onSave={handleAddPlayer}
+        onSave={handleSavePlayer}
         presetAvatars={ADD_PLAYER_PRESET_AVATARS}
         bannerOptions={ADD_PLAYER_BANNER_OPTIONS}
       />

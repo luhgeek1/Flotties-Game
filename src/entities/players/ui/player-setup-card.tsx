@@ -83,7 +83,7 @@ export function PlayerSetupCard({
           type="button"
           variant="ghost"
           size="icon"
-          disabled={!onEdit || isDisabled}
+          disabled={!onEdit}
           onClick={event => {
             event.stopPropagation();
             onEdit?.();
@@ -97,7 +97,7 @@ export function PlayerSetupCard({
           type="button"
           variant="ghost"
           size="icon"
-          disabled={!onDelete || isDisabled}
+          disabled={!onDelete}
           onClick={event => {
             event.stopPropagation();
             onDelete?.();
