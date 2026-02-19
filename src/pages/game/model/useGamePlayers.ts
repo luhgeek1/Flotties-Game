@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useCallback } from "react";
 import { useAtom } from "jotai";
 
-import { createDefaultPlayers, type PlayerId } from "@/entities/players";
+import { resolveSelectedPlayers, type PlayerId } from "@/entities/players";
 import { gamePlayerScoresAtom, type GamePlayerScores } from "@/shared/store/gameAtoms";
 import type { QuestionModalPlayer } from "@/features/question-modal";
 
@@ -17,14 +17,10 @@ function buildScoresByPlayerIds(
 export function useGamePlayers(selectedPlayerIds: readonly PlayerId[]) {
   const [playerScores, setPlayerScores] = useAtom(gamePlayerScoresAtom);
 
-  const selectedPlayers = useMemo(() => {
-    const all = createDefaultPlayers();
-    const byId = new Map(all.map(player => [player.id, player]));
-    const picked = selectedPlayerIds
-      .map(playerId => byId.get(playerId))
-      .filter((player): player is (typeof all)[number] => Boolean(player));
-    return picked.length ? picked : all;
-  }, [selectedPlayerIds]);
+  const selectedPlayers = useMemo(
+    () => resolveSelectedPlayers(selectedPlayerIds),
+    [selectedPlayerIds],
+  );
 
   const selectedPlayerIdsForGame = useMemo(
     () => selectedPlayers.map(p => p.id),
