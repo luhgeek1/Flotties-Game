@@ -1,10 +1,10 @@
 import { User } from "lucide-react";
 import { motion } from "motion/react";
-import { Badge } from "@/shared/components/ui/badge";
+import { formatKeyCode } from "@/shared/lib/format-key-code";
 import { cn } from "@/shared/lib/utils";
 import type { Player } from "../model/types";
 
-type PlayerScoreCardProps = Pick<Player, "name" | "score" | "avatarUrl"> & {
+type PlayerScoreCardProps = Pick<Player, "name" | "score" | "avatarUrl" | "keyCode"> & {
   layoutId?: string;
   isPicking?: boolean;
 };
@@ -14,6 +14,7 @@ export function PlayerScoreCard({
   name,
   score,
   avatarUrl,
+  keyCode,
   isPicking = false,
 }: PlayerScoreCardProps) {
   return (
@@ -38,10 +39,12 @@ export function PlayerScoreCard({
 
       <div className="flex-1 min-w-0 flex flex-col">
         <div className="flex items-center justify-between w-full gap-2">
-          <span className="font-bold text-sm truncate">{name}</span>
-          {isPicking ? (
-            <Badge className="shrink-0 uppercase tracking-wide">Выбирает</Badge>
-          ) : null}
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="font-bold text-sm truncate">{name}</span>
+            <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 text-[11px] font-semibold uppercase leading-none text-muted-foreground">
+              {formatKeyCode(keyCode)}
+            </kbd>
+          </div>
         </div>
         <div
           className={cn(

@@ -38,6 +38,7 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
             name={player.name}
             score={player.score}
             avatarUrl={player.avatarUrl}
+            keyCode={player.keyCode}
             isPicking={player.id === model.gameShell.activePickerId}
           />
         ))}

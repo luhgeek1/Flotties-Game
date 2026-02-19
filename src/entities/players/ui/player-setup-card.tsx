@@ -2,12 +2,14 @@ import { CheckCircle2, Pencil, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
 
 import { Button } from "@/shared/components/ui/button";
+import { formatKeyCode } from "@/shared/lib/format-key-code";
 import { cn } from "@/shared/lib/utils";
 
 type PlayerSetupCardProps = {
   layoutId: string;
   name: string;
   avatarUrl: string;
+  keyCode: string;
   isSelected?: boolean;
   status?: string;
   onToggle?: () => void;
@@ -19,6 +21,7 @@ export function PlayerSetupCard({
   layoutId,
   name,
   avatarUrl,
+  keyCode,
   isSelected = false,
   status = "Участвует",
   onToggle,
@@ -56,7 +59,12 @@ export function PlayerSetupCard({
           <span className={cn("text-base font-bold", isSelected ? "text-primary" : "text-foreground")}>
             {name}
           </span>
-          <span className="text-xs text-muted-foreground">{currentStatus}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">{currentStatus}</span>
+            <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 text-[11px] font-semibold uppercase leading-none text-muted-foreground">
+              {formatKeyCode(keyCode)}
+            </kbd>
+          </div>
         </div>
       </div>
 

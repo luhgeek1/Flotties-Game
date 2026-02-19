@@ -1,17 +1,11 @@
 import type { QuestionModalPlayer } from "../../model/types";
+import { formatKeyCode } from "@/shared/lib/format-key-code";
 
 type QuestionModalReadingStateProps = {
   questionText: string;
   players: QuestionModalPlayer[];
   attemptedPlayerIds: string[];
 };
-
-function formatKeyCode(code: string): string {
-  if (code === "Space") return "Space";
-  if (code.startsWith("Key")) return code.slice(3);
-  if (code.startsWith("Digit")) return code.slice(5);
-  return code;
-}
 
 export function QuestionModalReadingState({
   questionText,

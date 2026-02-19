@@ -59,6 +59,7 @@ export function PlayersSetupScreen({ onContinue }: PlayersSetupScreenProps) {
               layoutId={`player-${player.id}`}
               name={player.name}
               avatarUrl={player.avatarUrl}
+              keyCode={player.keyCode}
               isSelected={selectedPlayerIds.includes(player.id)}
               onToggle={() => togglePlayerSelection(player.id)}
             />
