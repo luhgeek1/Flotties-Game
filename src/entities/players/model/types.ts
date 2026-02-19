@@ -1,9 +1,13 @@
-export type PlayerId = "p1" | "p2" | "p3";
+export type PlayerId = string;
 
-export type Player = {
+export type SetupPlayer = {
   id: PlayerId;
   name: string;
-  keyCode: string;
   avatarUrl: string;
+  banner: string;
+};
+
+export type Player = SetupPlayer & {
+  keyCode: string;
   score: number;
 };

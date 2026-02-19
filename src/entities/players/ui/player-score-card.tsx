@@ -1,8 +1,8 @@
-import { User } from "lucide-react";
 import { motion } from "motion/react";
 import { formatKeyCode } from "@/shared/lib/format-key-code";
 import { cn } from "@/shared/lib/utils";
 import type { Player } from "../model/types";
+import { PlayerAvatar } from "./player-avatar";
 
 type PlayerScoreCardProps = Pick<Player, "name" | "score" | "avatarUrl" | "keyCode"> & {
   layoutId?: string;
@@ -28,13 +28,7 @@ export function PlayerScoreCard({
       )}
     >
       <div className="h-12 w-12 rounded-full shrink-0 border-2 shadow-sm bg-background border-border overflow-hidden">
-        {avatarUrl ? (
-          <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
-        ) : (
-          <div className="h-full w-full flex items-center justify-center text-foreground">
-            <User className="w-6 h-6" />
-          </div>
-        )}
+        <PlayerAvatar value={avatarUrl} alt={name} />
       </div>
 
       <div className="flex-1 min-w-0 flex flex-col">

@@ -1,12 +1,25 @@
-import { createDefaultPlayers } from "./defaults";
-import type { Player, PlayerId } from "./types";
+import { PLAYER_SELECTION_KEY_CODES } from "./defaults";
+import type { Player, PlayerId, SetupPlayer } from "./types";
 
-export function resolveSelectedPlayers(selectedPlayerIds: readonly PlayerId[]): Player[] {
-  const defaultPlayers = createDefaultPlayers();
-  const byId = new Map(defaultPlayers.map(player => [player.id, player]));
-  const pickedPlayers = selectedPlayerIds
-    .map(playerId => byId.get(playerId))
-    .filter((player): player is Player => Boolean(player));
+export function resolveSelectedPlayers(
+  setupPlayers: readonly SetupPlayer[],
+  selectedPlayerIds: readonly PlayerId[],
+): Player[] {
+  const playersById = new Map(setupPlayers.map(player => [player.id, player]));
+  const selectedPlayers: Player[] = [];
 
-  return pickedPlayers.length ? pickedPlayers : defaultPlayers;
+  selectedPlayerIds
+    .slice(0, PLAYER_SELECTION_KEY_CODES.length)
+    .forEach((playerId, index) => {
+      const setupPlayer = playersById.get(playerId);
+      if (!setupPlayer) return;
+
+      selectedPlayers.push({
+        ...setupPlayer,
+        keyCode: PLAYER_SELECTION_KEY_CODES[index],
+        score: 0,
+      });
+    });
+
+  return selectedPlayers;
 }

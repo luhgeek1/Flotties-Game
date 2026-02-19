@@ -1,4 +1,8 @@
-export { DEFAULT_PLAYER_AVATAR_URL, DEFAULT_PLAYERS, createDefaultPlayers } from "./model/defaults";
+export {
+  DEFAULT_PLAYER_AVATAR_URL,
+  DEFAULT_SETUP_PLAYERS,
+  PLAYER_SELECTION_KEY_CODES,
+} from "./model/defaults";
 export { resolveSelectedPlayers } from "./model/resolve-selected-players";
-export type { Player, PlayerId } from "./model/types";
-export {  PlayerScoreCard, PlayerSetupCard } from "./ui";
+export type { Player, PlayerId, SetupPlayer } from "./model/types";
+export { PlayerAvatar, PlayerScoreCard, PlayerSetupCard } from "./ui";
