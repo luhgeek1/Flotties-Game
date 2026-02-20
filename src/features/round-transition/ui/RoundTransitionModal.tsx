@@ -2,7 +2,7 @@ import confetti from "canvas-confetti"
 import { AnimatePresence, motion } from "motion/react"
 import { useEffect } from "react"
 
-import lottiCongrImage from "@/shared/assets/lotti_congr.jpg"
+import lottiCongrImage from "@/shared/assets/lotti_congr.png"
 import {
   roundTransitionConfettiDefaults,
   roundTransitionConfettiOrigins,

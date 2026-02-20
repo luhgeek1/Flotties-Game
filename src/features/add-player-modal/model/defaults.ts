@@ -19,10 +19,10 @@ export type AddPlayerValues = {
   banner: string;
 };
 
-export const DEFAULT_ADD_PLAYER_AVATAR = defaultAva;
+export const DEFAULT_PLAYER_AVATAR = defaultAva;
 
 export const ADD_PLAYER_PRESET_AVATARS: AvatarOption[] = [
-  { value: DEFAULT_ADD_PLAYER_AVATAR },
+  { value: DEFAULT_PLAYER_AVATAR },
   { value: avaFlotti },
   { value: avaProd },
   { value: avaGolden },

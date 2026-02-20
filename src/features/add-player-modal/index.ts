@@ -1,7 +1,7 @@
 export { AddPlayerModal } from "./ui/add-player-modal";
 export {
   ADD_PLAYER_BANNER_OPTIONS,
-  DEFAULT_ADD_PLAYER_AVATAR,
+  DEFAULT_PLAYER_AVATAR,
   ADD_PLAYER_PRESET_AVATARS,
   type AddPlayerValues,
   type AvatarOption,
