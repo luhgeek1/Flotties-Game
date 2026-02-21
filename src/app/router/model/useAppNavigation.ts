@@ -32,7 +32,7 @@ function resolveRound2Access(current: boolean, mode: NavigateOptions["round2Acce
 }
 
 function isGameFlowRoute(route: AppRoute): boolean {
-  return route !== "setup";
+  return route !== "setup" && route !== "history";
 }
 
 export function useAppNavigation() {
@@ -175,11 +175,21 @@ export function useAppNavigation() {
     markGameStarted(startedAt);
   }, [markGameStarted, navigateTo]);
 
+  const handleOpenHistory = useCallback(() => {
+    navigateTo("history", { replace: true, resetState: "none" });
+  }, [navigateTo]);
+
+  const handleCloseHistory = useCallback(() => {
+    navigateTo("setup", { replace: true, resetState: "none" });
+  }, [navigateTo]);
+
   return {
     route,
     navigateTo,
     prepareFinalAnswersStage,
     handleStartGame,
+    handleOpenHistory,
+    handleCloseHistory,
     handleExitToSetup,
     isHistoryExitModalOpen,
     handleHistoryExitCancel,
