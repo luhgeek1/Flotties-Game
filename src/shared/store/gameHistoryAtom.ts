@@ -29,7 +29,7 @@ export type GameHistoryEntry = {
   startedAt: string;
   endedAt: string;
   durationMs: number;
-  selectedPackId: QuestionPack["id"] | null;
+  selectedPackId: QuestionPack["id"];
   selectedPlayers: GameHistorySelectedPlayer[];
   playerScores: GamePlayerScores;
   roundMvps: GameRoundMvp[];
