@@ -1,5 +1,7 @@
 import { ArrowLeft, History, Moon, Sun } from "lucide-react";
+import { useState } from "react";
 
+import { ExitGameModal } from "@/features/exit-game";
 import { GameCard } from "@/features/history";
 import { Button } from "@/shared/components/ui/button";
 import { useTheme } from "@/shared/lib/use-theme";
@@ -12,6 +14,24 @@ type HistoryPageProps = {
 export function HistoryPage({ onBackToSetup }: HistoryPageProps) {
   const model = useHistoryPageModel();
   const { isDark, toggleTheme } = useTheme();
+  const [deleteCandidateId, setDeleteCandidateId] = useState<string | null>(null);
+
+  const deleteCandidate = model.cards.find(card => card.id === deleteCandidateId) ?? null;
+
+  const handleRequestDeleteGame = (gameId: string) => {
+    setDeleteCandidateId(gameId);
+  };
+
+  const handleCancelDeleteGame = () => {
+    setDeleteCandidateId(null);
+  };
+
+  const handleConfirmDeleteGame = () => {
+    if (!deleteCandidateId) return;
+
+    model.removeGameFromHistory(deleteCandidateId);
+    setDeleteCandidateId(null);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 transition-colors duration-300">
@@ -47,7 +67,12 @@ export function HistoryPage({ onBackToSetup }: HistoryPageProps) {
         {model.cards.length > 0 ? (
           <div className="flex flex-col gap-4">
             {model.cards.map((game, index) => (
-              <GameCard key={game.id} game={game} index={index} />
+              <GameCard
+                key={game.id}
+                game={game}
+                index={index}
+                onDelete={handleRequestDeleteGame}
+              />
             ))}
           </div>
         ) : (
@@ -56,6 +81,16 @@ export function HistoryPage({ onBackToSetup }: HistoryPageProps) {
           </div>
         )}
       </div>
+
+      <ExitGameModal
+        isOpen={deleteCandidate !== null}
+        title="Удалить игру?"
+        description={`Партия «${deleteCandidate?.packName ?? ""}» будет удалена из истории.`}
+        cancelLabel="Отмена"
+        confirmLabel="Удалить"
+        onCancel={handleCancelDeleteGame}
+        onConfirm={handleConfirmDeleteGame}
+      />
     </div>
   );
 }

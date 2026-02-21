@@ -1,1 +1,1 @@
-export { GameCard, type GameCardData } from "./game-card";
+export { GameCard, type GameCardData } from "./gameCard";

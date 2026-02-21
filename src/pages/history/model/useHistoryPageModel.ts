@@ -20,7 +20,7 @@ function formatDuration(durationMs: number): string {
 }
 
 export function useHistoryPageModel() {
-  const { history } = useGameHistory();
+  const { history, removeGameFromHistory } = useGameHistory();
   const questionPacks = useAtomValue(questionPacksAtom);
 
   const cards = useMemo<GameCardData[]>(() => {
@@ -57,7 +57,7 @@ export function useHistoryPageModel() {
         };
       };
 
-      const packName = packTitleById.get(entry.selectedPackId)!;
+      const packName = packTitleById.get(entry.selectedPackId) ?? entry.selectedPackId;
 
       return {
         id: entry.id,
@@ -73,5 +73,6 @@ export function useHistoryPageModel() {
 
   return {
     cards,
+    removeGameFromHistory,
   };
 }

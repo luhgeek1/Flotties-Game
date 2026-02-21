@@ -1,9 +1,10 @@
-import { Calendar, Clock, Crown, Star, Trophy, Zap } from "lucide-react";
+import { Calendar, Clock, Crown, Star, Trash2, Trophy, Zap } from "lucide-react";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 
 import { PlayerAvatar } from "@/entities/players";
 import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
 import { Separator } from "@/shared/components/ui/separator";
 
@@ -34,6 +35,7 @@ export type GameCardData = {
 type GameCardProps = {
   game: GameCardData;
   index: number;
+  onDelete?: (gameId: string) => void;
 };
 
 function MvpBadge({
@@ -76,16 +78,17 @@ function MvpBadge({
   );
 }
 
-export function GameCard({ game, index }: GameCardProps) {
+export function GameCard({ game, index, onDelete }: GameCardProps) {
   const sortedPlayers = [...game.players].sort((a, b) => b.score - a.score);
 
   return (
     <motion.div
+      className="flex items-center gap-3"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
     >
-      <Card className="group overflow-hidden border-border/50 p-0 gap-0 transition-all duration-300 hover:shadow-lg dark:hover:shadow-black/40">
+      <Card className="group flex-1 overflow-hidden border-border/50 p-0 gap-0 transition-all duration-300 hover:shadow-lg dark:hover:shadow-black/40">
         <div className="flex flex-col sm:flex-row sm:items-stretch">
           <div className="flex-1 p-5 flex flex-col gap-4">
             <div className="flex items-center gap-2">
@@ -177,6 +180,20 @@ export function GameCard({ game, index }: GameCardProps) {
           </div>
         </div>
       </Card>
+
+      {onDelete ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          title="Удалить игру"
+          aria-label="Удалить игру"
+          onClick={() => onDelete(game.id)}
+          className="size-10 shrink-0 rounded-full border border-red-200/70 bg-rose-100 p-0 text-red-600 shadow-none hover:bg-rose-200 hover:text-red-700 dark:border-red-400/40 dark:bg-red-500/15 dark:text-red-300 dark:hover:bg-red-500/25"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      ) : null}
     </motion.div>
   );
 }

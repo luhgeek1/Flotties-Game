@@ -13,12 +13,12 @@ import { setupPlayersAtom, setupSelectedPackIdAtom, setupSelectedPlayerIdsAtom }
 
 function createSequentialHistoryId(history: readonly GameHistoryEntry[]): string {
   const maxIndex = history.reduce((max, entry) => {
-    const index = Number(entry.id.replace("history-", ""));
+    const index = Number(entry.id.replace("game-", ""));
 
     return Math.max(max, index);
   }, 0);
 
-  return `history-${maxIndex + 1}`;
+  return `game-${maxIndex + 1}`;
 }
 
 export function useGameHistory() {
@@ -81,6 +81,10 @@ export function useGameHistory() {
     });
   };
 
+  const removeGameFromHistory = (gameId: string) => {
+    setHistory(prev => prev.filter(entry => entry.id !== gameId));
+  };
+
   const resetRoundMvps = () => {
     setRoundMvps([]);
     setGameStartedAt(null);
@@ -92,6 +96,7 @@ export function useGameHistory() {
     gameStartedAt,
     markGameStarted,
     appendCurrentGameToHistory,
+    removeGameFromHistory,
     resetRoundMvps,
   };
 }
