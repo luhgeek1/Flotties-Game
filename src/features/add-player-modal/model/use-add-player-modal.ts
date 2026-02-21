@@ -7,7 +7,7 @@ import {
   resetSetupAddPlayerModalStateAtom,
   setupAddPlayerModalStateAtom,
 } from "@/shared/store/setupAtoms";
-import type { AddPlayerValues } from "./defaults";
+import type { AddPlayerValues } from "@/entities/cosmetics";
 
 type UseAddPlayerModalArgs = {
   isOpen: boolean;

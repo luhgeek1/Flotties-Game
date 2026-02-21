@@ -5,7 +5,7 @@ import { Button } from "@/shared/components/ui/button";
 import { formatKeyCode } from "@/shared/lib/format-key-code";
 import { useTheme } from "@/shared/lib/use-theme";
 import { cn } from "@/shared/lib/utils";
-import { PlayerAvatar } from "./player-avatar";
+import { PlayerAvatar } from "./playerAvatar";
 
 type PlayerSetupCardProps = {
   layoutId: string;

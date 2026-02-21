@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { formatKeyCode } from "@/shared/lib/format-key-code";
 import { cn } from "@/shared/lib/utils";
 import type { Player } from "../model/types";
-import { PlayerAvatar } from "./player-avatar";
+import { PlayerAvatar } from "./playerAvatar";
 
 type PlayerScoreCardProps = Pick<Player, "name" | "score" | "avatarUrl" | "keyCode"> & {
   layoutId?: string;

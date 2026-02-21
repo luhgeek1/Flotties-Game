@@ -4,16 +4,16 @@ import { motion } from "motion/react";
 import { useState } from "react";
 
 import {
+  ADD_PLAYER_BANNER_OPTIONS,
+  ADD_PLAYER_PRESET_AVATARS,
+  type AddPlayerValues,
+} from "@/entities/cosmetics";
+import {
   PLAYER_SELECTION_KEY_CODES,
   PlayerSetupCard,
   type PlayerId,
 } from "@/entities/players";
-import {
-  ADD_PLAYER_BANNER_OPTIONS,
-  ADD_PLAYER_PRESET_AVATARS,
-  AddPlayerModal,
-  type AddPlayerValues,
-} from "@/features/add-player-modal";
+import { AddPlayerModal } from "@/features/add-player-modal";
 import { ExitGameModal } from "@/features/exit-game";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";

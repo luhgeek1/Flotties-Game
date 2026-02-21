@@ -1,13 +1,19 @@
 import { Palette, Plus, UserCircle2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
+import {
+  CosmeticsAvatarPicker,
+  CosmeticsBannerPicker,
+  type AddPlayerValues,
+  type AvatarOption,
+  type BannerOption,
+} from "@/entities/cosmetics";
 import type { PlayerId } from "@/entities/players";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { useTheme } from "@/shared/lib/use-theme";
 import { cn } from "@/shared/lib/utils";
 
-import type { AddPlayerValues, AvatarOption, BannerOption } from "../model/defaults";
 import { useAddPlayerModal } from "../model/use-add-player-modal";
 import { Modal } from "./modal";
 
@@ -123,32 +129,12 @@ export function AddPlayerModal({
             onChange={onFileChange}
           />
 
-          <div className="flex justify-center gap-3 w-full">
-            {presetAvatars.map(option => {
-              const isSelected = avatar === option.value;
-              return (
-                <motion.button
-                  key={option.value}
-                  type="button"
-                  onClick={() => setAvatar(option.value)}
-                  whileHover={{ scale: 1.06 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={cn(
-                    "w-12 h-12 rounded-full flex items-center justify-center transition-all border-2 relative overflow-hidden bg-transparent",
-                    isSelected
-                      ? isDarkDefaultBanner
-                        ? "border-slate-100 ring-1 ring-slate-100 scale-110 z-10"
-                        : "border-slate-900 ring-1 ring-slate-900 scale-110 z-10"
-                      : isDarkDefaultBanner
-                        ? "border-transparent hover:bg-slate-700/70"
-                        : "border-transparent hover:bg-slate-100",
-                  )}
-                >
-                  <img src={option.value} alt="Preset avatar" className="h-full w-full object-cover rounded-full" />
-                </motion.button>
-              );
-            })}
-          </div>
+          <CosmeticsAvatarPicker
+            options={presetAvatars}
+            selectedValue={avatar}
+            onSelect={setAvatar}
+            isDarkSurface={isDarkDefaultBanner}
+          />
         </motion.div>
 
         <motion.div variants={item} className="space-y-3">
@@ -202,51 +188,13 @@ export function AddPlayerModal({
             Оформление
           </label>
 
-          <div className="grid grid-cols-5 gap-2">
-            {bannerOptions.map(option => {
-              const isSelected = banner === option.value;
-              const isDefaultOption = option.value === "bg-white";
-              const isDarkDefaultOption = isDark && isDefaultOption;
-              const optionBannerClassName = isDefaultOption
-                ? `${option.value} dark:bg-slate-800`
-                : option.value;
-
-              return (
-                <motion.button
-                  key={option.id}
-                  type="button"
-                  title={option.label}
-                  onClick={() => setBanner(option.value)}
-                  whileHover={{ scale: 1.06 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={cn(
-                    "h-10 rounded-lg border-2 transition-all",
-                    optionBannerClassName,
-                    isSelected
-                      ? isDarkDefaultOption
-                        ? "border-slate-100 ring-1 ring-slate-100 shadow-sm"
-                        : "border-slate-900 ring-1 ring-slate-900 shadow-sm"
-                      : isDarkDefaultOption
-                        ? "border-transparent hover:border-slate-500"
-                        : "border-transparent hover:border-slate-300",
-                  )}
-                >
-                  {isSelected ? (
-                    <motion.div
-                      layoutId="selectedBannerDot"
-                      className="w-full h-full flex items-center justify-center"
-                    >
-                      <div className={cn(
-                        "w-2 h-2 rounded-full",
-                        isDarkDefaultOption ? "bg-slate-100" : "bg-slate-900",
-                      )}
-                      />
-                    </motion.div>
-                  ) : null}
-                </motion.button>
-              );
-            })}
-          </div>
+          <CosmeticsBannerPicker
+            options={bannerOptions}
+            selectedValue={banner}
+            onSelect={setBanner}
+            isDarkTheme={isDark}
+            selectedIndicatorLayoutId="add-player-selected-banner-dot"
+          />
         </motion.div>
 
         <motion.div variants={item} className="flex gap-3 pt-4">
