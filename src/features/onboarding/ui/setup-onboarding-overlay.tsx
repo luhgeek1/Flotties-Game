@@ -1,22 +1,32 @@
 import { motion } from "motion/react";
 
 import doFinalImage from "@/shared/assets/dofinal.png";
+import { useOnboardingFlow } from "../model/useOnboardingFlow";
+import { SetupOnboardingQuestionDemo } from "./setup-onboarding-question-demo";
 
 type SetupOnboardingOverlayProps = {
   onClose?: () => void;
 };
 
 export function SetupOnboardingOverlay({ onClose }: SetupOnboardingOverlayProps) {
+  const { step, showQuestionDemo } = useOnboardingFlow();
+
+  if (step === "question-demo") {
+    return (
+      <SetupOnboardingQuestionDemo onFinish={onClose} />
+    );
+  }
+
   return (
     <motion.button
       type="button"
-      onClick={onClose}
+      onClick={showQuestionDemo}
       className="fixed inset-0 z-50 block h-full w-full cursor-pointer overflow-hidden bg-white p-0 text-left"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
-      <span className="sr-only">Закрыть онбординг</span>
+      <span className="sr-only">Перейти к демо вопроса</span>
 
       <motion.div
         className="pointer-events-none absolute top-1/2 z-10 w-[min(64vw,760px)] -translate-y-1/2 rounded-[2rem] border border-slate-200 bg-white/95 p-6 shadow-lg right-[clamp(1rem,43vw,680px)] sm:p-8 md:p-10"
