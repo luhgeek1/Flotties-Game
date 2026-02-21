@@ -8,6 +8,7 @@ import {
   type GameHistoryEntry,
 } from "@/shared/store/gameHistoryAtom";
 import { gamePlayerScoresAtom, type GamePlayerScores } from "@/shared/store/gameAtoms";
+import { finalResultsStateAtom } from "@/shared/store/finalResultsAtom";
 import { setupPlayersAtom, setupSelectedPackIdAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 
 function createSequentialHistoryId(history: readonly GameHistoryEntry[]): string {
@@ -25,6 +26,7 @@ export function useGameHistory() {
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const selectedPackId = useAtomValue(setupSelectedPackIdAtom);
   const playerScores = useAtomValue(gamePlayerScoresAtom);
+  const finalResultsState = useAtomValue(finalResultsStateAtom);
   const [history, setHistory] = useAtom(gameHistoryAtom);
   const [roundMvps, setRoundMvps] = useAtom(gameRoundMvpsAtom);
   const [gameStartedAt, setGameStartedAt] = useAtom(gameStartedAtAtom);
@@ -42,8 +44,19 @@ export function useGameHistory() {
     const endedAt = new Date().toISOString();
     const startedAt = gameStartedAt ?? endedAt;
     const durationMs = Math.max(0, new Date(endedAt).getTime() - new Date(startedAt).getTime());
+    const finalScoresByPlayerId = finalResultsState.isCompleted
+      ? finalResultsState.players.reduce<GamePlayerScores>((acc, player) => {
+        acc[player.id] = player.finalScore;
+        return acc;
+      }, {})
+      : null;
+    const hasFinalScoresForSelectedPlayers = finalScoresByPlayerId !== null
+      && selectedPlayers.every(player => typeof finalScoresByPlayerId[player.id] === "number");
     const scoresBySelectedPlayers = selectedPlayers.reduce<GamePlayerScores>((acc, player) => {
-      acc[player.id] = playerScores[player.id] ?? 0;
+      const fallbackScore = playerScores[player.id] ?? 0;
+      acc[player.id] = hasFinalScoresForSelectedPlayers
+        ? (finalScoresByPlayerId[player.id] ?? fallbackScore)
+        : fallbackScore;
       return acc;
     }, {});
 
