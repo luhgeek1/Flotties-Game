@@ -1,23 +1,57 @@
-import { useMemo, useState } from "react"
-import { useAtom } from "jotai"
+import { useEffect, useMemo, useState } from "react"
+import { useAtom, useSetAtom } from "jotai"
 
+import { gameRoundMvpsAtom } from "@/shared/store/gameHistoryAtom"
 import { resetRoundTransitionStorageAtom, roundTransitionCarouselIndexAtom, roundTransitionStepAtom } from "@/shared/store/round-transition-storage"
-import { buildScoreChartItems, sortPlayersByScore } from "./selectors"
+import { buildScoreChartItems, getTopScorePlayers, sortPlayersByScore } from "./selectors"
 import type { RoundTransitionModalProps, RoundTransitionScoreSlide } from "./types"
 import { useHoverReveal } from "./useHoverReveal"
 
-export function useRoundTransitionModel({ playerScores, onConfirm, onExitToSetup }: RoundTransitionModalProps) {
+export function useRoundTransitionModel({
+  isOpen,
+  roundNumber,
+  playerScores,
+  onConfirm,
+  onExitToSetup,
+}: RoundTransitionModalProps) {
+  const setRoundMvps = useSetAtom(gameRoundMvpsAtom)
+  const topScorePlayers = useMemo(
+    () => getTopScorePlayers(playerScores),
+    [playerScores],
+  )
+
+  useEffect(() => {
+    if (!isOpen || topScorePlayers.length === 0)
+      return
+
+    const topScore = topScorePlayers[0]!.score
+
+    setRoundMvps(prev => {
+      const withoutRound = prev.filter(item => item.roundNumber !== roundNumber)
+      return [
+        ...withoutRound,
+        {
+          roundNumber,
+          score: topScore,
+          players: topScorePlayers.map(player => ({
+            playerId: player.id,
+            playerName: player.name,
+          })),
+        },
+      ].sort((a, b) => a.roundNumber - b.roundNumber)
+    })
+  }, [isOpen, roundNumber, setRoundMvps, topScorePlayers])
+
   const slides = useMemo<ReadonlyArray<RoundTransitionScoreSlide>>(
     () => {
       const sortedPlayers = sortPlayersByScore(playerScores)
       const scoreChartItems = buildScoreChartItems(sortedPlayers)
-      const mvpPlayer = sortedPlayers[0] ?? null
 
       return [
         {
           key: "mvp",
           type: "mvp",
-          player: mvpPlayer,
+          players: topScorePlayers,
         },
         {
           key: "score",
@@ -30,7 +64,7 @@ export function useRoundTransitionModel({ playerScores, onConfirm, onExitToSetup
         },
       ]
     },
-    [playerScores],
+    [playerScores, topScorePlayers],
   )
 
   const [step, setStep] = useAtom(roundTransitionStepAtom)

@@ -16,3 +16,11 @@ export function buildScoreChartItems(
     colorClassName: "bg-emerald-700",
   }))
 }
+
+export function getTopScorePlayers(players: RoundTransitionModalPlayerScore[]) {
+  const sortedPlayers = sortPlayersByScore(players)
+  const topScore = sortedPlayers[0]?.score
+  if (topScore === undefined) return []
+
+  return sortedPlayers.filter(player => player.score === topScore)
+}

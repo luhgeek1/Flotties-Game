@@ -9,11 +9,11 @@ import type { RoundTransitionScoreSlide } from "../model/types"
 import { RoundTransitionCarousel } from "./RoundTransitionCarousel"
 
 type MvpSlideProps = {
-  player: { name: string; score: number } | null
+  players: Array<{ id: string; name: string; score: number }>
 }
 
-function MvpSlide({ player }: MvpSlideProps) {
-  if (!player) {
+function MvpSlide({ players }: MvpSlideProps) {
+  if (players.length === 0) {
     return (
       <div className="w-full h-55 flex flex-col items-center justify-center bg-muted/20 rounded-lg border border-border/70 px-6 text-center">
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
@@ -24,6 +24,10 @@ function MvpSlide({ player }: MvpSlideProps) {
     )
   }
 
+  const topScore = players[0]!.score
+  const isTie = players.length > 1
+  const namesLine = players.map(player => player.name).join(", ")
+
   return (
     <div className="w-full h-55 flex flex-col items-center justify-center bg-muted/20 rounded-lg border border-border/70 px-6 text-center">
       <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
@@ -31,8 +35,8 @@ function MvpSlide({ player }: MvpSlideProps) {
       </h3>
 
       <div className="flex items-center justify-center gap-3">
-        <div className="text-3xl sm:text-4xl font-black tracking-tight">
-          {player.name}
+        <div className={isTie ? "text-2xl sm:text-3xl font-black tracking-tight" : "text-3xl sm:text-4xl font-black tracking-tight"}>
+          {namesLine}
         </div>
         <Crown className="size-8 text-amber-500" />
       </div>
@@ -40,10 +44,10 @@ function MvpSlide({ player }: MvpSlideProps) {
       <div
         className={[
           "mt-6 text-6xl sm:text-7xl font-black tracking-tight tabular-nums",
-          player.score < 0 ? "text-destructive" : "text-foreground",
+          topScore < 0 ? "text-destructive" : "text-foreground",
         ].join(" ")}
       >
-        {player.score}
+        {topScore}
       </div>
     </div>
   )
@@ -84,7 +88,7 @@ export function RoundTransitionScoreStep({
     if (slide.type === "mvp") {
       return {
         key: slide.key,
-        content: <MvpSlide player={slide.player} />,
+        content: <MvpSlide players={slide.players} />,
       }
     }
 

@@ -24,7 +24,7 @@ export type RoundTransitionScoreSlide =
   | {
       key: "mvp"
       type: "mvp"
-      player: RoundTransitionModalPlayerScore | null
+      players: RoundTransitionModalPlayerScore[]
     }
   | {
       key: "leader"
