@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 
 import { QuestionModal } from "@/features/question-modal";
 import { Button } from "@/shared/components/ui/button";
+import lottiForwardImage from "@/shared/assets/lottipryamoi.png";
 import { useOnboardingQuestionDemo } from "../model/useOnboardingQuestionDemo";
 
 type SetupOnboardingQuestionDemoProps = {
@@ -41,18 +42,55 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
             100
           </motion.button>
 
-          {model.isDemoQuestionCompleted ? (
-              <Button type="button" variant="outline" onClick={model.resetDemo}>
-                Повторить демо
-              </Button>
-
-          ) : (
+          {!model.isDemoQuestionCompleted ? (
             <p className="text-sm font-medium text-slate-600 md:text-base">
               Дальше следуйте указаниям. 
             </p>
-          )}
+          ) : null}
         </div>
       </div>
+
+      {model.isDemoQuestionCompleted ? (
+        <motion.div
+          className="fixed inset-0 z-30 bg-white/40 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          onClick={onFinish}
+        >
+          <motion.div
+            className="pointer-events-auto absolute left-4 top-[70%] z-10 w-[min(60vw,720px)] -translate-y-1/2 rounded-[2rem] border border-slate-200 bg-white/95 p-6 shadow-lg sm:left-6 sm:p-8 md:left-10 md:p-10"
+            initial={{ x: -24, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.35, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl">
+              Если всё понятно - кликните по экрану. Если хотите повторить демо - нажмите на кнопкку ниже. 
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-5"
+              onClick={(event) => {
+                event.stopPropagation();
+                model.resetDemo();
+              }}
+            >
+              Повторить демо
+            </Button>
+          </motion.div>
+
+          <motion.img
+            src={lottiForwardImage}
+            alt="Лотти"
+            className="pointer-events-none select-none absolute bottom-0 right-0 h-auto w-[min(50vw,700px)] sm:w-[min(50vw,700px)] md:w-[min(60vw,850px)]"
+            initial={{ x: 120, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            draggable={false}
+          />
+        </motion.div>
+      ) : null}
 
       <QuestionModal {...model.questionModal} />
     </motion.div>
