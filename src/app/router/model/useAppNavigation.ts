@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
+import { useGameHistory } from "@/features/history";
 import { prepareFinalAnswersStageAtom } from "@/shared/store/finalAtom";
 import { gameRound2UnlockedAtom } from "@/shared/store/gameAtoms";
 import { resetGameRoundStateAtom, resetGameSessionAtom } from "@/shared/store/reset-game-session";
@@ -50,6 +51,7 @@ export function useAppNavigation() {
   });
   const resetGameRoundState = useSetAtom(resetGameRoundStateAtom);
   const resetGameSession = useSetAtom(resetGameSessionAtom);
+  const { appendCurrentGameToHistory, resetRoundMvps } = useGameHistory();
   const prepareFinalAnswersStage = useSetAtom(prepareFinalAnswersStageAtom);
   const [isHistoryExitModalOpen, setIsHistoryExitModalOpen] = useState(false);
 
@@ -117,6 +119,7 @@ export function useAppNavigation() {
     });
 
     if (options?.resetState === "session") {
+      resetRoundMvps();
       resetGameSession();
     } else if (options?.resetState === "round") {
       resetGameRoundState();
@@ -143,15 +146,16 @@ export function useAppNavigation() {
     }
 
     setRoute(guardedRoute);
-  }, [canEnterGame, isRound2Unlocked, resetGameRoundState, resetGameSession, route, setIsRound2Unlocked]);
+  }, [canEnterGame, isRound2Unlocked, resetGameRoundState, resetGameSession, resetRoundMvps, route, setIsRound2Unlocked]);
 
   const handleExitToSetup = useCallback(() => {
+    appendCurrentGameToHistory();
     navigateTo("setup", {
       replace: true,
       round2Access: "lock",
       resetState: "session",
     });
-  }, [navigateTo]);
+  }, [appendCurrentGameToHistory, navigateTo]);
 
   const handleHistoryExitCancel = useCallback(() => {
     setIsHistoryExitModalOpen(false);

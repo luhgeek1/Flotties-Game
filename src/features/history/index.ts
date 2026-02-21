@@ -1,0 +1,1 @@
+export { useGameHistory } from "./model";
