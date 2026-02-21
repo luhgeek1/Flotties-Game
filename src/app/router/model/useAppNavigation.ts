@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { useGameHistory } from "@/features/history";
+import { useOnboarding } from "@/features/onboarding";
 import { prepareFinalAnswersStageAtom } from "@/shared/store/finalAtom";
 import { gameRound2UnlockedAtom } from "@/shared/store/gameAtoms";
 import { resetGameRoundStateAtom, resetGameSessionAtom } from "@/shared/store/reset-game-session";
@@ -52,6 +53,7 @@ export function useAppNavigation() {
   const resetGameRoundState = useSetAtom(resetGameRoundStateAtom);
   const resetGameSession = useSetAtom(resetGameSessionAtom);
   const { appendCurrentGameToHistory, markGameStarted, resetRoundMvps } = useGameHistory();
+  const { markOnboardingStartedGame } = useOnboarding();
   const prepareFinalAnswersStage = useSetAtom(prepareFinalAnswersStageAtom);
   const [isHistoryExitModalOpen, setIsHistoryExitModalOpen] = useState(false);
 
@@ -173,7 +175,8 @@ export function useAppNavigation() {
       resetState: "session",
     });
     markGameStarted(startedAt);
-  }, [markGameStarted, navigateTo]);
+    markOnboardingStartedGame();
+  }, [markGameStarted, markOnboardingStartedGame, navigateTo]);
 
   const handleOpenHistory = useCallback(() => {
     navigateTo("history", { replace: true, resetState: "none" });
