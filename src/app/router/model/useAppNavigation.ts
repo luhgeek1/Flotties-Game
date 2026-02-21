@@ -51,7 +51,7 @@ export function useAppNavigation() {
   });
   const resetGameRoundState = useSetAtom(resetGameRoundStateAtom);
   const resetGameSession = useSetAtom(resetGameSessionAtom);
-  const { appendCurrentGameToHistory, resetRoundMvps } = useGameHistory();
+  const { appendCurrentGameToHistory, markGameStarted, resetRoundMvps } = useGameHistory();
   const prepareFinalAnswersStage = useSetAtom(prepareFinalAnswersStageAtom);
   const [isHistoryExitModalOpen, setIsHistoryExitModalOpen] = useState(false);
 
@@ -165,10 +165,21 @@ export function useAppNavigation() {
     handleExitToSetup();
   }, [handleExitToSetup]);
 
+  const handleStartGame = useCallback(() => {
+    const startedAt = new Date().toISOString();
+
+    navigateTo("game", {
+      round2Access: "lock",
+      resetState: "session",
+    });
+    markGameStarted(startedAt);
+  }, [markGameStarted, navigateTo]);
+
   return {
     route,
     navigateTo,
     prepareFinalAnswersStage,
+    handleStartGame,
     handleExitToSetup,
     isHistoryExitModalOpen,
     handleHistoryExitCancel,

@@ -7,6 +7,7 @@ import type { NavigateOptions } from "../model/useAppNavigation";
 
 type RouteViewProps = {
   route: AppRoute;
+  onStartGame: () => void;
   onExitToSetup: () => void;
   onPrepareFinalAnswersStage: () => void;
   navigateTo: (nextRoute: AppRoute, options?: NavigateOptions) => void;
@@ -14,6 +15,7 @@ type RouteViewProps = {
 
 export function RouteView({
   route,
+  onStartGame,
   onExitToSetup,
   onPrepareFinalAnswersStage,
   navigateTo,
@@ -140,10 +142,7 @@ export function RouteView({
 
   return (
     <SetupPage
-      onStartGame={() => navigateTo("game", {
-        round2Access: "lock",
-        resetState: "session",
-      })}
+      onStartGame={onStartGame}
     />
   );
 }

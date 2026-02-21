@@ -10,6 +10,7 @@ export function AppRouter() {
       <RouteView
         route={navigation.route}
         navigateTo={navigation.navigateTo}
+        onStartGame={navigation.handleStartGame}
         onPrepareFinalAnswersStage={navigation.prepareFinalAnswersStage}
         onExitToSetup={navigation.handleExitToSetup}
       />
