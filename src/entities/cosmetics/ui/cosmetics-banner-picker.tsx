@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 
+import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 
 import type { BannerOption } from "../model/defaults";
@@ -30,15 +31,16 @@ export function CosmeticsBannerPicker({
         const optionBannerClassName = isDefaultOption ? `${option.value} dark:bg-slate-800` : option.value;
 
         return (
-          <motion.button
+          <Button
             key={option.id}
+            asChild
             type="button"
+            variant="ghost"
+            size="lg"
             title={option.label}
             onClick={() => onSelect(option.value)}
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.98 }}
             className={cn(
-              "h-10 rounded-lg border-2 transition-all",
+              "h-10 w-full rounded-lg border-2 transition-all p-0! hover:bg-transparent dark:hover:bg-transparent hover:text-inherit",
               optionBannerClassName,
               isSelected
                 ? isDarkDefaultOption
@@ -49,17 +51,19 @@ export function CosmeticsBannerPicker({
                   : "border-transparent hover:border-slate-300",
             )}
           >
-            {isSelected ? (
-              <motion.div layoutId={selectedIndicatorLayoutId} className="w-full h-full flex items-center justify-center">
-                <div
-                  className={cn(
-                    "w-2 h-2 rounded-full",
-                    isDarkDefaultOption ? "bg-slate-100" : "bg-slate-900",
-                  )}
-                />
-              </motion.div>
-            ) : null}
-          </motion.button>
+            <motion.button whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }}>
+              {isSelected ? (
+                <motion.div layoutId={selectedIndicatorLayoutId} className="w-full h-full flex items-center justify-center">
+                  <div
+                    className={cn(
+                      "w-2 h-2 rounded-full",
+                      isDarkDefaultOption ? "bg-slate-100" : "bg-slate-900",
+                    )}
+                  />
+                </motion.div>
+              ) : null}
+            </motion.button>
+          </Button>
         );
       })}
     </div>
