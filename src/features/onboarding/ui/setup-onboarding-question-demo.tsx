@@ -1,8 +1,10 @@
+import { useCallback, useState } from "react";
 import { motion } from "motion/react";
 
 import { QuestionModal } from "@/features/question-modal";
 import { Button } from "@/shared/components/ui/button";
 import lottiForwardImage from "@/shared/assets/lottipryamoi.png";
+import smileLottiImage from "@/shared/assets/smileLotti.png";
 import { useOnboardingQuestionDemo } from "../model/useOnboardingQuestionDemo";
 
 type SetupOnboardingQuestionDemoProps = {
@@ -11,6 +13,35 @@ type SetupOnboardingQuestionDemoProps = {
 
 export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestionDemoProps) {
   const model = useOnboardingQuestionDemo();
+  const [isSmileStepVisible, setIsSmileStepVisible] = useState(false);
+
+  const handleOpenSmileStep = useCallback(() => {
+    setIsSmileStepVisible(true);
+  }, []);
+
+  if (isSmileStepVisible) {
+    return (
+      <motion.button
+        type="button"
+        onClick={onFinish}
+        className="fixed inset-0 z-50 block h-full w-full cursor-pointer bg-white p-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <span className="sr-only">Закрыть онбординг</span>
+        <motion.img
+          src={smileLottiImage}
+          alt="Smile Lotti"
+          className="pointer-events-none select-none absolute bottom-0 left-1/2 h-auto w-[min(72vw,760px)] -translate-x-1/2"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          draggable={false}
+        />
+      </motion.button>
+    );
+  }
 
   return (
     <motion.div
@@ -56,7 +87,7 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          onClick={onFinish}
+          onClick={handleOpenSmileStep}
         >
           <motion.div
             className="pointer-events-auto absolute left-4 top-[70%] z-10 w-[min(60vw,720px)] -translate-y-1/2 rounded-[2rem] border border-slate-200 bg-white/95 p-6 shadow-lg sm:left-6 sm:p-8 md:left-10 md:p-10"
