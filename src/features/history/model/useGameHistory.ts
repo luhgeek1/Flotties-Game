@@ -37,6 +37,7 @@ export function useGameHistory() {
     const selectedPlayers = resolveSelectedPlayers(setupPlayers, selectedPlayerIds);
 
     if (selectedPlayers.length === 0) return;
+    if (selectedPackId === null) return;
 
     const endedAt = new Date().toISOString();
     const startedAt = gameStartedAt ?? endedAt;
