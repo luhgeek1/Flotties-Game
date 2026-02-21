@@ -1,9 +1,11 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { History } from "lucide-react";
 import { AnimatePresence } from "motion/react";
+import { SetupOnboardingOverlay } from "@/features/onboarding";
 import { PlayersSetupScreen } from "@/features/players-setup";
 import { PacksSetupScreen } from "@/features/packs-setup";
 import { Button } from "@/shared/components/ui/button";
+import { markOnboardingStartedGameAtom, onboardingStartedGameAtom } from "@/shared/store/onboardingAtom";
 import { setupStepAtom } from "@/shared/store/setupAtoms";
 
 type SetupPageProps = {
@@ -13,6 +15,8 @@ type SetupPageProps = {
 
 export function SetupPage({ onStartGame, onOpenHistory }: SetupPageProps) {
   const [step, setStep] = useAtom(setupStepAtom);
+  const hasOnboardingFlag = useAtomValue(onboardingStartedGameAtom);
+  const markOnboardingStartedGame = useSetAtom(markOnboardingStartedGameAtom);
 
   return (
     <>
@@ -38,6 +42,10 @@ export function SetupPage({ onStartGame, onOpenHistory }: SetupPageProps) {
           />
         )}
       </AnimatePresence>
+
+      {!hasOnboardingFlag ? (
+        <SetupOnboardingOverlay onClose={markOnboardingStartedGame} />
+      ) : null}
     </>
   );
 }
