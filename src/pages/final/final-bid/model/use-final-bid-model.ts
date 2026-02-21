@@ -3,7 +3,7 @@ import { useCallback, useMemo } from "react";
 
 import { gamePlayerScoresAtom } from "@/shared/store/gameAtoms";
 import { finalBidByPlayerIdAtom, finalBidInputByPlayerIdAtom } from "@/shared/store/finalAtom";
-import { useFinalPlayerQueue } from "@/pages/final/model/use-final-player-queue";
+import { useFinalPlayerQueue } from "@/pages/final/model/useFinalPlayerQueue";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
 
 type UseFinalBidModelArgs = {

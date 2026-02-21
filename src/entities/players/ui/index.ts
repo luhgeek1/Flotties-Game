@@ -1,3 +1,3 @@
-export { PlayerSetupCard } from "./player-setup-card";
-export { PlayerScoreCard } from "./player-score-card";
+export { PlayerSetupCard } from "./playerSetupCard";
+export { PlayerScoreCard } from "./playerGameCard";
 export { PlayerAvatar } from "./player-avatar";

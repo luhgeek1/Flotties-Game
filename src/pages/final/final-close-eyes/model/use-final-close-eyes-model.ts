@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 import { finalActivePlayerIdAtom } from "@/shared/store/finalAtom";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
-import { useFinalPlayerQueue } from "@/pages/final/model/use-final-player-queue";
+import { useFinalPlayerQueue } from "@/pages/final/model/useFinalPlayerQueue";
 
 type UseFinalCloseEyesModelArgs = {
   onReady?: () => void;
