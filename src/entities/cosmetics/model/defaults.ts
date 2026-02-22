@@ -2,6 +2,21 @@ import defaultAva from "@/shared/assets/default-user-avatar.svg";
 import avaProd from "@/shared/assets/avaProd.jpg";
 import avaFlotti from "@/shared/assets/avaFlotti.jpg";
 import avaGolden from "@/shared/assets/avaGolden.jpg";
+import shopLotti from "@/shared/assets/variants/lottiprof.png";
+import capImage from "@/shared/assets/variants/cap.png";
+import cilindrImage from "@/shared/assets/variants/cilindr.png";
+import coronaImage from "@/shared/assets/variants/corona.png";
+import garlandImage from "@/shared/assets/variants/garland.png";
+import sunglImage from "@/shared/assets/variants/sungl.png";
+import tshirtGreenImage from "@/shared/assets/variants/tshirt-green.png";
+import tshirtOrangeImage from "@/shared/assets/variants/tshirt-orange.png";
+import capCardImage from "@/shared/assets/variants/card/capVb.png";
+import cilindrCardImage from "@/shared/assets/variants/card/cilindrVb.png";
+import coronaCardImage from "@/shared/assets/variants/card/coronaVb.png";
+import garlandCardImage from "@/shared/assets/variants/card/garlandVb.png";
+import sunglCardImage from "@/shared/assets/variants/card/sunglVb.png";
+import greenCardImage from "@/shared/assets/variants/card/greenVb.png";
+import yellowCardImage from "@/shared/assets/variants/card/yellowVb.png";
 
 export type AvatarOption = {
   value: string;
@@ -39,3 +54,14 @@ export const ADD_PLAYER_BANNER_OPTIONS: BannerOption[] = [
   { id: "banner-8", label: "Розовый", value: "bg-rose-50" },
   { id: "banner-9", label: "Фиолетовый", value: "bg-violet-50" },
 ];
+
+export const TRY_ON_ITEMS = [
+  { id: "none", title: "Без предмета", cardSrc: shopLotti, overlaySrc: null },
+  { id: "cap", title: "Кепка", cardSrc: capCardImage, overlaySrc: capImage },
+  { id: "cilindr", title: "Цилиндр", cardSrc: cilindrCardImage, overlaySrc: cilindrImage },
+  { id: "corona", title: "Корона", cardSrc: coronaCardImage, overlaySrc: coronaImage },
+  { id: "garland", title: "Гирлянда", cardSrc: garlandCardImage, overlaySrc: garlandImage },
+  { id: "sungl", title: "Очки", cardSrc: sunglCardImage, overlaySrc: sunglImage },
+  { id: "green", title: "Зеленая", cardSrc: greenCardImage, overlaySrc: tshirtGreenImage },
+  { id: "yellow", title: "Оранжевая", cardSrc: yellowCardImage, overlaySrc: tshirtOrangeImage },
+] as const;
