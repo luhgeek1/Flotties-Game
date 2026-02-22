@@ -1,2 +1,2 @@
-export { CosmeticsAvatarPicker } from "./cosmetics-avatar-picker";
-export { CosmeticsBannerPicker } from "./cosmetics-banner-picker";
+export { CosmeticsAvatarPicker } from "./cosmeticsAvatarPicker";
+export { CosmeticsBannerPicker } from "./cosmeticsBannerPicker";

@@ -1,7 +1,4 @@
-import {
-  ADD_PLAYER_BANNER_OPTIONS,
-  ADD_PLAYER_PRESET_AVATARS,
-} from "./defaults";
+import { ADD_PLAYER_BANNER_OPTIONS, ADD_PLAYER_PRESET_AVATARS } from "./defaults";
 import capCardImage from "@/shared/assets/variants/card/capVb.png";
 import cilindrCardImage from "@/shared/assets/variants/card/cilindrVb.png";
 import coronaCardImage from "@/shared/assets/variants/card/coronaVb.png";
@@ -48,22 +45,20 @@ const BANNER_NAMES = [
 ] as const;
 
 function resolveAvatarName(index: number): string {
-  return AVATAR_NAMES[index] ?? `Avatar ${index + 1}`;
+  return AVATAR_NAMES[index];
 }
 
 function resolveAvatarPrice(index: number): number {
-  return AVATAR_PRICES[index] ?? (index + 1) * 80;
+  return AVATAR_PRICES[index];
 }
 
 function resolveBannerPrice(index: number): number {
-  return BANNER_PRICES[index] ?? (index + 1) * 25;
+  return BANNER_PRICES[index];
 }
 
 function resolveBannerName(index: number): string {
-  return BANNER_NAMES[index] ?? `Theme ${index + 1}`;
+  return BANNER_NAMES[index];
 }
-
-export const SHOP_STARTING_COINS = 300;
 
 export const SHOP_AVATAR_ITEMS: ShopAvatarItem[] = ADD_PLAYER_PRESET_AVATARS.map((option, index) => ({
   id: `avatar-${index + 1}`,

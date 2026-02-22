@@ -12,7 +12,6 @@ export {
   SHOP_DEFAULT_OWNED_AVATAR_VALUES,
   SHOP_DEFAULT_OWNED_BANNER_VALUES,
   SHOP_DEFAULT_OWNED_WEARABLE_VALUES,
-  SHOP_STARTING_COINS,
   type AddPlayerValues,
   type AvatarOption,
   type BannerOption,
