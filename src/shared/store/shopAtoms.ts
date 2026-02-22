@@ -3,7 +3,7 @@ import type { PlayerId } from "@/entities/players";
 
 import {
   SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE,
-  SHOP_DEFAULT_OWNED_AVATAR_VALUES,
+  SHOP_DEFAULT_OWNED_AVATAR_VALUE,
   SHOP_DEFAULT_OWNED_BANNER_VALUES,
   SHOP_DEFAULT_OWNED_WEARABLE_VALUES,
 } from "@/entities/cosmetics";
@@ -22,7 +22,7 @@ export type ShopPlayerInventories = Record<PlayerId, ShopPlayerInventory>;
 
 export function createDefaultShopPlayerInventory(): ShopPlayerInventory {
   return {
-    ownedAvatarValues: [...SHOP_DEFAULT_OWNED_AVATAR_VALUES],
+    ownedAvatarValues: [SHOP_DEFAULT_OWNED_AVATAR_VALUE],
     ownedBannerValues: [...SHOP_DEFAULT_OWNED_BANNER_VALUES],
     ownedWearableValues: [...SHOP_DEFAULT_OWNED_WEARABLE_VALUES],
     equippedWearableValue: SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE,

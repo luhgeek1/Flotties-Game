@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import {
   ADD_PLAYER_BANNER_OPTIONS,
   ADD_PLAYER_PRESET_AVATARS,
-  SHOP_DEFAULT_OWNED_AVATAR_VALUES,
+  SHOP_DEFAULT_OWNED_AVATAR_VALUE,
   SHOP_DEFAULT_OWNED_BANNER_VALUES,
   type AddPlayerValues,
 } from "@/entities/cosmetics";
@@ -74,7 +74,7 @@ export function usePlayersSetupScreen({ onContinue }: UsePlayersSetupScreenArgs 
   }, [editingPlayer, playerInventories]);
 
   const defaultAvatarForNewPlayer = useMemo(() => {
-    return SHOP_DEFAULT_OWNED_AVATAR_VALUES[0] ?? availablePresetAvatars[0]?.value ?? ADD_PLAYER_PRESET_AVATARS[0]?.value ?? "";
+    return SHOP_DEFAULT_OWNED_AVATAR_VALUE || availablePresetAvatars[0]?.value || ADD_PLAYER_PRESET_AVATARS[0]?.value || "";
   }, [availablePresetAvatars]);
 
   const defaultBannerForNewPlayer = useMemo(() => {
@@ -181,7 +181,7 @@ export function usePlayersSetupScreen({ onContinue }: UsePlayersSetupScreenArgs 
       [newPlayerId]: {
         ...createDefaultShopPlayerInventory(),
         ownedAvatarValues: toUniqueValues([
-          ...SHOP_DEFAULT_OWNED_AVATAR_VALUES,
+          SHOP_DEFAULT_OWNED_AVATAR_VALUE,
           values.avatar,
         ]),
         ownedBannerValues: toUniqueValues([

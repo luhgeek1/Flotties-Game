@@ -1,4 +1,4 @@
-import { ADD_PLAYER_BANNER_OPTIONS, ADD_PLAYER_PRESET_AVATARS } from "./defaults";
+import { ADD_PLAYER_BANNER_OPTIONS, ADD_PLAYER_PRESET_AVATARS, DEFAULT_PLAYER_AVATAR } from "./defaults";
 import capCardImage from "@/shared/assets/variants/card/capVb.png";
 import cilindrCardImage from "@/shared/assets/variants/card/cilindrVb.png";
 import coronaCardImage from "@/shared/assets/variants/card/coronaVb.png";
@@ -126,13 +126,9 @@ export const SHOP_WEARABLE_ITEMS: ShopWearableItem[] = [
   },
 ];
 
-export const SHOP_DEFAULT_OWNED_AVATAR_VALUES = SHOP_AVATAR_ITEMS
-  .filter(item => item.price === 0)
-  .map(item => item.value);
-export const SHOP_DEFAULT_OWNED_BANNER_VALUES = SHOP_BANNER_ITEMS
-  .filter(item => item.price === 0)
-  .map(item => item.value);
+export const SHOP_DEFAULT_OWNED_AVATAR_VALUE = DEFAULT_PLAYER_AVATAR;
+export const SHOP_DEFAULT_OWNED_BANNER_VALUES = [ADD_PLAYER_BANNER_OPTIONS[0].value];
 export const SHOP_DEFAULT_OWNED_WEARABLE_VALUES: string[] = [];
 export const SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE = "none";
-export const SHOP_DEFAULT_EQUIPPED_AVATAR_VALUE = SHOP_DEFAULT_OWNED_AVATAR_VALUES[0] ?? "";
-export const SHOP_DEFAULT_EQUIPPED_BANNER_VALUE = SHOP_DEFAULT_OWNED_BANNER_VALUES[0] ?? "bg-white";
+export const SHOP_DEFAULT_EQUIPPED_AVATAR_VALUE = SHOP_DEFAULT_OWNED_AVATAR_VALUE;
+export const SHOP_DEFAULT_EQUIPPED_BANNER_VALUE = SHOP_DEFAULT_OWNED_BANNER_VALUES[0];
