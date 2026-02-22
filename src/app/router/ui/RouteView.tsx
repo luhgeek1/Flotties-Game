@@ -1,5 +1,6 @@
 import { GamePage, GamePage2R } from "@/pages/game";
 import { HistoryPage } from "@/pages/history";
+import { ShopPage } from "@/pages/shop";
 import { FinalPrepairingPage } from "@/pages/final-prepairing";
 import { FinalBidPage, FinalCloseEyesPage, FinalQuestionPage, FinalResultsPage, FinalStartThemePage } from "@/pages/final";
 import { SetupPage } from "@/pages/setup";
@@ -9,6 +10,8 @@ import type { NavigateOptions } from "../model/useAppNavigation";
 type RouteViewProps = {
   route: AppRoute;
   onStartGame: () => void;
+  onOpenShop: () => void;
+  onCloseShop: () => void;
   onOpenHistory: () => void;
   onCloseHistory: () => void;
   onExitToSetup: () => void;
@@ -19,12 +22,20 @@ type RouteViewProps = {
 export function RouteView({
   route,
   onStartGame,
+  onOpenShop,
+  onCloseShop,
   onOpenHistory,
   onCloseHistory,
   onExitToSetup,
   onPrepareFinalAnswersStage,
   navigateTo,
 }: RouteViewProps) {
+  if (route === "shop") {
+    return (
+      <ShopPage onBackToSetup={onCloseShop} />
+    );
+  }
+
   if (route === "history") {
     return (
       <HistoryPage onBackToSetup={onCloseHistory} />
@@ -154,6 +165,7 @@ export function RouteView({
   return (
     <SetupPage
       onStartGame={onStartGame}
+      onOpenShop={onOpenShop}
       onOpenHistory={onOpenHistory}
     />
   );

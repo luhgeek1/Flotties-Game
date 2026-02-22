@@ -1,35 +1,69 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { History } from "lucide-react";
+import { History, ShoppingBag } from "lucide-react";
 import { AnimatePresence } from "motion/react";
+import { useState } from "react";
 import { SetupOnboardingOverlay } from "@/features/onboarding";
+import { ShopPlayerSelectModal } from "@/features/shop";
 import { PlayersSetupScreen } from "@/features/players-setup";
 import { PacksSetupScreen } from "@/features/packs-setup";
 import { Button } from "@/shared/components/ui/button";
 import { markOnboardingStartedGameAtom, onboardingStartedGameAtom } from "@/shared/store/onboardingAtom";
-import { setupStepAtom } from "@/shared/store/setupAtoms";
+import { setupStepAtom, setupPlayersAtom } from "@/shared/store/setupAtoms";
+import { shopActivePlayerIdAtom } from "@/shared/store/shopAtoms";
 
 type SetupPageProps = {
   onStartGame?: () => void;
+  onOpenShop?: () => void;
   onOpenHistory?: () => void;
 };
 
-export function SetupPage({ onStartGame, onOpenHistory }: SetupPageProps) {
+export function SetupPage({ onStartGame, onOpenShop, onOpenHistory }: SetupPageProps) {
   const [step, setStep] = useAtom(setupStepAtom);
+  const players = useAtomValue(setupPlayersAtom);
   const hasOnboardingFlag = useAtomValue(onboardingStartedGameAtom);
   const markOnboardingStartedGame = useSetAtom(markOnboardingStartedGameAtom);
+  const setShopActivePlayerId = useSetAtom(shopActivePlayerIdAtom);
+  const [isShopPlayerSelectOpen, setIsShopPlayerSelectOpen] = useState(false);
+
+  const handleOpenShopPlayerSelect = () => {
+    setIsShopPlayerSelectOpen(true);
+  };
+
+  const handleCloseShopPlayerSelect = () => {
+    setIsShopPlayerSelectOpen(false);
+  };
+
+  const handleSelectShopPlayer = (playerId: string) => {
+    setShopActivePlayerId(playerId);
+    setIsShopPlayerSelectOpen(false);
+    onOpenShop?.();
+  };
 
   return (
     <>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={onOpenHistory}
-        className="fixed left-4 top-4 z-30 border border-border bg-card/70 backdrop-blur hover:bg-card md:left-8 md:top-8"
-      >
-        <History className="w-4 h-4 mr-2" />
-        История
-      </Button>
+      <div className="fixed left-4 top-4 z-30 flex items-center gap-2 md:left-8 md:top-8">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={handleOpenShopPlayerSelect}
+          className="border border-border bg-card/70 backdrop-blur hover:bg-card"
+        >
+          <ShoppingBag className="w-4 h-4 mr-2" />
+          Магазин
+        </Button>
+
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={onOpenHistory}
+          className="border border-border bg-card/70 backdrop-blur hover:bg-card"
+        >
+          <History className="w-4 h-4 mr-2" />
+          История
+        </Button>
+      </div>
 
       <AnimatePresence mode="wait">
         {step === "players" ? (
@@ -42,6 +76,13 @@ export function SetupPage({ onStartGame, onOpenHistory }: SetupPageProps) {
           />
         )}
       </AnimatePresence>
+
+      <ShopPlayerSelectModal
+        isOpen={isShopPlayerSelectOpen}
+        players={players}
+        onClose={handleCloseShopPlayerSelect}
+        onSelectPlayer={handleSelectShopPlayer}
+      />
 
       {!hasOnboardingFlag ? (
         <SetupOnboardingOverlay onClose={markOnboardingStartedGame} />

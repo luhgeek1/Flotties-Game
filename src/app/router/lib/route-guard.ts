@@ -1,5 +1,6 @@
 export type AppRoute =
   | "setup"
+  | "shop"
   | "history"
   | "game"
   | "game2r"
@@ -13,6 +14,7 @@ export type AppRoute =
 
 export const ROUTE_PATH = {
   setup: "/",
+  shop: "/shop",
   history: "/history",
   game: "/game",
   game2r: "/game2r",
@@ -26,6 +28,10 @@ export const ROUTE_PATH = {
 } satisfies Record<AppRoute, string>;
 
 export function resolveRoute(pathname: string): AppRoute {
+  if (pathname === ROUTE_PATH.shop) {
+    return "shop";
+  }
+
   if (pathname === ROUTE_PATH.history) {
     return "history";
   }

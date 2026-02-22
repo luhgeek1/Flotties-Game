@@ -33,7 +33,7 @@ function resolveRound2Access(current: boolean, mode: NavigateOptions["round2Acce
 }
 
 function isGameFlowRoute(route: AppRoute): boolean {
-  return route !== "setup" && route !== "history";
+  return route !== "setup" && route !== "shop" && route !== "history";
 }
 
 export function useAppNavigation() {
@@ -182,7 +182,15 @@ export function useAppNavigation() {
     navigateTo("history", { replace: true, resetState: "none" });
   }, [navigateTo]);
 
+  const handleOpenShop = useCallback(() => {
+    navigateTo("shop", { replace: true, resetState: "none" });
+  }, [navigateTo]);
+
   const handleCloseHistory = useCallback(() => {
+    navigateTo("setup", { replace: true, resetState: "none" });
+  }, [navigateTo]);
+
+  const handleCloseShop = useCallback(() => {
     navigateTo("setup", { replace: true, resetState: "none" });
   }, [navigateTo]);
 
@@ -192,7 +200,9 @@ export function useAppNavigation() {
     prepareFinalAnswersStage,
     handleStartGame,
     handleOpenHistory,
+    handleOpenShop,
     handleCloseHistory,
+    handleCloseShop,
     handleExitToSetup,
     isHistoryExitModalOpen,
     handleHistoryExitCancel,

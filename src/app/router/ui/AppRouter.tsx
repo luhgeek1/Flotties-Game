@@ -11,6 +11,8 @@ export function AppRouter() {
         route={navigation.route}
         navigateTo={navigation.navigateTo}
         onStartGame={navigation.handleStartGame}
+        onOpenShop={navigation.handleOpenShop}
+        onCloseShop={navigation.handleCloseShop}
         onOpenHistory={navigation.handleOpenHistory}
         onCloseHistory={navigation.handleCloseHistory}
         onPrepareFinalAnswersStage={navigation.prepareFinalAnswersStage}
