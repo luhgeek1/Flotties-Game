@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 
 import { QuestionModal } from "@/features/question-modal";
@@ -8,6 +9,7 @@ import leftLottiImage from "@/shared/assets/slevalotti.png";
 import smileLottiImage from "@/shared/assets/smileLotti.png";
 import { useOnboardingQuestionDemo } from "../model/useOnboardingQuestionDemo";
 import { useOnboardingQuestionDemoStage } from "../model/useOnboardingQuestionDemoStage";
+import { SetupOnboardingDemoIntroOverlay } from "./setup-onboarding-demo-intro-overlay";
 
 type SetupOnboardingQuestionDemoProps = {
   onFinish?: () => void;
@@ -15,6 +17,7 @@ type SetupOnboardingQuestionDemoProps = {
 
 export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestionDemoProps) {
   const model = useOnboardingQuestionDemo();
+  const [isDemoIntroOverlayClosed, setIsDemoIntroOverlayClosed] = useState(false);
   const {
     isSpecialStepVisible,
     isFinalStepVisible,
@@ -27,6 +30,22 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
     isDemoQuestionCompleted: model.isDemoQuestionCompleted,
     resetDemo: model.resetDemo,
   });
+  const isDemoStepVisible =
+    !isFinalStepVisible &&
+    !isSpecialStepVisible &&
+    !isPostDemoOverlayVisible;
+
+  useEffect(() => {
+    if (!isDemoStepVisible) return;
+
+    setIsDemoIntroOverlayClosed(false);
+  }, [isDemoStepVisible]);
+
+  const isDemoIntroOverlayVisible =
+    isDemoStepVisible &&
+    !model.questionModal.isOpen &&
+    !model.isDemoQuestionCompleted &&
+    !isDemoIntroOverlayClosed;
 
   if (isFinalStepVisible) {
     return (
@@ -126,6 +145,10 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
     >
+      {isDemoIntroOverlayVisible ? (
+        <SetupOnboardingDemoIntroOverlay onClose={() => setIsDemoIntroOverlayClosed(true)} />
+      ) : null}
+
       <Button
         type="button"
         className="absolute right-4 top-4 z-10 md:right-8 md:top-8"
