@@ -1,6 +1,8 @@
 import { motion } from "motion/react";
 
-import cornerLottiImage from "@/shared/assets/lottipryamoi.png";
+import { Button } from "@/shared/components/ui/button";
+import demoLottiImage from "@/shared/assets/lottipryamoi.png";
+import readingLottiImage from "@/shared/assets/izuglalotti.png";
 
 type SetupOnboardingDemoIntroOverlayProps = {
   onClose?: () => void;
@@ -32,7 +34,7 @@ export function SetupOnboardingDemoIntroOverlay({ onClose }: SetupOnboardingDemo
         </motion.div>
 
         <motion.img
-          src={cornerLottiImage}
+          src={demoLottiImage}
           alt="Demo Lotti"
           className="pointer-events-none select-none h-auto w-[min(46vw,640px)] sm:w-[min(50vw,700px)] md:w-[min(54vw,780px)]"
           initial={{ y: 26, opacity: 0 }}
@@ -42,5 +44,85 @@ export function SetupOnboardingDemoIntroOverlay({ onClose }: SetupOnboardingDemo
         />
       </div>
     </motion.button>
+  );
+}
+
+type SetupOnboardingDemoPostOverlayProps = {
+  onContinue?: () => void;
+  onRepeat?: () => void;
+};
+
+export function SetupOnboardingDemoPostOverlay({
+  onContinue,
+  onRepeat,
+}: SetupOnboardingDemoPostOverlayProps) {
+  return (
+    <motion.div
+      className="fixed inset-0 z-30 bg-white/40 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+      onClick={onContinue}
+    >
+      <motion.div
+        className="pointer-events-auto absolute left-4 top-[70%] z-10 w-[min(60vw,720px)] -translate-y-1/2 rounded-[2rem] border border-slate-200 bg-white/95 p-6 shadow-lg sm:left-6 sm:p-8 md:left-10 md:p-10"
+        initial={{ x: -24, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.35, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <p className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl">
+          Отлично! Нажмите в любую часть экрана, чтобы продолжить. Если хотите повторить демо - нажмите на кнопкку
+          ниже.
+        </p>
+        <Button
+          type="button"
+          variant="outline"
+          className="mt-5 border-black bg-black text-white hover:bg-black/90 hover:text-white"
+          onClick={(event) => {
+            event.stopPropagation();
+            onRepeat?.();
+          }}
+        >
+          Повторить демо
+        </Button>
+      </motion.div>
+
+      <motion.img
+        src={demoLottiImage}
+        alt="Лотти"
+        className="pointer-events-none select-none absolute bottom-0 right-0 h-auto w-[min(50vw,700px)] sm:w-[min(50vw,700px)] md:w-[min(60vw,850px)]"
+        initial={{ x: 120, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        draggable={false}
+      />
+    </motion.div>
+  );
+}
+
+export function SetupOnboardingDemoReadingOverlay() {
+  return (
+    <div className="pointer-events-none fixed bottom-0 right-0 z-60">
+      <motion.img
+        src={readingLottiImage}
+        alt="Reading Lotti"
+        className="pointer-events-none select-none h-auto w-[min(34vw,460px)] sm:w-[min(36vw,520px)] md:w-[min(40vw,620px)]"
+        initial={{ y: 24, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+        draggable={false}
+      />
+
+      <motion.div
+        className="absolute right-[8%] top-[66%] w-[min(26vw,360px)] rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-lg sm:p-4 md:p-5"
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.24, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <p className="text-center text-sm font-semibold leading-snug text-slate-900 sm:text-base md:text-lg">
+          Если знаешь ответ - скорее жми свою клавишу!
+        </p>
+      </motion.div>
+    </div>
   );
 }

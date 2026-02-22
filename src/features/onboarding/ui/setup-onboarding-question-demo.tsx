@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "motion/react";
 
 import { QuestionModal } from "@/features/question-modal";
 import { RayGifBanner } from "@/features/special-banner";
 import { Button } from "@/shared/components/ui/button";
-import lottiForwardImage from "@/shared/assets/lottipryamoi.png";
 import leftLottiImage from "@/shared/assets/slevalotti.png";
 import smileLottiImage from "@/shared/assets/smileLotti.png";
 import { useOnboardingQuestionDemo } from "../model/useOnboardingQuestionDemo";
 import { useOnboardingQuestionDemoStage } from "../model/useOnboardingQuestionDemoStage";
-import { SetupOnboardingDemoIntroOverlay } from "./setup-onboarding-demo-intro-overlay";
+import {
+  SetupOnboardingDemoIntroOverlay,
+  SetupOnboardingDemoPostOverlay,
+  SetupOnboardingDemoReadingOverlay,
+} from "./setup-onboarding-demo-intro-overlay";
 
 type SetupOnboardingQuestionDemoProps = {
   onFinish?: () => void;
@@ -17,7 +20,7 @@ type SetupOnboardingQuestionDemoProps = {
 
 export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestionDemoProps) {
   const model = useOnboardingQuestionDemo();
-  const [isDemoIntroOverlayClosed, setIsDemoIntroOverlayClosed] = useState(false);
+  const [isDemoIntroOverlayDismissed, setIsDemoIntroOverlayDismissed] = useState(false);
   const {
     isSpecialStepVisible,
     isFinalStepVisible,
@@ -35,17 +38,14 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
     !isSpecialStepVisible &&
     !isPostDemoOverlayVisible;
 
-  useEffect(() => {
-    if (!isDemoStepVisible) return;
-
-    setIsDemoIntroOverlayClosed(false);
-  }, [isDemoStepVisible]);
-
   const isDemoIntroOverlayVisible =
     isDemoStepVisible &&
     !model.questionModal.isOpen &&
     !model.isDemoQuestionCompleted &&
-    !isDemoIntroOverlayClosed;
+    !isDemoIntroOverlayDismissed;
+  const isQuestionReadingPhaseVisible =
+    model.questionModal.isOpen &&
+    model.questionModal.phase === "reading";
 
   if (isFinalStepVisible) {
     return (
@@ -146,7 +146,7 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
     >
       {isDemoIntroOverlayVisible ? (
-        <SetupOnboardingDemoIntroOverlay onClose={() => setIsDemoIntroOverlayClosed(true)} />
+        <SetupOnboardingDemoIntroOverlay onClose={() => setIsDemoIntroOverlayDismissed(true)} />
       ) : null}
 
       <Button
@@ -181,46 +181,13 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
       </div>
 
       {isPostDemoOverlayVisible ? (
-        <motion.div
-          className="fixed inset-0 z-30 bg-white/40 backdrop-blur-sm"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          onClick={openSpecialStep}
-        >
-          <motion.div
-            className="pointer-events-auto absolute left-4 top-[70%] z-10 w-[min(60vw,720px)] -translate-y-1/2 rounded-[2rem] border border-slate-200 bg-white/95 p-6 shadow-lg sm:left-6 sm:p-8 md:left-10 md:p-10"
-            initial={{ x: -24, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.35, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <p className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl">
-              Отлично! Нажмите в любую часть экрана, чтобы продолжить. Если хотите повторить демо - нажмите на кнопкку ниже. 
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-5"
-              onClick={(event) => {
-                event.stopPropagation();
-                repeatDemo();
-              }}
-            >
-              Повторить демо
-            </Button>
-          </motion.div>
-
-          <motion.img
-            src={lottiForwardImage}
-            alt="Лотти"
-            className="pointer-events-none select-none absolute bottom-0 right-0 h-auto w-[min(50vw,700px)] sm:w-[min(50vw,700px)] md:w-[min(60vw,850px)]"
-            initial={{ x: 120, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            draggable={false}
-          />
-        </motion.div>
+        <SetupOnboardingDemoPostOverlay
+          onContinue={openSpecialStep}
+          onRepeat={repeatDemo}
+        />
       ) : null}
+
+      {isQuestionReadingPhaseVisible ? <SetupOnboardingDemoReadingOverlay /> : null}
 
       <QuestionModal {...model.questionModal} />
     </motion.div>
