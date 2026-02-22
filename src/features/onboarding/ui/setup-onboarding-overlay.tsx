@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
 import doFinalImage from "@/shared/assets/dofinal.png";
@@ -8,8 +9,24 @@ type SetupOnboardingOverlayProps = {
   onClose?: () => void;
 };
 
+const INTRO_MESSAGES = [
+  "Привет,меня зовут Флотти, и я ведущий этой игры. Вижу ты новенький. Давай проведу тебе небольной гайд по игре.",
+  "Игра состоит из 3 раундов: 1 раунд, 2 раунд, Финал. В 1-м и 2-м раундах идёт гонка за право ответа: кто быстрее нажмёт — тот отвечает. После каждого раунда вы сможете посмотреть текущие результаты.",
+  "Финальный раунд — это один вопрос на какую то тему, но об этом уже в самой игре. В конце победитель получит lottcoins, которые можно потратить в магазине.",
+] as const;
+
 export function SetupOnboardingOverlay({ onClose }: SetupOnboardingOverlayProps) {
   const { step, showQuestionDemo } = useOnboardingFlow();
+  const [introMessageIndex, setIntroMessageIndex] = useState(0);
+
+  const handleIntroClick = useCallback(() => {
+    if (introMessageIndex < INTRO_MESSAGES.length - 1) {
+      setIntroMessageIndex(prev => prev + 1);
+      return;
+    }
+
+    showQuestionDemo();
+  }, [introMessageIndex, showQuestionDemo]);
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
@@ -29,7 +46,7 @@ export function SetupOnboardingOverlay({ onClose }: SetupOnboardingOverlayProps)
           <motion.button
             key="onboarding-intro"
             type="button"
-            onClick={showQuestionDemo}
+            onClick={handleIntroClick}
             className="absolute inset-0 block h-full w-full cursor-pointer overflow-hidden bg-white p-0 text-left"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -44,10 +61,18 @@ export function SetupOnboardingOverlay({ onClose }: SetupOnboardingOverlayProps)
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
             >
-              <p className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl">
-                Привет,меня зовут Флотти, и я ведущий этой игры. Вижу ты новенький. Давай проведу тебе небольной
-                гайд по игре.
-              </p>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.p
+                  key={`intro-message-${introMessageIndex}`}
+                  className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {INTRO_MESSAGES[introMessageIndex]}
+                </motion.p>
+              </AnimatePresence>
             </motion.div>
 
             <motion.img
