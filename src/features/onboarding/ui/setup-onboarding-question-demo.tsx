@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { motion } from "motion/react";
 
 import { QuestionModal } from "@/features/question-modal";
+import { RayGifBanner } from "@/features/special-banner";
 import { Button } from "@/shared/components/ui/button";
 import lottiForwardImage from "@/shared/assets/lottipryamoi.png";
 import smileLottiImage from "@/shared/assets/smileLotti.png";
@@ -14,10 +15,17 @@ type SetupOnboardingQuestionDemoProps = {
 export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestionDemoProps) {
   const model = useOnboardingQuestionDemo();
   const [isSmileStepVisible, setIsSmileStepVisible] = useState(false);
+  const [isDemoSkipped, setIsDemoSkipped] = useState(false);
 
-  const handleOpenSmileStep = useCallback(() => {
+  const handleOpenSmileStep = () => {
+    setIsDemoSkipped(false);
     setIsSmileStepVisible(true);
-  }, []);
+  };
+
+  const handleSkipDemo = () => {
+    model.resetDemo();
+    setIsDemoSkipped(true);
+  };
 
   if (isSmileStepVisible) {
     return (
@@ -30,15 +38,45 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
       >
         <span className="sr-only">Закрыть онбординг</span>
-        <motion.img
-          src={smileLottiImage}
-          alt="Smile Lotti"
-          className="pointer-events-none select-none absolute bottom-0 left-1/2 h-auto w-[min(72vw,760px)] -translate-x-1/2"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          draggable={false}
+
+        <RayGifBanner
+          open
+          onClose={() => {}}
+          specialType="catInBag"
+          variant="compact"
+          className="absolute left-3 top-[34%] -rotate-8 origin-top-left sm:left-6 sm:top-[36%]"
         />
+
+        <RayGifBanner
+          open
+          onClose={() => {}}
+          specialType="auction"
+          variant="compact"
+          className="absolute right-3 top-[34%] rotate-8 origin-top-right sm:right-6 sm:top-[36%]"
+        />
+
+        <div className="pointer-events-none absolute bottom-0 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center">
+          <motion.div
+            className="mb-3 w-[min(84vw,860px)] rounded-[2rem] border border-slate-200 bg-white/95 p-4 shadow-lg sm:mb-4 sm:p-6 md:p-8"
+            initial={{ y: 18, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.28, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="text-center text-base font-semibold leading-relaxed text-slate-900 sm:text-lg md:text-2xl">
+              В игре есть специальные вопросы: "Кот в мешке" и "Аукцион". Вы сразу поймете когда они выпадут)))
+            </p>
+          </motion.div>
+
+          <motion.img
+            src={smileLottiImage}
+            alt="Smile Lotti"
+            className="pointer-events-none select-none h-auto w-[min(72vw,760px)]"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            draggable={false}
+          />
+        </div>
       </motion.button>
     );
   }
@@ -53,7 +91,7 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
       <Button
         type="button"
         className="absolute right-4 top-4 z-10 md:right-8 md:top-8"
-        onClick={onFinish}
+        onClick={handleSkipDemo}
       >
         SKIP
       </Button>
@@ -81,7 +119,7 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
         </div>
       </div>
 
-      {model.isDemoQuestionCompleted ? (
+      {model.isDemoQuestionCompleted || isDemoSkipped ? (
         <motion.div
           className="fixed inset-0 z-30 bg-white/40 backdrop-blur-sm"
           initial={{ opacity: 0 }}
@@ -96,7 +134,7 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
             transition={{ duration: 0.35, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl">
-              Если всё понятно - кликните по экрану. Если хотите повторить демо - нажмите на кнопкку ниже. 
+              Отлично! Нажмите в любую часть экрана чтобы продолжить. Если хотите повторить демо - нажмите на кнопкку ниже. 
             </p>
             <Button
               type="button"
@@ -105,6 +143,7 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
               onClick={(event) => {
                 event.stopPropagation();
                 model.resetDemo();
+                setIsDemoSkipped(false);
               }}
             >
               Повторить демо

@@ -4,8 +4,10 @@ import { AnimatePresence, motion } from "motion/react";
 import { GreenRays } from "./green-rays";
 import specialAuPngUrl from "@/shared/assets/specialAu.png";
 import specialCatPngUrl from "@/shared/assets/specialCat.png";
+import { cn } from "@/shared/lib/utils";
 
 type SpecialBannerType = "catInBag" | "auction";
+type RayGifBannerVariant = "fullscreen" | "compact";
 
 const DEFAULT_CAT_IN_BAG_GIF_URL = "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnR5dnZ6cG1reGpydmhwZHQ0MG1ib29rbzZlemMxdjk1N2g5ZDc4cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9KeOUp3sIqL6w/giphy.gif";
 const DEFAULT_AUCTION_GIF_URL = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGV3aHBmejBlc2FvM2ZqYjhtamtydHU0dDkxcmcxZzJpZGZsc2l3diZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT5LMESHbV1KLGMsq4/giphy.gif";
@@ -44,6 +46,8 @@ type RayGifBannerProps = {
   specialType?: SpecialBannerType;
   gifUrl?: string;
   autoCloseMs?: number;
+  variant?: RayGifBannerVariant;
+  className?: string;
 };
 
 const INTRO_MS = 1000;
@@ -54,18 +58,109 @@ export function RayGifBanner({
   specialType = "catInBag",
   gifUrl,
   autoCloseMs = 3000,
+  variant = "fullscreen",
+  className,
 }: RayGifBannerProps) {
   return (
     <AnimatePresence>
       {open ? (
-        <RayGifBannerOpen
-          onClose={onClose}
-          specialType={specialType}
-          gifUrl={gifUrl}
-          autoCloseMs={autoCloseMs}
-        />
+        variant === "compact" ? (
+          <RayGifBannerCompact
+            specialType={specialType}
+            gifUrl={gifUrl}
+            className={className}
+          />
+        ) : (
+          <RayGifBannerOpen
+            onClose={onClose}
+            specialType={specialType}
+            gifUrl={gifUrl}
+            autoCloseMs={autoCloseMs}
+          />
+        )
       ) : null}
     </AnimatePresence>
+  );
+}
+
+type RayGifBannerCompactProps = {
+  specialType: SpecialBannerType;
+  gifUrl?: string;
+  className?: string;
+};
+
+function RayGifBannerCompact({
+  specialType,
+  gifUrl,
+  className,
+}: RayGifBannerCompactProps) {
+  const title = TITLE_BY_TYPE[specialType];
+  const colorTheme = COLOR_BY_TYPE[specialType];
+  const introImageUrl = INTRO_IMAGE_BY_TYPE[specialType];
+  const resolvedGifUrl = gifUrl ?? GIF_URL_BY_TYPE[specialType];
+  const titleBorderClass = specialType === "auction"
+    ? "border-2 border-yellow-200/90"
+    : "";
+  const [phase, setPhase] = useState<"intro" | "main">("intro");
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setPhase("main");
+    }, INTRO_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  return (
+    <motion.div
+      className={cn(
+        "pointer-events-none z-40 flex w-[min(28vw,320px)] flex-col items-center gap-2",
+        className,
+      )}
+      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -8, scale: 0.97 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className={`text-sm sm:text-base font-black tracking-wide ${colorTheme.text} text-center drop-shadow-lg bg-white px-3 py-1 rounded-xl ${titleBorderClass}`}>
+        {title}
+      </div>
+
+      <div className="relative w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md">
+        <AnimatePresence mode="wait" initial={false}>
+          {phase === "intro" ? (
+            <motion.img
+              key="compact-intro"
+              src={introImageUrl}
+              alt={`${title} intro`}
+              className="w-full h-auto object-contain select-none"
+              initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              draggable={false}
+            />
+          ) : (
+            <motion.div
+              key="compact-main"
+              className="relative aspect-[4/3] w-full overflow-hidden"
+              initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <GreenRays color={colorTheme.ray} />
+              <img
+                src={resolvedGifUrl}
+                alt={`${title} gif`}
+                className="relative z-10 h-full w-full object-cover select-none"
+                draggable={false}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
   );
 }
 
