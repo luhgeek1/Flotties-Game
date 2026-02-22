@@ -1,9 +1,9 @@
+import { type ReactNode, useEffect } from "react";
 import { X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import type { ReactNode } from "react";
 
-import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { Button } from "./button";
 
 type ModalProps = {
   isOpen: boolean;
@@ -13,7 +13,47 @@ type ModalProps = {
   contentClassName?: string;
 };
 
-export function Modal({ isOpen, onClose, title, children, contentClassName }: ModalProps) {
+let openedModalsCount = 0;
+let previousBodyOverflow = "";
+let previousBodyPaddingRight = "";
+
+export function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+  contentClassName,
+}: ModalProps) {
+  useEffect(() => {
+    if (!isOpen || typeof document === "undefined") {
+      return;
+    }
+
+    const body = document.body;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    openedModalsCount += 1;
+
+    if (openedModalsCount === 1) {
+      previousBodyOverflow = body.style.overflow;
+      previousBodyPaddingRight = body.style.paddingRight;
+      body.style.overflow = "hidden";
+
+      if (scrollbarWidth > 0) {
+        body.style.paddingRight = `${scrollbarWidth}px`;
+      }
+    }
+
+    return () => {
+      openedModalsCount = Math.max(0, openedModalsCount - 1);
+
+      if (openedModalsCount === 0) {
+        body.style.overflow = previousBodyOverflow;
+        body.style.paddingRight = previousBodyPaddingRight;
+      }
+    };
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen ? (
