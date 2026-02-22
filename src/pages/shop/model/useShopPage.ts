@@ -5,7 +5,7 @@ import { SHOP_AVATAR_ITEMS, SHOP_BANNER_ITEMS } from "@/entities/cosmetics";
 import { useTheme } from "@/shared/lib/use-theme";
 import { setupPlayersAtom } from "@/shared/store/setupAtoms";
 import {
-  normalizeShopPlayerInventory,
+  createDefaultShopPlayerInventory,
   shopActivePlayerIdAtom,
   shopPlayerInventoriesAtom,
 } from "@/shared/store/shopAtoms";
@@ -25,10 +25,10 @@ export function useShopPage() {
 
   const activePlayerInventory = useMemo(() => {
     if (!activePlayerId) {
-      return normalizeShopPlayerInventory(undefined);
+      return createDefaultShopPlayerInventory();
     }
 
-    return normalizeShopPlayerInventory(playerInventories[activePlayerId]);
+    return playerInventories[activePlayerId] ?? createDefaultShopPlayerInventory();
   }, [activePlayerId, playerInventories]);
 
   const inventoryCount = useMemo(() => {
@@ -40,8 +40,9 @@ export function useShopPage() {
       ...activePlayerInventory.ownedBannerValues,
       activePlayer?.banner ?? "",
     ].filter(Boolean)).size;
+    const wearablesCount = new Set(activePlayerInventory.ownedWearableValues.filter(Boolean)).size;
 
-    return avatarsCount + bannersCount;
+    return avatarsCount + bannersCount + wearablesCount;
   }, [activePlayer?.avatarUrl, activePlayer?.banner, activePlayerInventory]);
 
   const equippedAvatarName = useMemo(() => {
@@ -52,6 +53,10 @@ export function useShopPage() {
   const equippedThemeName = useMemo(() => {
     const equippedThemeValue = activePlayer?.banner ?? "";
     return SHOP_BANNER_ITEMS.find(item => item.value === equippedThemeValue)?.name ?? "Classic White";
+  }, [activePlayer?.banner]);
+  const equippedThemeValue = useMemo(() => {
+    const activeBannerValue = activePlayer?.banner ?? "";
+    return SHOP_BANNER_ITEMS.find(item => item.value === activeBannerValue)?.value ?? "bg-white";
   }, [activePlayer?.banner]);
 
   const resolvedPlayerName = activePlayer?.name ?? "Player";
@@ -78,6 +83,7 @@ export function useShopPage() {
     inventoryCount,
     equippedAvatarName,
     equippedThemeName,
+    equippedThemeValue,
     isPlayerSelectOpen,
     openPlayerSelect,
     closePlayerSelect,

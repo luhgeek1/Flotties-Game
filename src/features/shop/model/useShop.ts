@@ -1,38 +1,27 @@
 import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-import { SHOP_AVATAR_ITEMS, SHOP_BANNER_ITEMS } from "@/entities/cosmetics";
-import { setupPlayersAtom } from "@/shared/store/setupAtoms";
 import {
-  createDefaultShopPlayerInventory,
-  normalizeShopPlayerInventory,
-  shopActivePlayerIdAtom,
-  shopPlayerInventoriesAtom,
-} from "@/shared/store/shopAtoms";
+  SHOP_AVATAR_ITEMS,
+  SHOP_BANNER_ITEMS,
+  SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE,
+  SHOP_WEARABLE_ITEMS,
+} from "@/entities/cosmetics";
+import { setupPlayersAtom } from "@/shared/store/setupAtoms";
+import { type ShopPlayerInventory, shopActivePlayerIdAtom, shopPlayerInventoriesAtom } from "@/shared/store/shopAtoms";
+import {
+  mapItemsToState,
+  resolveActivePlayer,
+  resolveActivePlayerInventory,
+  resolveOwnedValues,
+  toUniqueValues,
+} from "./lib";
+import type { ShopAvatarState, ShopBannerState, ShopPricedItem, ShopWearableState } from "./types";
 
-type ShopAvatarState = {
-  id: string;
-  name: string;
-  value: string;
-  price: number;
-  isOwned: boolean;
-  isEquipped: boolean;
-  canAfford: boolean;
-};
-
-type ShopBannerState = {
-  id: string;
-  name: string;
-  value: string;
-  price: number;
-  isOwned: boolean;
-  isEquipped: boolean;
-  canAfford: boolean;
-};
-
-function toUniqueValues(values: string[]): string[] {
-  return Array.from(new Set(values));
-}
+type OwnedInventoryField =
+  | "ownedAvatarValues"
+  | "ownedBannerValues"
+  | "ownedWearableValues";
 
 export function useShop() {
   const [setupPlayers, setSetupPlayers] = useAtom(setupPlayersAtom);
@@ -40,144 +29,161 @@ export function useShop() {
   const [playerInventories, setPlayerInventories] = useAtom(shopPlayerInventoriesAtom);
 
   const activePlayer = useMemo(
-    () => setupPlayers.find(player => player.id === activePlayerId) ?? null,
+    () => resolveActivePlayer(setupPlayers, activePlayerId),
     [activePlayerId, setupPlayers],
   );
   const coins = activePlayer?.balance ?? 0;
-  const activePlayerInventory = useMemo(() => {
-    if (!activePlayerId) {
-      return createDefaultShopPlayerInventory();
-    }
+  const activePlayerInventory = useMemo(
+    () => resolveActivePlayerInventory(playerInventories, activePlayerId),
+    [activePlayerId, playerInventories],
+  );
 
-    return normalizeShopPlayerInventory(playerInventories[activePlayerId]);
-  }, [activePlayerId, playerInventories]);
+  const resolvedOwnedAvatarValues = useMemo(
+    () => resolveOwnedValues(activePlayerInventory.ownedAvatarValues, [activePlayer?.avatarUrl]),
+    [activePlayer?.avatarUrl, activePlayerInventory.ownedAvatarValues],
+  );
+  const resolvedOwnedBannerValues = useMemo(
+    () => resolveOwnedValues(activePlayerInventory.ownedBannerValues, [activePlayer?.banner]),
+    [activePlayer?.banner, activePlayerInventory.ownedBannerValues],
+  );
+  const resolvedOwnedWearableValues = useMemo(
+    () => resolveOwnedValues(activePlayerInventory.ownedWearableValues, [SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE]),
+    [activePlayerInventory.ownedWearableValues],
+  );
 
-  const resolvedOwnedAvatarValues = useMemo(() => {
-    return toUniqueValues([
-      ...activePlayerInventory.ownedAvatarValues,
-      activePlayer?.avatarUrl ?? "",
-    ].filter(Boolean));
-  }, [activePlayer?.avatarUrl, activePlayerInventory.ownedAvatarValues]);
-  const resolvedOwnedBannerValues = useMemo(() => {
-    return toUniqueValues([
-      ...activePlayerInventory.ownedBannerValues,
-      activePlayer?.banner ?? "",
-    ].filter(Boolean));
-  }, [activePlayer?.banner, activePlayerInventory.ownedBannerValues]);
   const ownedAvatarSet = useMemo(() => new Set(resolvedOwnedAvatarValues), [resolvedOwnedAvatarValues]);
   const ownedBannerSet = useMemo(() => new Set(resolvedOwnedBannerValues), [resolvedOwnedBannerValues]);
+  const ownedWearableSet = useMemo(() => new Set(resolvedOwnedWearableValues), [resolvedOwnedWearableValues]);
 
-  const resolvedEquippedAvatarValue = activePlayer?.avatarUrl && ownedAvatarSet.has(activePlayer.avatarUrl)
-    ? activePlayer.avatarUrl
-    : null;
-  const resolvedEquippedBannerValue = activePlayer?.banner && ownedBannerSet.has(activePlayer.banner)
-    ? activePlayer.banner
-    : null;
+  const resolvedEquippedAvatarValue =
+    activePlayer?.avatarUrl && ownedAvatarSet.has(activePlayer.avatarUrl)
+      ? activePlayer.avatarUrl
+      : null;
+  const resolvedEquippedBannerValue =
+    activePlayer?.banner && ownedBannerSet.has(activePlayer.banner)
+      ? activePlayer.banner
+      : null;
+  const resolvedEquippedWearableValue = ownedWearableSet.has(activePlayerInventory.equippedWearableValue)
+    ? activePlayerInventory.equippedWearableValue
+    : SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE;
 
-  const avatarItems = useMemo<ShopAvatarState[]>(() => {
-    return SHOP_AVATAR_ITEMS.map(item => {
-      const isOwned = ownedAvatarSet.has(item.value);
-      const canAfford = Boolean(activePlayerId) && coins >= item.price;
+  const avatarItems = useMemo<ShopAvatarState[]>(
+    () => mapItemsToState(SHOP_AVATAR_ITEMS, ownedAvatarSet, resolvedEquippedAvatarValue, activePlayerId, coins),
+    [activePlayerId, coins, ownedAvatarSet, resolvedEquippedAvatarValue],
+  );
+  const bannerItems = useMemo<ShopBannerState[]>(
+    () => mapItemsToState(SHOP_BANNER_ITEMS, ownedBannerSet, resolvedEquippedBannerValue, activePlayerId, coins),
+    [activePlayerId, coins, ownedBannerSet, resolvedEquippedBannerValue],
+  );
+  const wearableItems = useMemo<ShopWearableState[]>(
+    () => mapItemsToState(SHOP_WEARABLE_ITEMS, ownedWearableSet, resolvedEquippedWearableValue, activePlayerId, coins),
+    [activePlayerId, coins, ownedWearableSet, resolvedEquippedWearableValue],
+  );
 
-      return {
-        ...item,
-        isOwned,
-        isEquipped: resolvedEquippedAvatarValue === item.value,
-        canAfford,
-      };
-    });
-  }, [activePlayerId, coins, ownedAvatarSet, resolvedEquippedAvatarValue]);
-
-  const bannerItems = useMemo<ShopBannerState[]>(() => {
-    return SHOP_BANNER_ITEMS.map(item => {
-      const isOwned = ownedBannerSet.has(item.value);
-      const canAfford = Boolean(activePlayerId) && coins >= item.price;
-
-      return {
-        ...item,
-        isOwned,
-        isEquipped: resolvedEquippedBannerValue === item.value,
-        canAfford,
-      };
-    });
-  }, [activePlayerId, coins, ownedBannerSet, resolvedEquippedBannerValue]);
-
-  const updateActivePlayerInventory = (updater: (inventory: ReturnType<typeof normalizeShopPlayerInventory>) => ReturnType<typeof normalizeShopPlayerInventory>) => {
+  const updateActivePlayerInventory = (updater: (inventory: ShopPlayerInventory) => ShopPlayerInventory) => {
     if (!activePlayerId) return;
 
     setPlayerInventories(prevInventories => {
-      const currentInventory = normalizeShopPlayerInventory(prevInventories[activePlayerId]);
+      const currentInventory = resolveActivePlayerInventory(prevInventories, activePlayerId);
       const nextInventory = updater(currentInventory);
 
       return {
         ...prevInventories,
-        [activePlayerId]: normalizeShopPlayerInventory(nextInventory),
+        [activePlayerId]: nextInventory,
       };
     });
   };
 
-  const buyAvatar = (value: string): boolean => {
-    const item = SHOP_AVATAR_ITEMS.find(avatarItem => avatarItem.value === value);
+  const decreaseActivePlayerBalance = (amount: number) => {
+    if (!activePlayerId) return;
+
+    setSetupPlayers(prevPlayers =>
+      prevPlayers.map(player =>
+        player.id === activePlayerId
+          ? { ...player, balance: Math.max(0, player.balance - amount) }
+          : player,
+      ),
+    );
+  };
+
+  const buyInventoryItem = (
+    items: readonly ShopPricedItem[],
+    value: string,
+    ownedSet: ReadonlySet<string>,
+    inventoryField: OwnedInventoryField,
+  ): boolean => {
+    const item = items.find(candidate => candidate.value === value);
 
     if (!item) return false;
     if (!activePlayerId) return false;
-    if (ownedAvatarSet.has(value)) return true;
+    if (ownedSet.has(value)) return true;
     if (coins < item.price) return false;
 
-    setSetupPlayers(prevPlayers => prevPlayers.map(player => (
-      player.id === activePlayerId
-        ? { ...player, balance: Math.max(0, player.balance - item.price) }
-        : player
-    )));
+    decreaseActivePlayerBalance(item.price);
     updateActivePlayerInventory(inventory => ({
       ...inventory,
-      ownedAvatarValues: toUniqueValues([...inventory.ownedAvatarValues, value]),
+      [inventoryField]: toUniqueValues([...inventory[inventoryField], value]),
     }));
 
     return true;
   };
 
+  const buyAvatar = (value: string): boolean => {
+    return buyInventoryItem(
+      SHOP_AVATAR_ITEMS,
+      value,
+      ownedAvatarSet,
+      "ownedAvatarValues",
+    );
+  };
+
   const buyBanner = (value: string): boolean => {
-    const item = SHOP_BANNER_ITEMS.find(bannerItem => bannerItem.value === value);
+    return buyInventoryItem(
+      SHOP_BANNER_ITEMS,
+      value,
+      ownedBannerSet,
+      "ownedBannerValues",
+    );
+  };
 
-    if (!item) return false;
-    if (!activePlayerId) return false;
-    if (ownedBannerSet.has(value)) return true;
-    if (coins < item.price) return false;
-
-    setSetupPlayers(prevPlayers => prevPlayers.map(player => (
-      player.id === activePlayerId
-        ? { ...player, balance: Math.max(0, player.balance - item.price) }
-        : player
-    )));
-    updateActivePlayerInventory(inventory => ({
-      ...inventory,
-      ownedBannerValues: toUniqueValues([...inventory.ownedBannerValues, value]),
-    }));
-
-    return true;
+  const buyWearable = (value: string): boolean => {
+    return buyInventoryItem(
+      SHOP_WEARABLE_ITEMS,
+      value,
+      ownedWearableSet,
+      "ownedWearableValues",
+    );
   };
 
   const equipAvatar = (value: string) => {
     if (!ownedAvatarSet.has(value)) return;
     if (!activePlayerId) return;
 
-    setSetupPlayers(prevPlayers => prevPlayers.map(player => (
-      player.id === activePlayerId
-        ? { ...player, avatarUrl: value }
-        : player
-    )));
+    setSetupPlayers(prevPlayers =>
+      prevPlayers.map(player =>
+        player.id === activePlayerId ? { ...player, avatarUrl: value } : player,
+      ),
+    );
   };
 
   const equipBanner = (value: string) => {
     if (!ownedBannerSet.has(value)) return;
     if (!activePlayerId) return;
 
-    setSetupPlayers(prevPlayers => prevPlayers.map(player => (
-      player.id === activePlayerId
-        ? { ...player, banner: value }
-        : player
-      )));
+    setSetupPlayers(prevPlayers =>
+      prevPlayers.map(player =>
+        player.id === activePlayerId ? { ...player, banner: value } : player,
+      ),
+    );
+  };
+
+  const equipWearable = (value: string) => {
+    if (!ownedWearableSet.has(value)) return;
+
+    updateActivePlayerInventory(inventory => ({
+      ...inventory,
+      equippedWearableValue: value,
+    }));
   };
 
   const buyOrEquipBanner = (value: string) => {
@@ -197,9 +203,14 @@ export function useShop() {
     coins,
     avatarItems,
     bannerItems,
+    wearableItems,
+    ownedWearableValues: resolvedOwnedWearableValues,
+    equippedWearableValue: resolvedEquippedWearableValue,
     buyAvatar,
     buyBanner,
+    buyWearable,
     equipAvatar,
+    equipWearable,
     buyOrEquipBanner,
   };
 }

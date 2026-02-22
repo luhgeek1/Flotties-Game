@@ -19,7 +19,6 @@ import {
 } from "@/shared/store/setupAtoms";
 import {
   createDefaultShopPlayerInventory,
-  normalizeShopPlayerInventory,
   shopPlayerInventoriesAtom,
 } from "@/shared/store/shopAtoms";
 
@@ -50,7 +49,7 @@ export function usePlayersSetupScreen({ onContinue }: UsePlayersSetupScreenArgs 
 
   const availablePresetAvatars = useMemo(() => {
     const editingInventory = editingPlayer
-      ? normalizeShopPlayerInventory(playerInventories[editingPlayer.id])
+      ? playerInventories[editingPlayer.id] ?? createDefaultShopPlayerInventory()
       : createDefaultShopPlayerInventory();
     const ownedValues = new Set([
       ...editingInventory.ownedAvatarValues,
@@ -63,7 +62,7 @@ export function usePlayersSetupScreen({ onContinue }: UsePlayersSetupScreenArgs 
 
   const availableBannerOptions = useMemo(() => {
     const editingInventory = editingPlayer
-      ? normalizeShopPlayerInventory(playerInventories[editingPlayer.id])
+      ? playerInventories[editingPlayer.id] ?? createDefaultShopPlayerInventory()
       : createDefaultShopPlayerInventory();
     const ownedValues = new Set([
       ...editingInventory.ownedBannerValues,
@@ -143,11 +142,12 @@ export function usePlayersSetupScreen({ onContinue }: UsePlayersSetupScreenArgs 
       } : player)));
 
       setPlayerInventories(prevInventories => {
-        const currentInventory = normalizeShopPlayerInventory(prevInventories[editingPlayerId]);
+        const currentInventory = prevInventories[editingPlayerId] ?? createDefaultShopPlayerInventory();
 
         return {
           ...prevInventories,
           [editingPlayerId]: {
+            ...currentInventory,
             ownedAvatarValues: toUniqueValues([
               ...currentInventory.ownedAvatarValues,
               values.avatar,
@@ -179,6 +179,7 @@ export function usePlayersSetupScreen({ onContinue }: UsePlayersSetupScreenArgs 
     setPlayerInventories(prevInventories => ({
       ...prevInventories,
       [newPlayerId]: {
+        ...createDefaultShopPlayerInventory(),
         ownedAvatarValues: toUniqueValues([
           ...SHOP_DEFAULT_OWNED_AVATAR_VALUES,
           values.avatar,
