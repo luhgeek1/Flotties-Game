@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion } from "motion/react";
 
 import { QuestionModal } from "@/features/question-modal";
@@ -8,6 +7,7 @@ import lottiForwardImage from "@/shared/assets/lottipryamoi.png";
 import leftLottiImage from "@/shared/assets/slevalotti.png";
 import smileLottiImage from "@/shared/assets/smileLotti.png";
 import { useOnboardingQuestionDemo } from "../model/useOnboardingQuestionDemo";
+import { useOnboardingQuestionDemoStage } from "../model/useOnboardingQuestionDemoStage";
 
 type SetupOnboardingQuestionDemoProps = {
   onFinish?: () => void;
@@ -15,23 +15,18 @@ type SetupOnboardingQuestionDemoProps = {
 
 export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestionDemoProps) {
   const model = useOnboardingQuestionDemo();
-  const [isSmileStepVisible, setIsSmileStepVisible] = useState(false);
-  const [isFinalStepVisible, setIsFinalStepVisible] = useState(false);
-  const [isDemoSkipped, setIsDemoSkipped] = useState(false);
-
-  const handleOpenSmileStep = () => {
-    setIsDemoSkipped(false);
-    setIsSmileStepVisible(true);
-  };
-
-  const handleOpenFinalStep = () => {
-    setIsFinalStepVisible(true);
-  };
-
-  const handleSkipDemo = () => {
-    model.resetDemo();
-    setIsDemoSkipped(true);
-  };
+  const {
+    isSpecialStepVisible,
+    isFinalStepVisible,
+    isPostDemoOverlayVisible,
+    openSpecialStep,
+    openFinalStep,
+    skipDemo,
+    repeatDemo,
+  } = useOnboardingQuestionDemoStage({
+    isDemoQuestionCompleted: model.isDemoQuestionCompleted,
+    resetDemo: model.resetDemo,
+  });
 
   if (isFinalStepVisible) {
     return (
@@ -70,11 +65,11 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
     );
   }
 
-  if (isSmileStepVisible) {
+  if (isSpecialStepVisible) {
     return (
       <motion.button
         type="button"
-        onClick={handleOpenFinalStep}
+        onClick={openFinalStep}
         className="fixed inset-0 z-50 block h-full w-full cursor-pointer bg-white p-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -134,7 +129,7 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
       <Button
         type="button"
         className="absolute right-4 top-4 z-10 md:right-8 md:top-8"
-        onClick={handleSkipDemo}
+        onClick={skipDemo}
       >
         SKIP
       </Button>
@@ -162,13 +157,13 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
         </div>
       </div>
 
-      {model.isDemoQuestionCompleted || isDemoSkipped ? (
+      {isPostDemoOverlayVisible ? (
         <motion.div
           className="fixed inset-0 z-30 bg-white/40 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          onClick={handleOpenSmileStep}
+          onClick={openSpecialStep}
         >
           <motion.div
             className="pointer-events-auto absolute left-4 top-[70%] z-10 w-[min(60vw,720px)] -translate-y-1/2 rounded-[2rem] border border-slate-200 bg-white/95 p-6 shadow-lg sm:left-6 sm:p-8 md:left-10 md:p-10"
@@ -185,8 +180,7 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
               className="mt-5"
               onClick={(event) => {
                 event.stopPropagation();
-                model.resetDemo();
-                setIsDemoSkipped(false);
+                repeatDemo();
               }}
             >
               Повторить демо

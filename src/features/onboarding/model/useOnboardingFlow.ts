@@ -1,13 +1,19 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
+import { useAtom } from "jotai";
+import { onboardingStageAtom } from "@/shared/store/onboardingAtom";
 
 export type OnboardingFlowStep = "intro" | "question-demo";
 
 export function useOnboardingFlow() {
-  const [step, setStep] = useState<OnboardingFlowStep>("intro");
+  const [onboardingStage, setOnboardingStage] = useAtom(onboardingStageAtom);
 
   const showQuestionDemo = useCallback(() => {
-    setStep("question-demo");
-  }, []);
+    setOnboardingStage("demo");
+  }, [setOnboardingStage]);
+
+  const step: OnboardingFlowStep = onboardingStage === "intro"
+    ? "intro"
+    : "question-demo";
 
   return {
     step,
