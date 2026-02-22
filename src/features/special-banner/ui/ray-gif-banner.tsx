@@ -143,7 +143,7 @@ function RayGifBannerCompact({
           ) : (
             <motion.div
               key="compact-main"
-              className="relative aspect-[4/3] w-full overflow-hidden"
+              className="relative aspect-4/3 w-full overflow-hidden"
               initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}

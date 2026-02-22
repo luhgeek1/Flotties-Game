@@ -5,6 +5,7 @@ import { QuestionModal } from "@/features/question-modal";
 import { RayGifBanner } from "@/features/special-banner";
 import { Button } from "@/shared/components/ui/button";
 import lottiForwardImage from "@/shared/assets/lottipryamoi.png";
+import leftLottiImage from "@/shared/assets/slevalotti.png";
 import smileLottiImage from "@/shared/assets/smileLotti.png";
 import { useOnboardingQuestionDemo } from "../model/useOnboardingQuestionDemo";
 
@@ -15,6 +16,7 @@ type SetupOnboardingQuestionDemoProps = {
 export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestionDemoProps) {
   const model = useOnboardingQuestionDemo();
   const [isSmileStepVisible, setIsSmileStepVisible] = useState(false);
+  const [isFinalStepVisible, setIsFinalStepVisible] = useState(false);
   const [isDemoSkipped, setIsDemoSkipped] = useState(false);
 
   const handleOpenSmileStep = () => {
@@ -22,16 +24,57 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
     setIsSmileStepVisible(true);
   };
 
+  const handleOpenFinalStep = () => {
+    setIsFinalStepVisible(true);
+  };
+
   const handleSkipDemo = () => {
     model.resetDemo();
     setIsDemoSkipped(true);
   };
 
+  if (isFinalStepVisible) {
+    return (
+      <motion.div
+        className="fixed inset-0 z-50 bg-white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="pointer-events-none absolute bottom-0 left-0 z-20">
+          <motion.img
+            src={leftLottiImage}
+            alt="Left Lotti"
+            className="h-auto w-[min(52vw,760px)] sm:w-[min(56vw,840px)] md:w-[min(60vw,920px)]"
+            initial={{ x: -42, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            draggable={false}
+          />
+        </div>
+
+        <motion.div
+          className="absolute left-[50%] top-1/2 z-30 w-[min(48vw,680px)] -translate-y-1/2 rounded-[2rem] border border-slate-200 bg-white/95 p-5 shadow-lg sm:p-7 md:p-9"
+          initial={{ x: 24, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p className="text-base font-semibold leading-relaxed text-slate-900 sm:text-lg md:text-2xl">
+            На этом все! С остальным я буду помогать во время игры! Вы готовы?
+          </p>
+          <Button type="button" className="mt-5 sm:mt-6" onClick={onFinish}>
+            Продолжить -&gt;
+          </Button>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
   if (isSmileStepVisible) {
     return (
       <motion.button
         type="button"
-        onClick={onFinish}
+        onClick={handleOpenFinalStep}
         className="fixed inset-0 z-50 block h-full w-full cursor-pointer bg-white p-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -134,7 +177,7 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
             transition={{ duration: 0.35, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl">
-              Отлично! Нажмите в любую часть экрана чтобы продолжить. Если хотите повторить демо - нажмите на кнопкку ниже. 
+              Отлично! Нажмите в любую часть экрана, чтобы продолжить. Если хотите повторить демо - нажмите на кнопкку ниже. 
             </p>
             <Button
               type="button"
