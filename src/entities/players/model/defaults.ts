@@ -11,17 +11,20 @@ export const DEFAULT_SETUP_PLAYERS: SetupPlayer[] = [
     name: "Игрок 1",
     avatarUrl: DEFAULT_PLAYER_AVATAR_URL,
     banner: "bg-white",
+    balance: 0,
   },
   {
     id: "p2",
     name: "Игрок 2",
     avatarUrl: DEFAULT_PLAYER_AVATAR_URL,
     banner: "bg-white",
+    balance: 0,
   },
   {
     id: "p3",
     name: "Игрок 3",
     avatarUrl: DEFAULT_PLAYER_AVATAR_URL,
     banner: "bg-white",
+    balance: 0,
   },
 ];

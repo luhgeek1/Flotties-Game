@@ -5,6 +5,7 @@ export type SetupPlayer = {
   name: string;
   avatarUrl: string;
   banner: string;
+  balance: number;
 };
 
 export type Player = SetupPlayer & {
