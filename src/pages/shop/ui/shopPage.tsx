@@ -18,6 +18,7 @@ export function ShopPage({ onBackToSetup }: ShopPageProps) {
     inventoryCount,
     equippedAvatarName,
     equippedThemeName,
+    equippedThemeValue,
     isPlayerSelectOpen,
     openPlayerSelect,
     closePlayerSelect,
@@ -77,6 +78,7 @@ export function ShopPage({ onBackToSetup }: ShopPageProps) {
           inventoryCount={inventoryCount}
           equippedAvatarName={equippedAvatarName}
           equippedThemeName={equippedThemeName}
+          equippedThemeValue={equippedThemeValue}
         />
       </div>
 
