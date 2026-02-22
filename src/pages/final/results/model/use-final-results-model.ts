@@ -40,9 +40,11 @@ function sleep(ms: number): Promise<void> {
   });
 }
 
+const WINNER_COINS_BONUS = 150;
+
 export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {}) {
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
-  const setupPlayers = useAtomValue(setupPlayersAtom);
+  const [setupPlayers, setSetupPlayers] = useAtom(setupPlayersAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const playerScores = useAtomValue(gamePlayerScoresAtom);
   const finalBids = useAtomValue(finalBidByPlayerIdAtom);
@@ -52,7 +54,7 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
   const basePlayers = useMemo<DisplayPlayer[]>(() => {
     const correctAnswer = selectedPack.rounds.final.answers[0] ?? "";
 
-    return resolveSelectedPlayers(setupPlayers, selectedPlayerIds).map(player => {
+    const playersWithScores = resolveSelectedPlayers(setupPlayers, selectedPlayerIds).map(player => {
       const wager = finalBids[player.id] ?? 0;
       const answer = finalAnswers[player.id] ?? "";
       const initialScore = playerScores[player.id] ?? 0;
@@ -67,9 +69,20 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
         isCorrect,
         initialScore,
         finalScore,
+        winnerBonus: 0,
         isRevealed: false,
       };
     });
+
+    const winnerScore = playersWithScores.reduce(
+      (max, player) => Math.max(max, player.finalScore),
+      Number.NEGATIVE_INFINITY,
+    );
+
+    return playersWithScores.map(player => ({
+      ...player,
+      winnerBonus: player.finalScore === winnerScore ? WINNER_COINS_BONUS : 0,
+    }));
   }, [finalAnswers, finalBids, playerScores, selectedPack.rounds.final.answers, selectedPlayerIds, setupPlayers]);
 
   const sourceKey = useMemo(() => JSON.stringify({
@@ -123,6 +136,12 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
       setIsSorting(true);
       setDisplayPlayers(sortedPlayers);
 
+      const winnerBonusByPlayerId = new Map(
+        sortedPlayers
+          .filter(player => player.winnerBonus > 0)
+          .map(player => [player.id, player.winnerBonus] as const),
+      );
+
       await sleep(800);
       if (isCancelled) return;
 
@@ -134,6 +153,19 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
         showControls: true,
         isCompleted: true,
       });
+
+      if (winnerBonusByPlayerId.size > 0) {
+        setSetupPlayers(prevPlayers => prevPlayers.map(player => {
+          const bonus = winnerBonusByPlayerId.get(player.id) ?? 0;
+
+          if (bonus <= 0) return player;
+
+          return {
+            ...player,
+            balance: player.balance + bonus,
+          };
+        }));
+      }
     };
 
     runSequence();
@@ -141,7 +173,7 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
     return () => {
       isCancelled = true;
     };
-  }, [basePlayers, canRestoreSavedResults, setSavedResults, sourceKey]);
+  }, [basePlayers, canRestoreSavedResults, setSavedResults, setSetupPlayers, sourceKey]);
 
   const winnerScore = useMemo(
     () => displayPlayers.reduce((max, player) => Math.max(max, player.finalScore), Number.NEGATIVE_INFINITY),

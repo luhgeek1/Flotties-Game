@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { CheckCircle2, Trophy, XCircle } from "lucide-react";
+import { CheckCircle2, Coins, Trophy, XCircle } from "lucide-react";
 
 import { Button } from "@/shared/components/ui/button";
 import { Header } from "@/widgets/header";
@@ -55,10 +55,19 @@ export function FinalResultsPage({ onExitToSetup, onReset }: FinalResultsPagePro
                         <motion.div
                           initial={{ y: -20, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
-                          className="absolute top-0 right-0 z-10 flex items-center gap-1 rounded-bl-xl bg-yellow-500 px-3 py-1 text-[10px] font-bold tracking-widest text-white uppercase"
+                          className="absolute top-0 right-0 z-10 flex items-center gap-2 rounded-bl-xl bg-yellow-500 px-3 py-1 text-[10px] font-bold tracking-widest text-white uppercase"
                         >
-                          <Trophy size={12} />
-                          Победитель
+                          <span className="flex items-center gap-1">
+                            <Trophy size={12} />
+                            Победитель
+                          </span>
+
+                          {player.winnerBonus > 0 ? (
+                            <span className="flex items-center gap-1 border-l border-white/50 pl-2">
+                              <Coins size={12} />
+                              +{player.winnerBonus}
+                            </span>
+                          ) : null}
                         </motion.div>
                       ) : null}
                     </AnimatePresence>

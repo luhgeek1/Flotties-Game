@@ -11,6 +11,7 @@ export type FinalResultsPlayerState = {
   isCorrect: boolean;
   initialScore: number;
   finalScore: number;
+  winnerBonus: number;
   isRevealed: boolean;
 };
 
