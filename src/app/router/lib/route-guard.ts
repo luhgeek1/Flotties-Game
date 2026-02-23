@@ -80,6 +80,7 @@ type CoerceRouteArgs = {
   currentRoute: AppRoute;
   isRound2Unlocked: boolean;
   canEnterGame: boolean;
+  canEnterShop: boolean;
 };
 
 export function coerceRoute({
@@ -87,7 +88,12 @@ export function coerceRoute({
   currentRoute,
   isRound2Unlocked,
   canEnterGame,
+  canEnterShop,
 }: CoerceRouteArgs): AppRoute {
+  if (requestedRoute === "shop" && !canEnterShop) {
+    return "setup";
+  }
+
   if (
     (requestedRoute === "game"
       || requestedRoute === "game2r"
@@ -128,11 +134,13 @@ export function getInitialRoute(
   pathname: string,
   isRound2Unlocked: boolean,
   canEnterGame: boolean,
+  canEnterShop: boolean,
 ): AppRoute {
   return coerceRoute({
     requestedRoute: resolveRoute(pathname),
     currentRoute: "setup",
     isRound2Unlocked,
     canEnterGame,
+    canEnterShop,
   });
 }
