@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAtom, useSetAtom } from "jotai";
 
 import type { GameQuestionFlowState } from "@/shared/store/gameAtoms";
@@ -17,15 +17,40 @@ import {
 } from "@/features/question-flow";
 import { DEMO_PLAYERS, DEMO_QUESTION } from "./constants";
 
+function createRestoredQuestionFlowState(
+  questionPhase: GameQuestionFlowState["phase"] | null,
+  answerInput: string,
+): GameQuestionFlowState | null {
+  if (!questionPhase) return null;
+
+  const baseState = createQuestionFlowState(DEMO_QUESTION.id);
+
+  if (questionPhase === "answering") {
+    return {
+      ...baseState,
+      phase: questionPhase,
+      activePlayerId: DEMO_PLAYERS[0]?.id ?? null,
+      answerInput,
+    };
+  }
+
+  return {
+    ...baseState,
+    phase: questionPhase,
+    answerInput,
+  };
+}
+
 export function useOnboardingQuestionDemo() {
   const [demoState, setDemoState] = useAtom(onboardingDemoStateAtom);
   const resetOnboardingDemoState = useSetAtom(resetOnboardingDemoStateAtom);
-  const {
-    activeQuestionId,
-    openedQuestionIds,
-    questionFlowState,
-    playerScores,
-  } = demoState;
+  const [activeQuestionId, setActiveQuestionId] = useState<string | null>(
+    demoState.questionPhase ? DEMO_QUESTION.id : null,
+  );
+  const [questionFlowState, setQuestionFlowStateState] = useState<GameQuestionFlowState | null>(
+    () => createRestoredQuestionFlowState(demoState.questionPhase, demoState.answerInput),
+  );
+  const [isDemoQuestionCompleted, setIsDemoQuestionCompleted] = useState(false);
 
   const setQuestionFlowState = useCallback((
     next:
@@ -33,45 +58,44 @@ export function useOnboardingQuestionDemo() {
       | null
       | ((prev: GameQuestionFlowState | null) => GameQuestionFlowState | null),
   ) => {
-    setDemoState(prev => ({
-      ...prev,
-      questionFlowState: typeof next === "function" ? next(prev.questionFlowState) : next,
-    }));
-  }, [setDemoState]);
+    setQuestionFlowStateState(prev => (typeof next === "function" ? next(prev) : next));
+  }, []);
 
-  const isOpened = useCallback(
-    (questionId: string) => openedQuestionIds.includes(questionId),
-    [openedQuestionIds],
-  );
+  const persistedQuestionPhase = questionFlowState?.phase ?? null;
+  const persistedAnswerInput = questionFlowState?.answerInput ?? "";
 
-  const closeQuestionModal = useCallback(() => {
+  useEffect(() => {
     setDemoState(prev => {
-      const currentQuestionId = prev.activeQuestionId;
-      if (!currentQuestionId) return prev;
-
-      const nextOpenedQuestionIds = prev.openedQuestionIds.includes(currentQuestionId)
-        ? prev.openedQuestionIds
-        : [...prev.openedQuestionIds, currentQuestionId];
+      if (
+        prev.questionPhase === persistedQuestionPhase
+        && prev.answerInput === persistedAnswerInput
+      ) {
+        return prev;
+      }
 
       return {
         ...prev,
-        openedQuestionIds: nextOpenedQuestionIds,
-        activeQuestionId: null,
-        questionFlowState: null,
+        questionPhase: persistedQuestionPhase,
+        answerInput: persistedAnswerInput,
       };
     });
-  }, [setDemoState]);
+  }, [persistedAnswerInput, persistedQuestionPhase, setDemoState]);
+
+  const closeQuestionModal = useCallback(() => {
+    if (!activeQuestionId) return;
+
+    setIsDemoQuestionCompleted(true);
+    setActiveQuestionId(null);
+    setQuestionFlowStateState(null);
+  }, [activeQuestionId]);
 
   const handleQuestionSelect = useCallback((questionId: string) => {
     if (questionId !== DEMO_QUESTION.id) return;
-    if (isOpened(questionId)) return;
+    if (isDemoQuestionCompleted) return;
 
-    setDemoState(prev => ({
-      ...prev,
-      activeQuestionId: questionId,
-      questionFlowState: createQuestionFlowState(questionId),
-    }));
-  }, [isOpened, setDemoState]);
+    setActiveQuestionId(questionId);
+    setQuestionFlowStateState(createQuestionFlowState(questionId));
+  }, [isDemoQuestionCompleted]);
 
   const activeQuestion = activeQuestionId === DEMO_QUESTION.id ? DEMO_QUESTION : null;
   const flowPhase = questionFlowState?.phase ?? (activeQuestionId ? "reading" : null);
@@ -94,22 +118,12 @@ export function useOnboardingQuestionDemo() {
     closeQuestionModal,
   });
 
-  const onPlayerScoreDelta = useCallback((playerId: string, delta: number) => {
-    setDemoState(prev => ({
-      ...prev,
-      playerScores: {
-        ...prev.playerScores,
-        [playerId]: (prev.playerScores[playerId] ?? 0) + delta,
-      },
-    }));
-  }, [setDemoState]);
-
   const { setAnswerInput, submitAnswer, continueAfterWrong } = useQuestionAnswerActions({
     activeQuestionId,
     activeQuestion,
     questionFlowState,
     players: DEMO_PLAYERS,
-    onPlayerScoreDelta,
+    onPlayerScoreDelta: () => {},
     closeQuestionModal,
     setQuestionFlowState,
   });
@@ -130,25 +144,17 @@ export function useOnboardingQuestionDemo() {
 
   const resetDemo = useCallback(() => {
     resetOnboardingDemoState();
+    setIsDemoQuestionCompleted(false);
+    setActiveQuestionId(null);
+    setQuestionFlowStateState(null);
   }, [resetOnboardingDemoState]);
 
-  const playersWithScore = useMemo(
-    () => DEMO_PLAYERS.map(player => ({
-      ...player,
-      score: playerScores[player.id] ?? 0,
-    })),
-    [playerScores],
-  );
-
-  const isDemoQuestionCompleted = openedQuestionIds.includes(DEMO_QUESTION.id);
   const canPickPlayerByClick = flowPhase === "reading" && activeQuestionId === DEMO_QUESTION.id;
 
   return {
     demoQuestionId: DEMO_QUESTION.id,
     demoQuestionValue: DEMO_QUESTION.value,
-    openedQuestionIds,
     handleQuestionSelect,
-    playersWithScore,
     canPickPlayerByClick,
     pickPlayerByClick,
     isDemoQuestionCompleted,

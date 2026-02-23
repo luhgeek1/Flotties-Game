@@ -33,7 +33,7 @@ export function GameShell({
           onThemeToggle={onThemeToggle}
           rightSlot={onOpenAllQuestionsClick ? (
             <Button type="button" variant="outline" size="sm" onClick={onOpenAllQuestionsClick}>
-              Закончить раньше
+              Закончить раунд
             </Button>
           ) : null}
         />
