@@ -3,15 +3,12 @@ import { useCallback, useMemo } from "react";
 
 import { useAuctionInteraction, useAuctionQuestionData } from "@/features/auction/model";
 import { useCatInBagInteraction, useCatInBagQuestionData } from "@/features/cat-in-bag/model";
+import { useGameBoardData, useGamePlayers, useRoundSpecialMap } from "@/features/game-session";
 import { usePlayerPick } from "@/features/player-pick";
+import { useQuestionState } from "@/features/question-flow";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
 import { adminModeEnabledAtom } from "@/shared/store/adminModeAtom";
 import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
-
-import { useGameBoardData } from "./useGameBoardData";
-import { useGamePlayers } from "./useGamePlayers";
-import { useQuestionState } from "./useQuestionState";
-import { useRoundSpecialMap } from "./useRoundSpecialMap";
 
 type UseGamePageModelArgs = {
   onExitToSetup?: () => void;

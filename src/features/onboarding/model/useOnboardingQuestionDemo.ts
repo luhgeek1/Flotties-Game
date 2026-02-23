@@ -10,11 +10,11 @@ import {
   applyPlayerBuzz,
   createQuestionFlowState,
   QUESTION_TIMER_DURATION_MS,
-} from "@/pages/game/model/questionFlow";
-import { useQuestionAnswerActions } from "@/pages/game/model/useQuestionAnswerActions";
-import { useQuestionAutoCloseEffect } from "@/pages/game/model/useQuestionAutoCloseEffect";
-import { useQuestionBuzzingEffect } from "@/pages/game/model/useQuestionBuzzingEffect";
-import { useQuestionTimerEffect } from "@/pages/game/model/useQuestionTimerEffect";
+  useQuestionAnswerActions,
+  useQuestionAutoCloseEffect,
+  useQuestionBuzzingEffect,
+  useQuestionTimerEffect,
+} from "@/features/question-flow";
 import { DEMO_PLAYERS, DEMO_QUESTION, DEMO_THEME } from "./constants";
 
 export function useOnboardingQuestionDemo() {

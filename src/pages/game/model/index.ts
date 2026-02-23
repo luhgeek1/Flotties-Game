@@ -1,5 +1,3 @@
-export { useGamePlayers } from "./useGamePlayers";
-export { useGameBoardData } from "./useGameBoardData";
-export { useQuestionState } from "./useQuestionState";
-export { useRoundSpecialMap } from "./useRoundSpecialMap";
+export { useGamePlayers, useGameBoardData, useRoundSpecialMap } from "@/features/game-session";
+export { useQuestionState } from "@/features/question-flow";
 export { useGamePageModel } from "./useGamePageModel";
