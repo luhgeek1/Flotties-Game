@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 import { LogOut, Moon, Sun } from "lucide-react";
 
+import { AdminModeSwitch } from "@/features/admin";
 import { ExitGameModal } from "@/features/exit-game";
 import { Button } from "@/shared/components/ui/button";
 import { useTheme } from "@/shared/lib/use-theme";
@@ -55,7 +56,8 @@ export function Header({
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          <AdminModeSwitch />
           {rightSlot}
           <Button
             type="button"
