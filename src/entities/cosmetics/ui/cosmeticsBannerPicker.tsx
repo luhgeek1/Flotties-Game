@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 
-import type { BannerOption } from "../model/defaults";
+import type { BannerOption } from "../model";
 
 type CosmeticsBannerPickerProps = {
   options: BannerOption[];

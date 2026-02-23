@@ -1,6 +1,7 @@
 import { Check, Coins, Palette, User } from "lucide-react";
 import { useCallback, useRef } from "react";
 
+import { CosmeticsWearableCard } from "@/entities/cosmetics";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 
@@ -225,52 +226,16 @@ export function ShopSection({
 
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
             {wearableItems.map(item => (
-              <div key={item.id}>
-                <div className="relative">
-                  <div
-                    className={cn(
-                      "w-full aspect-square rounded-2xl border-2 flex items-center justify-center relative overflow-hidden bg-zinc-50 dark:bg-slate-900",
-                      item.isOwned
-                        ? "border-black ring-2 ring-black ring-offset-2 dark:border-slate-100 dark:ring-slate-100 dark:ring-offset-slate-950"
-                        : "border-zinc-200 dark:border-slate-700",
-                    )}
-                  >
-                    <img
-                      src={item.cardSrc}
-                      alt={item.name}
-                      className="h-full w-full object-cover"
-                    />
-
-                    {!item.isOwned ? (
-                      <span className="absolute top-2 right-2 inline-flex min-w-19 items-center justify-center gap-1 whitespace-nowrap text-white font-bold text-xs leading-none bg-black px-3 py-1 rounded-full">
-                        {item.price}
-                        <Coins className="h-3.5 w-3.5" />
-                      </span>
-                    ) : (
-                      <div className="absolute top-2 right-2 rounded-full bg-black px-3 py-1 text-xs font-bold text-white dark:bg-slate-100 dark:text-slate-900">
-                        КУПЛЕНО
-                      </div>
-                    )}
-
-                    <span className="absolute left-2 right-2 bottom-2 px-2 py-1.5 text-center text-[11px] font-semibold tracking-wide truncate bg-white/90 text-zinc-900 rounded-md dark:bg-slate-900/85 dark:text-zinc-100">
-                      {item.name}
-                    </span>
-                  </div>
-                </div>
-
-                {!item.isOwned ? (
-                  <Button
-                    type="button"
-                    className="mt-2 h-8 w-full rounded-full bg-white! text-black! shadow-[0_2px_8px_rgba(0,0,0,0.2)] hover:bg-zinc-100!"
-                    disabled={!item.canAfford}
-                    onClick={() => {
-                      buyWearable(item.value);
-                    }}
-                  >
-                    КУПИТЬ
-                  </Button>
-                ) : null}
-              </div>
+              <CosmeticsWearableCard
+                key={item.id}
+                name={item.name}
+                value={item.value}
+                price={item.price}
+                cardSrc={item.cardSrc}
+                isOwned={item.isOwned}
+                canAfford={item.canAfford}
+                onBuy={buyWearable}
+              />
             ))}
           </div>
         </div>

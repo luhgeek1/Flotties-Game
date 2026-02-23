@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 
-import type { AvatarOption } from "../model/defaults";
+import type { AvatarOption } from "../model";
 
 type CosmeticsAvatarPickerProps = {
   options: AvatarOption[];

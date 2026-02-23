@@ -1,7 +1,6 @@
 export {
   ADD_PLAYER_BANNER_OPTIONS,
   ADD_PLAYER_PRESET_AVATARS,
-  DEFAULT_PLAYER_AVATAR,
   TRY_ON_ITEMS,
   SHOP_AVATAR_ITEMS,
   SHOP_BANNER_ITEMS,
@@ -19,4 +18,6 @@ export {
   type ShopBannerItem,
   type ShopWearableItem,
 } from "./model";
-export { CosmeticsAvatarPicker, CosmeticsBannerPicker } from "./ui";
+export { CosmeticsAvatarPicker } from "./ui/cosmeticsAvatarPicker";
+export { CosmeticsBannerPicker } from "./ui/cosmeticsBannerPicker";
+export { CosmeticsWearableCard } from "./ui/cosmeticsWearableCard";
