@@ -8,19 +8,20 @@ export function toUniqueValues(values: string[]): string[] {
 
 export function resolveActivePlayer<TPlayer extends { id: string }>(
   players: TPlayer[],
-  activePlayerId: string | null,
-): TPlayer | null {
-  return players.find(player => player.id === activePlayerId) ?? null;
+  activePlayerId: string,
+): TPlayer {
+  const activePlayer = players.find(player => player.id === activePlayerId);
+  if (!activePlayer) {
+    throw new Error(`Active shop player not found: ${activePlayerId}`);
+  }
+
+  return activePlayer;
 }
 
 export function resolveActivePlayerInventory(
   playerInventories: ShopPlayerInventories,
-  activePlayerId: string | null,
+  activePlayerId: string,
 ): ShopPlayerInventory {
-  if (!activePlayerId) {
-    return createDefaultShopPlayerInventory();
-  }
-
   return playerInventories[activePlayerId] ?? createDefaultShopPlayerInventory();
 }
 
@@ -38,12 +39,11 @@ export function mapItemsToState<TItem extends ShopPricedItem>(
   items: readonly TItem[],
   ownedSet: ReadonlySet<string>,
   equippedValue: string | null,
-  activePlayerId: string | null,
   coins: number,
 ): Array<TItem & ItemStateMeta> {
   return items.map(item => {
     const isOwned = ownedSet.has(item.value);
-    const canAfford = Boolean(activePlayerId) && coins >= item.price;
+    const canAfford = coins >= item.price;
 
     return {
       ...item,

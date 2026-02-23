@@ -34,19 +34,19 @@ export function useShop() {
     () => resolveActivePlayer(setupPlayers, activePlayerId),
     [activePlayerId, setupPlayers],
   );
-  const coins = isAdminMode ? 1000 : (activePlayer?.balance ?? 0);
+  const coins = isAdminMode ? 1000 : activePlayer.balance;
   const activePlayerInventory = useMemo(
     () => resolveActivePlayerInventory(playerInventories, activePlayerId),
     [activePlayerId, playerInventories],
   );
 
   const resolvedOwnedAvatarValues = useMemo(
-    () => resolveOwnedValues(activePlayerInventory.ownedAvatarValues, [activePlayer?.avatarUrl]),
-    [activePlayer?.avatarUrl, activePlayerInventory.ownedAvatarValues],
+    () => resolveOwnedValues(activePlayerInventory.ownedAvatarValues, [activePlayer.avatarUrl]),
+    [activePlayer.avatarUrl, activePlayerInventory.ownedAvatarValues],
   );
   const resolvedOwnedBannerValues = useMemo(
-    () => resolveOwnedValues(activePlayerInventory.ownedBannerValues, [activePlayer?.banner]),
-    [activePlayer?.banner, activePlayerInventory.ownedBannerValues],
+    () => resolveOwnedValues(activePlayerInventory.ownedBannerValues, [activePlayer.banner]),
+    [activePlayer.banner, activePlayerInventory.ownedBannerValues],
   );
   const resolvedOwnedWearableValues = useMemo(
     () => resolveOwnedValues(activePlayerInventory.ownedWearableValues, [SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE]),
@@ -58,11 +58,11 @@ export function useShop() {
   const ownedWearableSet = useMemo(() => new Set(resolvedOwnedWearableValues), [resolvedOwnedWearableValues]);
 
   const resolvedEquippedAvatarValue =
-    activePlayer?.avatarUrl && ownedAvatarSet.has(activePlayer.avatarUrl)
+    activePlayer.avatarUrl && ownedAvatarSet.has(activePlayer.avatarUrl)
       ? activePlayer.avatarUrl
       : null;
   const resolvedEquippedBannerValue =
-    activePlayer?.banner && ownedBannerSet.has(activePlayer.banner)
+    activePlayer.banner && ownedBannerSet.has(activePlayer.banner)
       ? activePlayer.banner
       : null;
   const resolvedEquippedWearableValue = ownedWearableSet.has(activePlayerInventory.equippedWearableValue)
@@ -70,21 +70,19 @@ export function useShop() {
     : SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE;
 
   const avatarItems = useMemo<ShopAvatarState[]>(
-    () => mapItemsToState(SHOP_AVATAR_ITEMS, ownedAvatarSet, resolvedEquippedAvatarValue, activePlayerId, coins),
-    [activePlayerId, coins, ownedAvatarSet, resolvedEquippedAvatarValue],
+    () => mapItemsToState(SHOP_AVATAR_ITEMS, ownedAvatarSet, resolvedEquippedAvatarValue, coins),
+    [coins, ownedAvatarSet, resolvedEquippedAvatarValue],
   );
   const bannerItems = useMemo<ShopBannerState[]>(
-    () => mapItemsToState(SHOP_BANNER_ITEMS, ownedBannerSet, resolvedEquippedBannerValue, activePlayerId, coins),
-    [activePlayerId, coins, ownedBannerSet, resolvedEquippedBannerValue],
+    () => mapItemsToState(SHOP_BANNER_ITEMS, ownedBannerSet, resolvedEquippedBannerValue, coins),
+    [coins, ownedBannerSet, resolvedEquippedBannerValue],
   );
   const wearableItems = useMemo<ShopWearableState[]>(
-    () => mapItemsToState(SHOP_WEARABLE_ITEMS, ownedWearableSet, resolvedEquippedWearableValue, activePlayerId, coins),
-    [activePlayerId, coins, ownedWearableSet, resolvedEquippedWearableValue],
+    () => mapItemsToState(SHOP_WEARABLE_ITEMS, ownedWearableSet, resolvedEquippedWearableValue, coins),
+    [coins, ownedWearableSet, resolvedEquippedWearableValue],
   );
 
   const updateActivePlayerInventory = (updater: (inventory: ShopPlayerInventory) => ShopPlayerInventory) => {
-    if (!activePlayerId) return;
-
     setPlayerInventories(prevInventories => {
       const currentInventory = resolveActivePlayerInventory(prevInventories, activePlayerId);
       const nextInventory = updater(currentInventory);
@@ -97,7 +95,7 @@ export function useShop() {
   };
 
   const decreaseActivePlayerBalance = (amount: number) => {
-    if (!activePlayerId || isAdminMode) return;
+    if (isAdminMode) return;
 
     setSetupPlayers(prevPlayers =>
       prevPlayers.map(player =>
@@ -117,7 +115,6 @@ export function useShop() {
     const item = items.find(candidate => candidate.value === value);
 
     if (!item) return false;
-    if (!activePlayerId) return false;
     if (ownedSet.has(value)) return true;
     if (coins < item.price) return false;
 
@@ -159,7 +156,6 @@ export function useShop() {
 
   const equipAvatar = (value: string) => {
     if (!ownedAvatarSet.has(value)) return;
-    if (!activePlayerId) return;
 
     setSetupPlayers(prevPlayers =>
       prevPlayers.map(player =>
@@ -170,7 +166,6 @@ export function useShop() {
 
   const equipBanner = (value: string) => {
     if (!ownedBannerSet.has(value)) return;
-    if (!activePlayerId) return;
 
     setSetupPlayers(prevPlayers =>
       prevPlayers.map(player =>

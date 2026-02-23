@@ -1,5 +1,5 @@
 import { atomWithStorage } from "jotai/utils";
-import type { PlayerId } from "@/entities/players";
+import { DEFAULT_SETUP_PLAYERS, type PlayerId } from "@/entities/players";
 
 import {
   SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE,
@@ -10,6 +10,7 @@ import {
 
 const SHOP_PLAYER_INVENTORIES_STORAGE_KEY = "shop-player-inventories";
 const SHOP_ACTIVE_PLAYER_ID_STORAGE_KEY = "shop-active-player-id";
+const SHOP_DEFAULT_ACTIVE_PLAYER_ID: PlayerId = DEFAULT_SETUP_PLAYERS[0]?.id ?? "p1";
 
 export type ShopPlayerInventory = {
   ownedAvatarValues: string[];
@@ -36,9 +37,9 @@ export const shopPlayerInventoriesAtom = atomWithStorage<ShopPlayerInventories>(
   { getOnInit: true },
 );
 
-export const shopActivePlayerIdAtom = atomWithStorage<PlayerId | null>(
+export const shopActivePlayerIdAtom = atomWithStorage<PlayerId>(
   SHOP_ACTIVE_PLAYER_ID_STORAGE_KEY,
-  null,
+  SHOP_DEFAULT_ACTIVE_PLAYER_ID,
   undefined,
   { getOnInit: true },
 );

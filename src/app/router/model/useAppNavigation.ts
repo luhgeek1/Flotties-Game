@@ -45,8 +45,7 @@ export function useAppNavigation() {
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const selectedPackId = useAtomValue(setupSelectedPackIdAtom);
   const canEnterGame = selectedPlayerIds.length === PLAYERS_TO_START_GAME && selectedPackId !== null;
-  const canEnterShop = activeShopPlayerId !== null
-    && setupPlayers.some(player => player.id === activeShopPlayerId);
+  const canEnterShop = setupPlayers.some(player => player.id === activeShopPlayerId);
   const [route, setRoute] = useState<AppRoute>(() => {
     const routeLockRoute = readRouteLockRoute();
 

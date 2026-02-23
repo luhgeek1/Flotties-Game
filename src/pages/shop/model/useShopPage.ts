@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import {
   SHOP_AVATAR_ITEMS,
@@ -25,56 +25,49 @@ export function useShopPage() {
   const playerInventories = useAtomValue(shopPlayerInventoriesAtom);
   const [isPlayerSelectOpen, setIsPlayerSelectOpen] = useState(false);
 
-  const activePlayer = useMemo(
-    () => players.find(player => player.id === activePlayerId) ?? players[0] ?? null,
-    [activePlayerId, players],
-  );
-
-  useEffect(() => {
-    if (!activePlayer) return;
-    if (activePlayer.id === activePlayerId) return;
-
-    setShopActivePlayerId(activePlayer.id);
-  }, [activePlayer, activePlayerId, setShopActivePlayerId]);
-
-  const activePlayerInventory = useMemo(() => {
-    if (!activePlayerId) {
-      return createDefaultShopPlayerInventory();
+  const activePlayer = useMemo(() => {
+    const resolvedPlayer = players.find(player => player.id === activePlayerId);
+    if (!resolvedPlayer) {
+      throw new Error(`Active shop player not found: ${activePlayerId}`);
     }
 
+    return resolvedPlayer;
+  }, [activePlayerId, players]);
+
+  const activePlayerInventory = useMemo(() => {
     return playerInventories[activePlayerId] ?? createDefaultShopPlayerInventory();
   }, [activePlayerId, playerInventories]);
 
   const inventoryCount = useMemo(() => {
     const avatarsCount = new Set([
       ...activePlayerInventory.ownedAvatarValues,
-      activePlayer?.avatarUrl ?? "",
+      activePlayer.avatarUrl,
     ].filter((value): value is string => (
       Boolean(value) && value !== SHOP_DEFAULT_OWNED_AVATAR_VALUE
     ))).size;
     const bannersCount = new Set([
       ...activePlayerInventory.ownedBannerValues,
-      activePlayer?.banner ?? "",
+      activePlayer.banner,
     ].filter((value): value is string => (
       Boolean(value) && value !== DEFAULT_BANNER_VALUE
     ))).size;
     const wearablesCount = new Set(activePlayerInventory.ownedWearableValues.filter(Boolean)).size;
 
     return avatarsCount + bannersCount + wearablesCount;
-  }, [activePlayer?.avatarUrl, activePlayer?.banner, activePlayerInventory]);
+  }, [activePlayer.avatarUrl, activePlayer.banner, activePlayerInventory]);
 
   const equippedAvatarName = useMemo(() => {
-    const equippedAvatarValue = activePlayer?.avatarUrl ?? "";
+    const equippedAvatarValue = activePlayer.avatarUrl;
     return SHOP_AVATAR_ITEMS.find(item => item.value === equippedAvatarValue)?.name ?? "Default";
-  }, [activePlayer?.avatarUrl]);
+  }, [activePlayer.avatarUrl]);
 
   const equippedThemeName = useMemo(() => {
-    const equippedThemeValue = activePlayer?.banner ?? "";
+    const equippedThemeValue = activePlayer.banner;
     return SHOP_BANNER_ITEMS.find(item => item.value === equippedThemeValue)?.name ?? "Classic White";
-  }, [activePlayer?.banner]);
-  const equippedThemeValue = activePlayer?.banner ?? "bg-white";
+  }, [activePlayer.banner]);
+  const equippedThemeValue = activePlayer.banner;
 
-  const resolvedPlayerName = activePlayer?.name ?? "Player";
+  const resolvedPlayerName = activePlayer.name;
 
   const openPlayerSelect = useCallback(() => {
     setIsPlayerSelectOpen(true);
