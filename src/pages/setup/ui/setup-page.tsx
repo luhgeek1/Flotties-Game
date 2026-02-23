@@ -23,19 +23,19 @@ export function SetupPage({ onStartGame, onOpenShop, onOpenHistory }: SetupPageP
   const hasOnboardingFlag = useAtomValue(onboardingStartedGameAtom);
   const markOnboardingStartedGame = useSetAtom(markOnboardingStartedGameAtom);
   const setShopActivePlayerId = useSetAtom(shopActivePlayerIdAtom);
-  const [isShopPlayerSelectOpen, setIsShopPlayerSelectOpen] = useState(false);
+  const [isShopModalOpen, setIsShopModalOpen] = useState(false);
 
   const handleOpenShopPlayerSelect = () => {
-    setIsShopPlayerSelectOpen(true);
+    setIsShopModalOpen(true);
   };
 
   const handleCloseShopPlayerSelect = () => {
-    setIsShopPlayerSelectOpen(false);
+    setIsShopModalOpen(false);
   };
 
   const handleSelectShopPlayer = (playerId: string) => {
     setShopActivePlayerId(playerId);
-    setIsShopPlayerSelectOpen(false);
+    setIsShopModalOpen(false);
     onOpenShop?.();
   };
 
@@ -78,7 +78,7 @@ export function SetupPage({ onStartGame, onOpenShop, onOpenHistory }: SetupPageP
       </AnimatePresence>
 
       <ShopPlayerSelectModal
-        isOpen={isShopPlayerSelectOpen}
+        isOpen={isShopModalOpen}
         players={players}
         onClose={handleCloseShopPlayerSelect}
         onSelectPlayer={handleSelectShopPlayer}
