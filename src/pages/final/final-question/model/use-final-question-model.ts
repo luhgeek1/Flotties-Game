@@ -1,5 +1,6 @@
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
+import { DEFAULT_PLAYER_AVATAR_URL } from "@/entities/players";
 
 import { finalAnswerByPlayerIdAtom, finalAnswerInputByPlayerIdAtom } from "@/shared/store/finalAtom";
 import { useFinalPlayerQueue } from "@/pages/final/model/useFinalPlayerQueue";
@@ -88,7 +89,7 @@ export function useFinalQuestionModel({ onConfirmAnswer }: UseFinalQuestionModel
     finalAnswerText: selectedPack.rounds.final.answers[0] ?? "Ответ не указан",
     currentPlayerId: currentPlayer?.id ?? null,
     currentPlayerName: currentPlayer?.name ?? "Игрок",
-    currentPlayerAvatarUrl: currentPlayer?.avatarUrl ?? null,
+    currentPlayerAvatarUrl: currentPlayer?.avatarUrl ?? DEFAULT_PLAYER_AVATAR_URL,
     answerInput,
     isSubmitDisabled: !isAnswerValid,
     isAllPlayersAnswerDone,

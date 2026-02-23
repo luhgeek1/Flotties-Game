@@ -18,7 +18,7 @@ export type GameCardPlayer = {
 
 export type GameCardMvpRound = {
   names: string;
-  avatarUrl: string | null;
+  avatarUrl: string;
   score: number | null;
 };
 

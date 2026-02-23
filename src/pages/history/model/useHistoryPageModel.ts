@@ -47,8 +47,8 @@ export function useHistoryPageModel() {
         if (!round || round.players.length === 0) return null;
 
         const names = round.players.map(player => player.playerName).join(", ");
-        const firstMvpPlayerId = round.players[0]?.playerId ?? null;
-        const avatarUrl = firstMvpPlayerId ? (playersById.get(firstMvpPlayerId)?.avatarUrl ?? null) : null;
+        const firstMvpPlayerId = round.players[0]!.playerId;
+        const avatarUrl = playersById.get(firstMvpPlayerId)!.avatarUrl;
 
         return {
           names,

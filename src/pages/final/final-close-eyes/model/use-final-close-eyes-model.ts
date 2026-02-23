@@ -1,5 +1,6 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
+import { DEFAULT_PLAYER_AVATAR_URL } from "@/entities/players";
 
 import { finalActivePlayerIdAtom } from "@/shared/store/finalAtom";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
@@ -14,7 +15,7 @@ export function useFinalCloseEyesModel({ onReady }: UseFinalCloseEyesModelArgs =
   const { currentPlayer } = useFinalPlayerQueue();
   const setActivePlayerId = useSetAtom(finalActivePlayerIdAtom);
   const currentAnswererName = currentPlayer?.name ?? "Игрок";
-  const currentAnswererAvatarUrl = currentPlayer?.avatarUrl ?? null;
+  const currentAnswererAvatarUrl = currentPlayer?.avatarUrl ?? DEFAULT_PLAYER_AVATAR_URL;
 
   const handleReadyClick = useCallback(() => {
     if (!currentPlayer) return;

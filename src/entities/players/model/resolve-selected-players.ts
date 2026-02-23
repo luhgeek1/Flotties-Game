@@ -11,8 +11,7 @@ export function resolveSelectedPlayers(
   selectedPlayerIds
     .slice(0, PLAYER_SELECTION_KEY_CODES.length)
     .forEach((playerId, index) => {
-      const setupPlayer = playersById.get(playerId);
-      if (!setupPlayer) return;
+      const setupPlayer = playersById.get(playerId)!;
 
       selectedPlayers.push({
         ...setupPlayer,

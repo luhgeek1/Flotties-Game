@@ -6,7 +6,7 @@ import { Input } from "@/shared/components/ui/input";
 
 type QuestionModalAnsweringStateProps = {
   playerName: string;
-  playerAvatarUrl: string | null;
+  playerAvatarUrl: string;
   questionText: string;
   answerInput: string;
   prefilledAnswerText?: string;

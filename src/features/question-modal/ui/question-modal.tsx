@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
+import { DEFAULT_PLAYER_AVATAR_URL } from "@/entities/players";
 
 import type { GameQuestionPhase } from "@/shared/store/gameAtoms";
 import { QuestionTimer } from "@/shared/ui";
@@ -98,7 +99,7 @@ export function QuestionModal({
               {currentPhase === "answering" ? (
                 <QuestionModalAnsweringState
                   playerName={activePlayer?.name ?? "Игрок"}
-                  playerAvatarUrl={activePlayer?.avatarUrl ?? null}
+                  playerAvatarUrl={activePlayer?.avatarUrl ?? DEFAULT_PLAYER_AVATAR_URL}
                   questionText={questionText}
                   answerInput={answerInput}
                   prefilledAnswerText={prefilledAnswerText}
