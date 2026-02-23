@@ -1,4 +1,4 @@
-import { GamePage, GamePage2R } from "@/pages/game";
+import { GamePage } from "@/pages/game";
 import { HistoryPage } from "@/pages/history";
 import { ShopPage } from "@/pages/shop";
 import { FinalPrepairingPage } from "@/pages/final-prepairing";
@@ -57,13 +57,14 @@ export function RouteView({
 
   if (route === "game2r") {
     return (
-      <GamePage2R
+      <GamePage
         onExitToSetup={onExitToSetup}
         onRoundTransitionConfirm={() => navigateTo("finalprepairing", {
           replace: true,
           resetState: "round",
           round2Access: "unlock",
         })}
+        roundIndex={1}
       />
     );
   }
