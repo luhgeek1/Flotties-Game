@@ -1,12 +1,7 @@
 import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-import {
-  SHOP_AVATAR_ITEMS,
-  SHOP_BANNER_ITEMS,
-  SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE,
-  SHOP_WEARABLE_ITEMS,
-} from "@/entities/cosmetics";
+import { SHOP_AVATAR_ITEMS, SHOP_BANNER_ITEMS, SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE, SHOP_WEARABLE_ITEMS } from "@/entities/cosmetics";
 import { adminModeEnabledAtom } from "@/shared/store/adminModeAtom";
 import { setupPlayersAtom } from "@/shared/store/setupAtoms";
 import { type ShopPlayerInventory, shopActivePlayerIdAtom, shopPlayerInventoriesAtom } from "@/shared/store/shopAtoms";
@@ -34,7 +29,9 @@ export function useShop() {
     () => resolveActivePlayer(setupPlayers, activePlayerId),
     [activePlayerId, setupPlayers],
   );
+  
   const coins = isAdminMode ? 1000 : activePlayer.balance;
+
   const activePlayerInventory = useMemo(
     () => resolveActivePlayerInventory(playerInventories, activePlayerId),
     [activePlayerId, playerInventories],
@@ -57,17 +54,9 @@ export function useShop() {
   const ownedBannerSet = useMemo(() => new Set(resolvedOwnedBannerValues), [resolvedOwnedBannerValues]);
   const ownedWearableSet = useMemo(() => new Set(resolvedOwnedWearableValues), [resolvedOwnedWearableValues]);
 
-  const resolvedEquippedAvatarValue =
-    activePlayer.avatarUrl && ownedAvatarSet.has(activePlayer.avatarUrl)
-      ? activePlayer.avatarUrl
-      : null;
-  const resolvedEquippedBannerValue =
-    activePlayer.banner && ownedBannerSet.has(activePlayer.banner)
-      ? activePlayer.banner
-      : null;
-  const resolvedEquippedWearableValue = ownedWearableSet.has(activePlayerInventory.equippedWearableValue)
-    ? activePlayerInventory.equippedWearableValue
-    : SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE;
+  const resolvedEquippedAvatarValue = activePlayer.avatarUrl;
+  const resolvedEquippedBannerValue = activePlayer.banner;
+  const resolvedEquippedWearableValue = activePlayerInventory.equippedWearableValue;
 
   const avatarItems = useMemo<ShopAvatarState[]>(
     () => mapItemsToState(SHOP_AVATAR_ITEMS, ownedAvatarSet, resolvedEquippedAvatarValue, coins),
@@ -100,7 +89,7 @@ export function useShop() {
     setSetupPlayers(prevPlayers =>
       prevPlayers.map(player =>
         player.id === activePlayerId
-          ? { ...player, balance: Math.max(0, player.balance - amount) }
+          ? { ...player, balance: player.balance - amount }
           : player,
       ),
     );
