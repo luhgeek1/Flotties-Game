@@ -15,7 +15,7 @@ import {
   useQuestionBuzzingEffect,
   useQuestionTimerEffect,
 } from "@/features/question-flow";
-import { DEMO_PLAYERS, DEMO_QUESTION, DEMO_THEME } from "./constants";
+import { DEMO_PLAYERS, DEMO_QUESTION } from "./constants";
 
 export function useOnboardingQuestionDemo() {
   const [demoState, setDemoState] = useAtom(onboardingDemoStateAtom);
@@ -144,7 +144,8 @@ export function useOnboardingQuestionDemo() {
   const canPickPlayerByClick = flowPhase === "reading" && activeQuestionId === DEMO_QUESTION.id;
 
   return {
-    boardThemes: [DEMO_THEME],
+    demoQuestionId: DEMO_QUESTION.id,
+    demoQuestionValue: DEMO_QUESTION.value,
     openedQuestionIds,
     handleQuestionSelect,
     playersWithScore,

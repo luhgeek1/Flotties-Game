@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 
 import doFinalImage from "@/shared/assets/dofinal.png";
 import { useOnboardingFlow } from "../model/useOnboardingFlow";
+import { OnboardingTextCard } from "./onboarding-text-card";
 import { SetupOnboardingQuestionDemo } from "./setup-onboarding-question-demo";
 
 type SetupOnboardingOverlayProps = {
@@ -10,7 +11,7 @@ type SetupOnboardingOverlayProps = {
 };
 
 const INTRO_MESSAGES = [
-  "Привет,меня зовут Флотти, и я ведущий этой игры. Вижу ты новенький. Давай проведу тебе небольной гайд по игре.",
+  "Привет,меня зовут Флотти, и я ведущий этой игры. Вижу Вы новенькие. Давай проведу Вам небольной гайд по игре.",
   "Игра состоит из 3 раундов: 1 раунд, 2 раунд, Финал. В 1-м и 2-м раундах идёт гонка за право ответа: кто быстрее нажмёт — тот отвечает. После каждого раунда вы сможете посмотреть текущие результаты.",
   "Финальный раунд — это один вопрос на какую то тему, но об этом уже в самой игре. В конце победитель получит lottcoins, которые можно потратить в магазине.",
 ] as const;
@@ -53,26 +54,26 @@ export function SetupOnboardingOverlay({ onClose }: SetupOnboardingOverlayProps)
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span className="sr-only">Перейти к демо вопроса</span>
-
             <motion.div
-              className="pointer-events-none absolute left-[clamp(1rem,6vw,6rem)] top-1/2 z-10 w-[min(64vw,760px)] -translate-y-1/2 rounded-[2rem] border border-slate-200 bg-white/95 p-6 shadow-lg sm:p-8 md:p-10"
+              className="pointer-events-none absolute left-[clamp(1rem,6vw,6rem)] top-1/2 z-10 w-[min(64vw,760px)] -translate-y-1/2"
               initial={{ x: -52, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
             >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.p
-                  key={`intro-message-${introMessageIndex}`}
-                  className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  {INTRO_MESSAGES[introMessageIndex]}
-                </motion.p>
-              </AnimatePresence>
+              <OnboardingTextCard className="p-6 sm:p-8 md:p-10">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.p
+                    key={`intro-message-${introMessageIndex}`}
+                    className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {INTRO_MESSAGES[introMessageIndex]}
+                  </motion.p>
+                </AnimatePresence>
+              </OnboardingTextCard>
             </motion.div>
 
             <motion.img

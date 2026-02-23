@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Button } from "@/shared/components/ui/button";
 import demoLottiImage from "@/shared/assets/lottipryamoi.png";
 import readingLottiImage from "@/shared/assets/izuglalotti.png";
+import { OnboardingTextCard } from "./onboarding-text-card";
 
 type SetupOnboardingDemoIntroOverlayProps = {
   onClose?: () => void;
@@ -18,19 +19,19 @@ export function SetupOnboardingDemoIntroOverlay({ onClose }: SetupOnboardingDemo
       animate={{ opacity: 1 }}
       transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
     >
-      <span className="sr-only">Закрыть оверлей демо</span>
-
       <div className="absolute bottom-0 right-[clamp(0.5rem,2vw,2rem)] flex items-center gap-3 sm:gap-5 md:gap-7">
         <motion.div
-          className="pointer-events-none w-[min(38vw,520px)] rounded-[2rem] border border-slate-200 bg-white/95 p-4 shadow-lg sm:p-6 md:p-8"
+          className="pointer-events-none w-[min(38vw,520px)]"
           initial={{ x: -16, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="text-sm font-semibold leading-relaxed text-slate-900 sm:text-base md:text-xl">
-            Попробуем с тобой демо версию игры! Вам нужно определить кто какой игрок. На выбор: Игрок 1, Игрок 2,
-            Игрок 3. У каждого свои клавиши для ответа
-          </p>
+          <OnboardingTextCard className="p-4 sm:p-6 md:p-8">
+            <p className="text-sm font-semibold leading-relaxed text-slate-900 sm:text-base md:text-xl">
+              Попробуем с Вами демо версию игры! Сейчас нужно определить кто какой игрок. На выбор: Игрок 1, Игрок 2,
+              Игрок 3. У каждого свои клавиши для ответа. Готовьтесь нажать их как можно скорее!
+            </p>
+          </OnboardingTextCard>
         </motion.div>
 
         <motion.img
@@ -65,26 +66,28 @@ export function SetupOnboardingDemoPostOverlay({
       onClick={onContinue}
     >
       <motion.div
-        className="pointer-events-auto absolute left-4 top-[70%] z-10 w-[min(60vw,720px)] -translate-y-1/2 rounded-[2rem] border border-slate-200 bg-white/95 p-6 shadow-lg sm:left-6 sm:p-8 md:left-10 md:p-10"
+        className="pointer-events-auto absolute left-4 top-[70%] z-10 w-[min(60vw,720px)] -translate-y-1/2 sm:left-6 md:left-10"
         initial={{ x: -24, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.35, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
       >
-        <p className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl">
-          Отлично! Нажмите в любую часть экрана, чтобы продолжить. Если хотите повторить демо - нажмите на кнопкку
-          ниже.
-        </p>
-        <Button
-          type="button"
-          variant="outline"
-          className="mt-5 border-black bg-black text-white hover:bg-black/90 hover:text-white"
-          onClick={(event) => {
-            event.stopPropagation();
-            onRepeat?.();
-          }}
-        >
-          Повторить демо
-        </Button>
+        <OnboardingTextCard className="p-6 sm:p-8 md:p-10">
+          <p className="text-lg font-semibold leading-relaxed text-slate-900 sm:text-xl md:text-2xl">
+            Отлично! Нажмите в любую часть экрана, чтобы продолжить. Если хотите повторить демо - нажмите на кнопкку
+            ниже.
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-5 border-black bg-black text-white hover:bg-black/90 hover:text-white"
+            onClick={(event) => {
+              event.stopPropagation();
+              onRepeat?.();
+            }}
+          >
+            Повторить демо
+          </Button>
+        </OnboardingTextCard>
       </motion.div>
 
       <motion.img
@@ -114,14 +117,16 @@ export function SetupOnboardingDemoReadingOverlay() {
       />
 
       <motion.div
-        className="absolute right-[8%] top-[66%] w-[min(26vw,360px)] rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-lg sm:p-4 md:p-5"
+        className="absolute right-[8%] top-[66%] w-[min(26vw,360px)]"
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.24, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
       >
-        <p className="text-center text-sm font-semibold leading-snug text-slate-900 sm:text-base md:text-lg">
-          Если знаешь ответ - скорее жми свою клавишу!
-        </p>
+        <OnboardingTextCard
+          className="rounded-2xl p-3 sm:p-4 md:p-5"
+          textClassName="text-center text-sm leading-snug sm:text-base md:text-lg"
+          text="Если знаешь ответ - скорее жми свою клавишу!"
+        />
       </motion.div>
     </div>
   );

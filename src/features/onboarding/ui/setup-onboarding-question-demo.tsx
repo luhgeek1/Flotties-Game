@@ -13,6 +13,7 @@ import {
   SetupOnboardingDemoPostOverlay,
   SetupOnboardingDemoReadingOverlay,
 } from "./setup-onboarding-demo-intro-overlay";
+import { OnboardingTextCard } from "./onboarding-text-card";
 
 type SetupOnboardingQuestionDemoProps = {
   onFinish?: () => void;
@@ -68,17 +69,19 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
         </div>
 
         <motion.div
-          className="absolute left-[50%] top-1/2 z-30 w-[min(48vw,680px)] -translate-y-1/2 rounded-[2rem] border border-slate-200 bg-white/95 p-5 shadow-lg sm:p-7 md:p-9"
+          className="absolute left-[50%] top-1/2 z-30 w-[min(48vw,680px)] -translate-y-1/2"
           initial={{ x: 24, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="text-base font-semibold leading-relaxed text-slate-900 sm:text-lg md:text-2xl">
-            На этом все! С остальным я буду помогать во время игры! Вы готовы?
-          </p>
-          <Button type="button" className="mt-5 sm:mt-6" onClick={onFinish}>
-            Продолжить -&gt;
-          </Button>
+          <OnboardingTextCard className="p-5 sm:p-7 md:p-9">
+            <p className="text-base font-semibold leading-relaxed text-slate-900 sm:text-lg md:text-2xl">
+              На этом все! С остальным я буду помогать во время игры! Вы готовы?
+            </p>
+            <Button type="button" className="mt-5 sm:mt-6" onClick={onFinish}>
+              Продолжить -&gt;
+            </Button>
+          </OnboardingTextCard>
         </motion.div>
       </motion.div>
     );
@@ -94,8 +97,6 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
         animate={{ opacity: 1 }}
         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
       >
-        <span className="sr-only">Закрыть онбординг</span>
-
         <RayGifBanner
           open
           onClose={() => {}}
@@ -114,14 +115,16 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
 
         <div className="pointer-events-none absolute bottom-0 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center">
           <motion.div
-            className="mb-3 w-[min(84vw,860px)] rounded-[2rem] border border-slate-200 bg-white/95 p-4 shadow-lg sm:mb-4 sm:p-6 md:p-8"
+            className="mb-3 w-[min(84vw,860px)] sm:mb-4"
             initial={{ y: 18, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.28, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="text-center text-base font-semibold leading-relaxed text-slate-900 sm:text-lg md:text-2xl">
-              В игре есть специальные вопросы: "Кот в мешке" и "Аукцион". Вы сразу поймете когда они выпадут)))
-            </p>
+            <OnboardingTextCard className="p-4 sm:p-6 md:p-8">
+              <p className="text-center text-base font-semibold leading-relaxed text-slate-900 sm:text-lg md:text-2xl">
+                В игре есть специальные вопросы: "Кот в мешке" и "Аукцион". Вы сразу поймете когда они выпадут)))
+              </p>
+            </OnboardingTextCard>
           </motion.div>
 
           <motion.img
@@ -157,19 +160,19 @@ export function SetupOnboardingQuestionDemo({ onFinish }: SetupOnboardingQuestio
         SKIP
       </Button>
 
-      <div className="flex h-full items-center justify-center p-4">
-        <div className="flex max-w-xl flex-col items-center gap-5 text-center md:gap-7">
+      <div className="absolute inset-0 flex items-center justify-center p-4">
+        <div className="flex w-full max-w-xl flex-col items-center gap-5 text-center md:gap-7">
           <h2 className="text-2xl font-black leading-tight md:text-3xl">Нажми на кнопку чтобы открыть вопрос</h2>
 
           <motion.button
             type="button"
-            onClick={() => model.handleQuestionSelect("r1-langs-100")}
+            onClick={() => model.handleQuestionSelect(model.demoQuestionId)}
             disabled={model.isDemoQuestionCompleted}
             className="flex h-34 w-34 items-center justify-center rounded-2xl border-2 border-primary bg-card text-5xl font-black font-mono text-primary shadow-md transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-50 md:h-42 md:w-42 md:text-6xl"
             whileHover={{ scale: model.isDemoQuestionCompleted ? 1 : 1.03 }}
             whileTap={{ scale: model.isDemoQuestionCompleted ? 1 : 0.98 }}
           >
-            100
+            {model.demoQuestionValue}
           </motion.button>
 
           {!model.isDemoQuestionCompleted ? (

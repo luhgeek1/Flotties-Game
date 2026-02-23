@@ -5,7 +5,7 @@ import type { GamePlayerScores, GameQuestionFlowState } from "./gameAtoms";
 const ONBOARDING_STARTED_GAME_STORAGE_KEY = "onboarding-started-game-v1";
 const ONBOARDING_SESSION_STORAGE_KEY = "onboarding-session-v1";
 
-export const ONBOARDING_DEMO_QUESTION_ID = "r1-langs-100";
+export const ONBOARDING_DEMO_QUESTION_ID = "demo-1";
 const ONBOARDING_DEMO_PLAYER_IDS = [
   "onboarding-p1",
   "onboarding-p2",

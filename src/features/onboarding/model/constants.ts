@@ -1,4 +1,3 @@
-import type { GameBoardTheme } from "@/entities/game-board/model";
 import { PLAYER_SELECTION_KEY_CODES } from "@/entities/players";
 import type { QuestionModalPlayer } from "@/features/question-modal";
 import defaultPlayerAvatar from "@/shared/assets/default-user-avatar.svg";
@@ -9,15 +8,10 @@ export const DEMO_QUESTION: QuestionPackQuestion = {
   id: ONBOARDING_DEMO_QUESTION_ID,
   value: 100,
   type: "normal",
-  question: "Какой язык программирования создал Гвидо ван Россум?",
-  answers: ["python"],
+  question: "Сколько будет 2 + 2?",
+  answers: ["4"],
 };
 
-export const DEMO_THEME: GameBoardTheme = {
-  id: "r1-langs",
-  title: "Языки программирования",
-  questions: [{ id: ONBOARDING_DEMO_QUESTION_ID, value: 100 }],
-};
 
 export const DEMO_PLAYERS: QuestionModalPlayer[] = [
   {
