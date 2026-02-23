@@ -1,7 +1,12 @@
-//помог codex в реализации ui 
-import { motion } from "motion/react"
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 
-import { cn } from "@/shared/lib/utils"
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/shared/components/ui/chart"
 
 export type ScoreBarChartItem = {
   id: string
@@ -16,13 +21,15 @@ type ScoreBarChartProps = {
   emptyStateText?: string
 }
 
-const defaultBarColors = [
-  "bg-blue-500",
-  "bg-cyan-500",
-  "bg-emerald-500",
-  "bg-amber-500",
-  "bg-violet-500",
-] as const
+const chartConfig = {
+  score: {
+    label: "Score",
+    color: "#3b82f6",
+  },
+  label: {
+    color: "var(--background)",
+  },
+} satisfies ChartConfig
 
 export function ScoreBarChart({
   title = "Общий счет игроков",
@@ -38,59 +45,71 @@ export function ScoreBarChart({
     )
   }
 
-  const maxPositiveValue = items.reduce((acc, item) => (
-    item.value > acc ? item.value : acc
-  ), 0)
-  const safeMaxPositiveValue = Math.max(maxPositiveValue, 1)
+  const chartData = items.map(item => ({
+    id: item.id,
+    label: item.label,
+    score: item.value,
+  }))
 
   return (
-    <div className="w-full h-55 flex flex-col">
-      <h3 className="text-center text-sm font-semibold text-muted-foreground mb-3">
-        {title}
-      </h3>
-
-      <div className="flex-1 min-h-0 space-y-3">
-        {items.map((item, index) => {
-          const hasPositiveBar = item.value > 0
-          const ratio = hasPositiveBar ? item.value / safeMaxPositiveValue : 0
-          const width = `${Math.max(8, Math.round(ratio * 100))}%`
-
-          return (
-            <div
-              key={item.id}
-              className="grid grid-cols-[minmax(0,1fr)_80px] items-center gap-3"
+    <Card className="w-full h-55 py-3 gap-3 border-border/60 shadow-none">
+      <CardHeader className="px-4 py-0">
+        <CardTitle className="text-center text-sm font-semibold text-muted-foreground">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="flex-1 min-h-0 px-3">
+        <ChartContainer config={chartConfig} className="h-full w-full aspect-auto">
+          <BarChart
+            accessibilityLayer
+            data={chartData}
+            layout="vertical"
+            margin={{
+              right: 22,
+            }}
+          >
+            <CartesianGrid horizontal={false} />
+            <YAxis
+              dataKey="label"
+              type="category"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value: string) => value.slice(0, 3)}
+              hide
+            />
+            <XAxis dataKey="score" type="number" hide />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="line" />}
+            />
+            <Bar
+              dataKey="score"
+              layout="vertical"
+              fill="var(--color-score)"
+              radius={4}
             >
-              <div className="relative h-12">
-                {hasPositiveBar ? (
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width }}
-                    transition={{ duration: 0.35, ease: "easeOut", delay: index * 0.06 }}
-                    className={cn(
-                      "h-full rounded-md px-4 flex items-center",
-                      item.colorClassName ?? defaultBarColors[index % defaultBarColors.length],
-                    )}
-                  >
-                    <span className="text-sm font-semibold truncate text-white">
-                      {item.label}
-                    </span>
-                  </motion.div>
-                ) : (
-                  <div className="h-full px-1 flex items-center">
-                    <span className="text-sm font-medium text-muted-foreground truncate">
-                      {item.label}
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              <div className="text-right text-lg font-bold tabular-nums">
-                {item.value}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </div>
+              <LabelList
+                dataKey="label"
+                position="insideLeft"
+                offset={8}
+                className="fill-white font-bold"
+                style={{
+                  paintOrder: "stroke",
+                  stroke: "rgb(15 23 42 / 0.35)",
+                  strokeWidth: 2,
+                }}
+                fontSize={14}
+              />
+              <LabelList
+                dataKey="score"
+                position="right"
+                offset={8}
+                className="fill-foreground font-semibold"
+                fontSize={13}
+              />
+            </Bar>
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   )
 }
