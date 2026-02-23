@@ -2,6 +2,7 @@ import type { ShopPlayerInventory, ShopPlayerInventories } from "@/shared/store/
 import { createDefaultShopPlayerInventory } from "@/shared/store/shopAtoms";
 import type { ItemStateMeta, ShopPricedItem } from "./types";
 
+//убираем дубликаты
 export function toUniqueValues(values: string[]): string[] {
   return Array.from(new Set(values));
 }
@@ -10,14 +11,10 @@ export function resolveActivePlayer<TPlayer extends { id: string }>(
   players: TPlayer[],
   activePlayerId: string,
 ): TPlayer {
-  const activePlayer = players.find(player => player.id === activePlayerId);
-  if (!activePlayer) {
-    throw new Error(`Active shop player not found: ${activePlayerId}`);
-  }
-
-  return activePlayer;
+  return players.find(player => player.id === activePlayerId) as TPlayer;
 }
 
+//инвентарь выбранного игрока
 export function resolveActivePlayerInventory(
   playerInventories: ShopPlayerInventories,
   activePlayerId: string,
@@ -45,11 +42,6 @@ export function mapItemsToState<TItem extends ShopPricedItem>(
     const isOwned = ownedSet.has(item.value);
     const canAfford = coins >= item.price;
 
-    return {
-      ...item,
-      isOwned,
-      isEquipped: equippedValue === item.value,
-      canAfford,
-    };
+    return {...item, isOwned, isEquipped: equippedValue === item.value, canAfford };
   });
 }
