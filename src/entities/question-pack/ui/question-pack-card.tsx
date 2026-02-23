@@ -10,7 +10,6 @@ type QuestionPackCardProps = {
   themesCount: number;
   lang: string;
   isSelected: boolean;
-  version?: string;
   onToggle?: () => void;
 };
 
@@ -20,7 +19,6 @@ export function QuestionPackCard({
   themesCount,
   lang,
   isSelected,
-  version = "V1.0",
   onToggle,
 }: QuestionPackCardProps) {
   return (
@@ -60,12 +58,6 @@ export function QuestionPackCard({
             className="text-[10px] font-mono uppercase bg-background/50 h-5 px-2 py-0.5 font-semibold"
           >
             {lang}
-          </Badge>
-          <Badge
-            variant="outline"
-            className="text-[10px] font-mono uppercase bg-background/50 h-5 px-2 py-0.5 font-semibold"
-          >
-            {version}
           </Badge>
         </div>
       </div>

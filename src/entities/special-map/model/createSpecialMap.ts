@@ -7,7 +7,7 @@ type SpecialCandidate = {
   specialQuestionId: string;
 };
 // алгоритм Фишера-Йейтса помог кодекс сделать 
-// перемешивает массив index для того чтобы на рандом нам потом выбрать вопросы которые заментся на простые
+// перемешивает массив index для того чтобы на рандом нам потом выбрать вопросы которые заментся на специальные
 function shuffle<T>(items: readonly T[], random: () => number): T[] { 
   const next = [...items];
   
@@ -15,13 +15,14 @@ function shuffle<T>(items: readonly T[], random: () => number): T[] {
     const swapIndex = Math.floor(random() * (index + 1));
     [next[index], next[swapIndex]] = [next[swapIndex], next[index]];
   }
-
   return next;
 }
 
+//возвращает один массив из всех вопросов всех тем
 function getRoundQuestionIds(round: CreateRoundSpecialMapArgs["round"]): string[] {
   return round.themes.flatMap(theme => theme.questions.map(question => question.id));
 }
+
 
 function getSpecialCandidates(special: CreateRoundSpecialMapArgs["special"]): SpecialCandidate[] {
   const catInBagCandidates = special.catInBag.questions.map(question => ({
@@ -36,6 +37,9 @@ function getSpecialCandidates(special: CreateRoundSpecialMapArgs["special"]): Sp
 
   return [...catInBagCandidates, ...auctionCandidates];
 }
+
+//мешает все questionId и спецвопросы и перемешивает их 
+//а потом на рандом обычным вопросам присваивает тип и айди спецвопросов
 
 export function createRoundSpecialMap({
   round,
