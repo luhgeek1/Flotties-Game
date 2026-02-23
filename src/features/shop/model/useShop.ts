@@ -7,6 +7,7 @@ import {
   SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE,
   SHOP_WEARABLE_ITEMS,
 } from "@/entities/cosmetics";
+import { adminModeEnabledAtom } from "@/shared/store/adminModeAtom";
 import { setupPlayersAtom } from "@/shared/store/setupAtoms";
 import { type ShopPlayerInventory, shopActivePlayerIdAtom, shopPlayerInventoriesAtom } from "@/shared/store/shopAtoms";
 import {
@@ -27,12 +28,13 @@ export function useShop() {
   const [setupPlayers, setSetupPlayers] = useAtom(setupPlayersAtom);
   const activePlayerId = useAtomValue(shopActivePlayerIdAtom);
   const [playerInventories, setPlayerInventories] = useAtom(shopPlayerInventoriesAtom);
+  const isAdminMode = useAtomValue(adminModeEnabledAtom);
 
   const activePlayer = useMemo(
     () => resolveActivePlayer(setupPlayers, activePlayerId),
     [activePlayerId, setupPlayers],
   );
-  const coins = activePlayer?.balance ?? 0;
+  const coins = isAdminMode ? 1000 : (activePlayer?.balance ?? 0);
   const activePlayerInventory = useMemo(
     () => resolveActivePlayerInventory(playerInventories, activePlayerId),
     [activePlayerId, playerInventories],
@@ -95,7 +97,7 @@ export function useShop() {
   };
 
   const decreaseActivePlayerBalance = (amount: number) => {
-    if (!activePlayerId) return;
+    if (!activePlayerId || isAdminMode) return;
 
     setSetupPlayers(prevPlayers =>
       prevPlayers.map(player =>
