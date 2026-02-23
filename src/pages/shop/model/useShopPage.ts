@@ -1,9 +1,10 @@
 import { useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { SHOP_AVATAR_ITEMS, SHOP_BANNER_ITEMS } from "@/entities/cosmetics";
+import { resolveSelectedPlayers } from "@/entities/players";
 import { useTheme } from "@/shared/lib/use-theme";
-import { setupPlayersAtom } from "@/shared/store/setupAtoms";
+import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 import {
   createDefaultShopPlayerInventory,
   shopActivePlayerIdAtom,
@@ -13,15 +14,28 @@ import {
 export function useShopPage() {
   const { isDark, toggleTheme } = useTheme();
   const players = useAtomValue(setupPlayersAtom);
+  const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const activePlayerId = useAtomValue(shopActivePlayerIdAtom);
   const setShopActivePlayerId = useSetAtom(shopActivePlayerIdAtom);
   const playerInventories = useAtomValue(shopPlayerInventoriesAtom);
   const [isPlayerSelectOpen, setIsPlayerSelectOpen] = useState(false);
+  const shopPlayers = useMemo(() => (
+    selectedPlayerIds.length > 0
+      ? resolveSelectedPlayers(players, selectedPlayerIds)
+      : players
+  ), [players, selectedPlayerIds]);
 
   const activePlayer = useMemo(
-    () => players.find(player => player.id === activePlayerId) ?? null,
-    [activePlayerId, players],
+    () => shopPlayers.find(player => player.id === activePlayerId) ?? shopPlayers[0] ?? null,
+    [activePlayerId, shopPlayers],
   );
+
+  useEffect(() => {
+    if (!activePlayer) return;
+    if (activePlayer.id === activePlayerId) return;
+
+    setShopActivePlayerId(activePlayer.id);
+  }, [activePlayer, activePlayerId, setShopActivePlayerId]);
 
   const activePlayerInventory = useMemo(() => {
     if (!activePlayerId) {
@@ -54,10 +68,7 @@ export function useShopPage() {
     const equippedThemeValue = activePlayer?.banner ?? "";
     return SHOP_BANNER_ITEMS.find(item => item.value === equippedThemeValue)?.name ?? "Classic White";
   }, [activePlayer?.banner]);
-  const equippedThemeValue = useMemo(() => {
-    const activeBannerValue = activePlayer?.banner ?? "";
-    return SHOP_BANNER_ITEMS.find(item => item.value === activeBannerValue)?.value ?? "bg-white";
-  }, [activePlayer?.banner]);
+  const equippedThemeValue = activePlayer?.banner ?? "bg-white";
 
   const resolvedPlayerName = activePlayer?.name ?? "Player";
 
@@ -77,7 +88,7 @@ export function useShopPage() {
   return {
     isDark,
     toggleTheme,
-    players,
+    players: shopPlayers,
     activePlayer,
     resolvedPlayerName,
     inventoryCount,
