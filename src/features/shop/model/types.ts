@@ -9,12 +9,12 @@ export type ShopPricedItem = {
   price: number;
 };
 
-type ShopItemStateMeta = {
+export type ItemStateMeta = {
   isOwned: boolean;
   isEquipped: boolean;
   canAfford: boolean;
 };
 
-export type ShopAvatarState = ShopAvatarItem & ShopItemStateMeta;
-export type ShopBannerState = ShopBannerItem & ShopItemStateMeta;
-export type ShopWearableState = ShopWearableItem & ShopItemStateMeta;
+export type ShopAvatarState = ShopAvatarItem & ItemStateMeta;
+export type ShopBannerState = ShopBannerItem & ItemStateMeta;
+export type ShopWearableState = ShopWearableItem & ItemStateMeta;

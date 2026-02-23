@@ -1,12 +1,6 @@
 import type { ShopPlayerInventory, ShopPlayerInventories } from "@/shared/store/shopAtoms";
 import { createDefaultShopPlayerInventory } from "@/shared/store/shopAtoms";
-import type { ShopPricedItem } from "./types";
-
-type ItemStateMeta = {
-  isOwned: boolean;
-  isEquipped: boolean;
-  canAfford: boolean;
-};
+import type { ItemStateMeta, ShopPricedItem } from "./types";
 
 export function toUniqueValues(values: string[]): string[] {
   return Array.from(new Set(values));

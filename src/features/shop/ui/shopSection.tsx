@@ -6,7 +6,7 @@ import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 
 import { useShop } from "../model";
-import { ShopBattleArena } from "./shopBattleArena";
+import { ShopProfile } from "./shopProfile";
 
 function formatPrice(price: number): string {
   return `${price} lottcoins`;
@@ -54,7 +54,7 @@ export function ShopSection({
       <div className="space-y-12">
         <h2 className="text-3xl font-bold tracking-tight uppercase">Профиль</h2>
 
-        <ShopBattleArena
+        <ShopProfile
           playerName={playerName}
           coins={coins}
           inventoryCount={inventoryCount}

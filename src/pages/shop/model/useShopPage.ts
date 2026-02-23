@@ -1,7 +1,12 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { SHOP_AVATAR_ITEMS, SHOP_BANNER_ITEMS } from "@/entities/cosmetics";
+import {
+  SHOP_AVATAR_ITEMS,
+  SHOP_BANNER_ITEMS,
+  SHOP_DEFAULT_OWNED_AVATAR_VALUE,
+  SHOP_DEFAULT_OWNED_BANNER_VALUES,
+} from "@/entities/cosmetics";
 import { useTheme } from "@/shared/lib/use-theme";
 import { setupPlayersAtom } from "@/shared/store/setupAtoms";
 import {
@@ -9,6 +14,8 @@ import {
   shopActivePlayerIdAtom,
   shopPlayerInventoriesAtom,
 } from "@/shared/store/shopAtoms";
+
+const DEFAULT_BANNER_VALUE = SHOP_DEFAULT_OWNED_BANNER_VALUES[0] ?? "";
 
 export function useShopPage() {
   const { isDark, toggleTheme } = useTheme();
@@ -42,11 +49,15 @@ export function useShopPage() {
     const avatarsCount = new Set([
       ...activePlayerInventory.ownedAvatarValues,
       activePlayer?.avatarUrl ?? "",
-    ].filter(Boolean)).size;
+    ].filter((value): value is string => (
+      Boolean(value) && value !== SHOP_DEFAULT_OWNED_AVATAR_VALUE
+    ))).size;
     const bannersCount = new Set([
       ...activePlayerInventory.ownedBannerValues,
       activePlayer?.banner ?? "",
-    ].filter(Boolean)).size;
+    ].filter((value): value is string => (
+      Boolean(value) && value !== DEFAULT_BANNER_VALUE
+    ))).size;
     const wearablesCount = new Set(activePlayerInventory.ownedWearableValues.filter(Boolean)).size;
 
     return avatarsCount + bannersCount + wearablesCount;

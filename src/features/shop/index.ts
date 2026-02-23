@@ -1,1 +1,1 @@
-export { ShopBattleArena, ShopSection, ShopPlayerSelectModal } from "./ui";
+export { ShopProfile, ShopSection, ShopPlayerSelectModal } from "./ui";

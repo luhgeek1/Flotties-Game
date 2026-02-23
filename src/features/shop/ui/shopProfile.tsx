@@ -1,7 +1,7 @@
 import { TRY_ON_ITEMS } from "@/entities/cosmetics";
 import { cn } from "@/shared/lib/utils";
 
-type ShopBattleArenaProps = {
+type ShopProfileProps = {
   playerName: string;
   coins: number;
   inventoryCount: number;
@@ -14,7 +14,7 @@ type ShopBattleArenaProps = {
   onOpenWearablesSection: () => void;
 };
 
-export function ShopBattleArena({
+export function ShopProfile({
   playerName,
   coins,
   inventoryCount,
@@ -25,7 +25,7 @@ export function ShopBattleArena({
   equippedWearableValue,
   onSelectWearable,
   onOpenWearablesSection,
-}: ShopBattleArenaProps) {
+}: ShopProfileProps) {
   const baseLottiImage = TRY_ON_ITEMS.find(item => item.id === "none")?.cardSrc ?? TRY_ON_ITEMS[0]?.cardSrc ?? "";
   const ownedWearableSet = new Set(ownedWearableValues);
   const selectedItem = TRY_ON_ITEMS.find(item => item.id === equippedWearableValue) ?? TRY_ON_ITEMS[0];
