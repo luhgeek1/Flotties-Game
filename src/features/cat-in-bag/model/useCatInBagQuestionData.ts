@@ -3,11 +3,11 @@ import { useCallback, useMemo } from "react";
 
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
 import type { QuestionModalPlayer } from "@/features/question-modal";
-import type { QuestionPack, QuestionPackQuestion, QuestionPackSpecialQuestion } from "@/shared/api/questionPack";
+import type { QuestionPackQuestion, QuestionPackSpecial, QuestionPackSpecialQuestion } from "@/shared/api/questionPack";
 import { catInBagBidByQuestionIdAtom, catInBagSelectedAnsweringPlayerIdAtom, type RoundSpecialMap } from "@/shared/store/specialCIBAtom";
 
 type UseCatInBagQuestionDataArgs = {
-  selectedPack: QuestionPack;
+  roundSpecial: QuestionPackSpecial;
   roundSpecialMap: RoundSpecialMap;
   questionsById: Map<string, QuestionPackQuestion>;
   questionPlayers: QuestionModalPlayer[];
@@ -24,7 +24,7 @@ type UseCatInBagQuestionDataResult = {
 };
 
 export function useCatInBagQuestionData({
-  selectedPack,
+  roundSpecial,
   roundSpecialMap,
   questionsById,
   questionPlayers,
@@ -45,11 +45,11 @@ export function useCatInBagQuestionData({
 
   const catInBagSpecialQuestionById = useMemo(() => {
     const next = new Map<string, QuestionPackSpecialQuestion>();
-    selectedPack.special.catInBag.questions.forEach(question => {
+    roundSpecial.catInBag.questions.forEach(question => {
       next.set(question.id, question);
     });
     return next;
-  }, [selectedPack.special.catInBag.questions]);
+  }, [roundSpecial.catInBag.questions]);
 
   const catInBagThemeByQuestionId = useMemo<Record<string, string>>(() => {
     const next: Record<string, string> = {};

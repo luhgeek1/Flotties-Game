@@ -28,7 +28,7 @@ export function useGamePageModel({
 
   const { gamePlayers, questionPlayers, changePlayerScore } = useGamePlayers(setupPlayers, selectedPlayerIds);
   const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack, roundIndex);
-  const { roundSpecialMap } = useRoundSpecialMap(selectedPack, roundIndex);
+  const { roundSpecialMap, roundSpecial } = useRoundSpecialMap(selectedPack, roundIndex);
   const {
     specialTypeByQuestionId,
     catInBagThemeByQuestionId,
@@ -38,14 +38,14 @@ export function useGamePageModel({
     catInBagSelectedAnsweringPlayerId,
     setCatInBagSelectedAnsweringPlayerId,
   } = useCatInBagQuestionData({
-    selectedPack,
+    roundSpecial,
     roundSpecialMap,
     questionsById,
     questionPlayers,
   });
 
   const { questionsByIdWithAuction, isSingleAttemptAuctionQuestion } = useAuctionQuestionData({
-    selectedPack,
+    roundSpecial,
     roundSpecialMap,
     questionsById: questionsByIdWithCatInBag,
   });

@@ -24,6 +24,12 @@ export type QuestionPackSpecial = {
   auction: QuestionPackSpecialBucket;
 };
 
+export type QuestionPackSpecialByRound = Record<string, QuestionPackSpecial>;
+
+export type QuestionPackSpecialConfig = {
+  byRound: QuestionPackSpecialByRound;
+};
+
 export type QuestionPackTheme = {
   id: string;
   title: string;
@@ -47,7 +53,7 @@ export type QuestionPack = {
   title: string;
   lang: string;
   rounds: QuestionPackRounds;
-  special: QuestionPackSpecial;
+  special: QuestionPackSpecialConfig;
 };
 
 export async function fetchDefaultQuestionPack(): Promise<QuestionPack> {

@@ -2,11 +2,18 @@ import { useAtom } from "jotai";
 import { useEffect, useMemo } from "react";
 
 import { createRoundSpecialMap } from "@/entities/special-map";
-import type { QuestionPack } from "@/shared/api/questionPack";
+import type { QuestionPack, QuestionPackSpecial } from "@/shared/api/questionPack";
 import { roundSpecialMapsAtom, type RoundSpecialMap } from "@/shared/store/specialCIBAtom";
 
 function buildRoundSpecialKey(packId: string, roundId: string): string {
   return `${packId}:${roundId}`;
+}
+
+function createEmptyRoundSpecial(): QuestionPackSpecial {
+  return {
+    catInBag: { questions: [] },
+    auction: { questions: [] },
+  };
 }
 
 export function useRoundSpecialMap(selectedPack: QuestionPack, roundIndex: number) {
@@ -20,6 +27,10 @@ export function useRoundSpecialMap(selectedPack: QuestionPack, roundIndex: numbe
     () => buildRoundSpecialKey(selectedPack.id, activeRound.id),
     [selectedPack.id, activeRound.id],
   );
+  const roundSpecial = useMemo<QuestionPackSpecial>(
+    () => selectedPack.special.byRound[activeRound.id] ?? createEmptyRoundSpecial(),
+    [activeRound.id, selectedPack.special.byRound],
+  );
 
 
   useEffect(() => {
@@ -30,11 +41,11 @@ export function useRoundSpecialMap(selectedPack: QuestionPack, roundIndex: numbe
         ...prev,
         [roundSpecialKey]: createRoundSpecialMap({
           round: activeRound,
-          special: selectedPack.special,
+          special: roundSpecial,
         }),
       };
     });
-  }, [activeRound, roundSpecialKey, selectedPack.special, setRoundSpecialMaps]);
+  }, [activeRound, roundSpecial, roundSpecialKey, setRoundSpecialMaps]);
 
   const roundSpecialMap = useMemo<RoundSpecialMap>(
     () => roundSpecialMaps[roundSpecialKey] ?? {},
@@ -44,5 +55,6 @@ export function useRoundSpecialMap(selectedPack: QuestionPack, roundIndex: numbe
   return {
     roundSpecialKey,
     roundSpecialMap,
+    roundSpecial,
   };
 }

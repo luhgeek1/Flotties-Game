@@ -1,18 +1,18 @@
 import { useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
 
-import type { QuestionPack, QuestionPackQuestion, QuestionPackSpecialQuestion } from "@/shared/api/questionPack";
+import type { QuestionPackQuestion, QuestionPackSpecial, QuestionPackSpecialQuestion } from "@/shared/api/questionPack";
 import { auctionWinningBidByQuestionIdAtom, auctionWinningPlayerByQuestionIdAtom } from "@/shared/store/specialAuctionAtom";
 import type { RoundSpecialMap } from "@/shared/store/specialCIBAtom";
 
 type UseAuctionQuestionDataArgs = {
-  selectedPack: QuestionPack;
+  roundSpecial: QuestionPackSpecial;
   roundSpecialMap: RoundSpecialMap;
   questionsById: Map<string, QuestionPackQuestion>;
 };
 
 export function useAuctionQuestionData({
-  selectedPack,
+  roundSpecial,
   roundSpecialMap,
   questionsById,
 }: UseAuctionQuestionDataArgs) {
@@ -21,11 +21,11 @@ export function useAuctionQuestionData({
 
   const auctionSpecialQuestionById = useMemo(() => {
     const next = new Map<string, QuestionPackSpecialQuestion>();
-    selectedPack.special.auction.questions.forEach(question => {
+    roundSpecial.auction.questions.forEach(question => {
       next.set(question.id, question);
     });
     return next;
-  }, [selectedPack.special.auction.questions]);
+  }, [roundSpecial.auction.questions]);
 
   const questionsByIdWithAuction = useMemo(() => {
     const next = new Map(questionsById);
