@@ -108,6 +108,17 @@ export function useAddPlayerModal({
       return;
     }
 
+    const normalizedNickname = trimmedNickname.toLowerCase();
+    const hasDuplicateNickname = players.some(player => (
+      player.id !== editingPlayerId
+      && player.name.trim().toLowerCase() === normalizedNickname
+    ));
+
+    if (hasDuplicateNickname) {
+      setError("Игрок с таким никнеймом уже существует");
+      return;
+    }
+
     onSave({ nickname: trimmedNickname, avatar, banner }, editingPlayerId);
     close();
   };
