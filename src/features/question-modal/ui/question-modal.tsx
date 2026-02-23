@@ -18,6 +18,7 @@ type QuestionModalProps = {
   questionValue: number | string;
   questionText: string;
   answerText: string;
+  prefilledAnswerText?: string;
   players: QuestionModalPlayer[];
   isSingleAttemptMode?: boolean;
   phase: GameQuestionPhase | null;
@@ -37,6 +38,7 @@ export function QuestionModal({
   questionValue,
   questionText,
   answerText,
+  prefilledAnswerText = "",
   players,
   isSingleAttemptMode = false,
   phase,
@@ -99,6 +101,7 @@ export function QuestionModal({
                   playerAvatarUrl={activePlayer?.avatarUrl ?? null}
                   questionText={questionText}
                   answerInput={answerInput}
+                  prefilledAnswerText={prefilledAnswerText}
                   onAnswerInputChange={onAnswerInputChange}
                   onSubmitAnswer={onSubmitAnswer}
                 />

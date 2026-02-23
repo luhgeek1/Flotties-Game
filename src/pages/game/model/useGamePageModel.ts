@@ -5,6 +5,7 @@ import { useAuctionInteraction, useAuctionQuestionData } from "@/features/auctio
 import { useCatInBagInteraction, useCatInBagQuestionData } from "@/features/cat-in-bag/model";
 import { usePlayerPick } from "@/features/player-pick";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
+import { adminModeEnabledAtom } from "@/shared/store/adminModeAtom";
 import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 
 import { useGameBoardData } from "./useGameBoardData";
@@ -26,6 +27,7 @@ export function useGamePageModel({
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
   const setupPlayers = useAtomValue(setupPlayersAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
+  const isAdminMode = useAtomValue(adminModeEnabledAtom);
 
   const { gamePlayers, questionPlayers, changePlayerScore } = useGamePlayers(setupPlayers, selectedPlayerIds);
   const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack, roundIndex);
@@ -76,6 +78,10 @@ export function useGamePageModel({
   const modalQuestionId = activeQuestionId ?? modalState?.questionId ?? null;
   const modalQuestion = modalQuestionId ? questionsByIdWithAuction.get(modalQuestionId) ?? null : null;
   const isQuestionModalOpen = modalQuestionId !== null;
+  const answerText = modalQuestion?.answers[0] ?? activeQuestion?.answers[0] ?? "Ответ не указан";
+  const adminPrefilledAnswer = isAdminMode
+    ? (modalQuestion?.answers[0] ?? activeQuestion?.answers[0] ?? "")
+    : "";
 
   const { currentPickerId, currentPicker } = usePlayerPick({
     players: gamePlayers,
@@ -175,7 +181,7 @@ export function useGamePageModel({
       players: gamePlayers,
       activePickerId,
       onExitToSetup: navigateToSetup,
-      onOpenAllQuestionsClick: openAllQuestions,
+      onOpenAllQuestionsClick: isAdminMode ? openAllQuestions : undefined,
     },
     pickBanner: {
       playerName: currentPicker?.name ?? null,
@@ -183,7 +189,7 @@ export function useGamePageModel({
     },
     gameBoard: {
       themes: boardThemes,
-      specialTypeByQuestionId,
+      specialTypeByQuestionId: isAdminMode ? specialTypeByQuestionId : {},
       openedQuestionIds,
       onQuestionSelect: auction.handleBoardQuestionSelect,
     },
@@ -241,7 +247,8 @@ export function useGamePageModel({
       questionId: modalQuestionId,
       questionValue: modalQuestion?.value ?? activeQuestion?.value ?? "",
       questionText: modalQuestion?.question ?? activeQuestion?.question ?? "",
-      answerText: modalQuestion?.answers[0] ?? activeQuestion?.answers[0] ?? "Ответ не указан",
+      answerText,
+      prefilledAnswerText: adminPrefilledAnswer,
       players: questionPlayersForState,
       isSingleAttemptMode: isCatInBagQuestionActive,
       phase: modalState?.phase ?? null,

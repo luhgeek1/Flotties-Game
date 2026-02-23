@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { PlayerAvatar } from "@/entities/players";
 
 import { Button } from "@/shared/components/ui/button";
@@ -8,6 +9,7 @@ type QuestionModalAnsweringStateProps = {
   playerAvatarUrl: string | null;
   questionText: string;
   answerInput: string;
+  prefilledAnswerText?: string;
   onAnswerInputChange: (value: string) => void;
   onSubmitAnswer: () => void;
 };
@@ -17,9 +19,16 @@ export function QuestionModalAnsweringState({
   playerAvatarUrl,
   questionText,
   answerInput,
+  prefilledAnswerText = "",
   onAnswerInputChange,
   onSubmitAnswer,
 }: QuestionModalAnsweringStateProps) {
+  useEffect(() => {
+    if (!prefilledAnswerText) return;
+    if (answerInput.length > 0) return;
+    onAnswerInputChange(prefilledAnswerText);
+  }, [answerInput, onAnswerInputChange, prefilledAnswerText]);
+
   return (
     <div className="mx-auto w-full max-w-2xl space-y-8 animate-in slide-in-from-bottom-10">
       <div className="flex items-center justify-center gap-4 mb-4">

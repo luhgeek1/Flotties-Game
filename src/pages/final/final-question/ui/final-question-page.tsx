@@ -1,8 +1,10 @@
+import { useAtomValue } from "jotai";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { QuestionModalAnsweringState, QuestionModalResultTimeoutState } from "@/features/question-modal";
 import smileLottiImage from "@/shared/assets/smileLotti.png";
+import { adminModeEnabledAtom } from "@/shared/store/adminModeAtom";
 import { QuestionTimer } from "@/shared/ui";
 import { Header } from "@/widgets/header";
 import { useFinalQuestionModel } from "../model/use-final-question-model";
@@ -18,6 +20,7 @@ const FINAL_COMPLETE_SCREEN_DURATION_MS = 3000;
 
 export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer, onAllAnswersDone }: FinalQuestionPageProps) {
   const model = useFinalQuestionModel({ onConfirmAnswer });
+  const isAdminMode = useAtomValue(adminModeEnabledAtom);
   const [isLeaving, setIsLeaving] = useState(false);
   const [remainingMs, setRemainingMs] = useState(FINAL_ANSWER_TIMER_DURATION_MS);
   const [isTimeoutModalOpen, setIsTimeoutModalOpen] = useState(false);
@@ -189,6 +192,7 @@ export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer, onAllAnswers
                       playerAvatarUrl={model.currentPlayerAvatarUrl}
                       questionText={model.finalQuestionText}
                       answerInput={model.answerInput}
+                      prefilledAnswerText={isAdminMode ? model.finalAnswerText : ""}
                       onAnswerInputChange={model.onAnswerInputChange}
                       onSubmitAnswer={handleSubmit}
                     />
