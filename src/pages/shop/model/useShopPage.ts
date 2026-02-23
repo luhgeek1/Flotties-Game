@@ -2,9 +2,8 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { SHOP_AVATAR_ITEMS, SHOP_BANNER_ITEMS } from "@/entities/cosmetics";
-import { resolveSelectedPlayers } from "@/entities/players";
 import { useTheme } from "@/shared/lib/use-theme";
-import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { setupPlayersAtom } from "@/shared/store/setupAtoms";
 import {
   createDefaultShopPlayerInventory,
   shopActivePlayerIdAtom,
@@ -14,20 +13,14 @@ import {
 export function useShopPage() {
   const { isDark, toggleTheme } = useTheme();
   const players = useAtomValue(setupPlayersAtom);
-  const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const activePlayerId = useAtomValue(shopActivePlayerIdAtom);
   const setShopActivePlayerId = useSetAtom(shopActivePlayerIdAtom);
   const playerInventories = useAtomValue(shopPlayerInventoriesAtom);
   const [isPlayerSelectOpen, setIsPlayerSelectOpen] = useState(false);
-  const shopPlayers = useMemo(() => (
-    selectedPlayerIds.length > 0
-      ? resolveSelectedPlayers(players, selectedPlayerIds)
-      : players
-  ), [players, selectedPlayerIds]);
 
   const activePlayer = useMemo(
-    () => shopPlayers.find(player => player.id === activePlayerId) ?? shopPlayers[0] ?? null,
-    [activePlayerId, shopPlayers],
+    () => players.find(player => player.id === activePlayerId) ?? players[0] ?? null,
+    [activePlayerId, players],
   );
 
   useEffect(() => {
@@ -88,7 +81,7 @@ export function useShopPage() {
   return {
     isDark,
     toggleTheme,
-    players: shopPlayers,
+    players,
     activePlayer,
     resolvedPlayerName,
     inventoryCount,

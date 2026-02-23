@@ -2,14 +2,13 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { History, ShoppingBag } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useState } from "react";
-import { resolveSelectedPlayers } from "@/entities/players";
 import { SetupOnboardingOverlay } from "@/features/onboarding";
 import { ShopPlayerSelectModal } from "@/features/shop";
 import { PlayersSetupScreen } from "@/features/players-setup";
 import { PacksSetupScreen } from "@/features/packs-setup";
 import { Button } from "@/shared/components/ui/button";
 import { markOnboardingStartedGameAtom, onboardingStartedGameAtom } from "@/shared/store/onboardingAtom";
-import { setupStepAtom, setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { setupStepAtom, setupPlayersAtom } from "@/shared/store/setupAtoms";
 import { shopActivePlayerIdAtom } from "@/shared/store/shopAtoms";
 
 type SetupPageProps = {
@@ -21,14 +20,10 @@ type SetupPageProps = {
 export function SetupPage({ onStartGame, onOpenShop, onOpenHistory }: SetupPageProps) {
   const [step, setStep] = useAtom(setupStepAtom);
   const players = useAtomValue(setupPlayersAtom);
-  const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const hasOnboardingFlag = useAtomValue(onboardingStartedGameAtom);
   const markOnboardingStartedGame = useSetAtom(markOnboardingStartedGameAtom);
   const setShopActivePlayerId = useSetAtom(shopActivePlayerIdAtom);
   const [isShopPlayerSelectOpen, setIsShopPlayerSelectOpen] = useState(false);
-  const shopPlayers = selectedPlayerIds.length > 0
-    ? resolveSelectedPlayers(players, selectedPlayerIds)
-    : players;
 
   const handleOpenShopPlayerSelect = () => {
     setIsShopPlayerSelectOpen(true);
@@ -84,7 +79,7 @@ export function SetupPage({ onStartGame, onOpenShop, onOpenHistory }: SetupPageP
 
       <ShopPlayerSelectModal
         isOpen={isShopPlayerSelectOpen}
-        players={shopPlayers}
+        players={players}
         onClose={handleCloseShopPlayerSelect}
         onSelectPlayer={handleSelectShopPlayer}
       />
