@@ -5,8 +5,8 @@ import { FinalPrepairingPage } from "@/pages/final-prepairing";
 import { FinalBidPage, FinalCloseEyesPage, FinalQuestionPage, FinalResultsPage, FinalStartThemePage } from "@/pages/final";
 import { useAtomValue } from "jotai";
 import { SetupPage } from "@/pages/setup";
-import { gamePlayerScoresAtom } from "@/shared/store/gameAtoms";
-import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { gamePlayerScoresAtom } from "@/features/game-session/store/gameAtoms";
+import { setupSelectedPlayerIdsAtom } from "@/features/game-session/store/setupAtoms";
 import type { AppRoute } from "../lib/route-guard";
 import type { NavigateOptions } from "../model/useAppNavigation";
 

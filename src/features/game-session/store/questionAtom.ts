@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { fetchDefaultQuestionPack, type QuestionPack } from "../api/questionPack";
+import { fetchDefaultQuestionPack, type QuestionPack } from "@/shared/api/questionPack";
 import { setupSelectedPackIdAtom } from "./setupAtoms";
 
 // загрузка всех паков 

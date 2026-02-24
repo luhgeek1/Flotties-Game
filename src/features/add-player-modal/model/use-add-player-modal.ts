@@ -6,7 +6,7 @@ import {
   setupPlayersAtom,
   resetSetupAddPlayerModalStateAtom,
   setupAddPlayerModalStateAtom,
-} from "@/shared/store/setupAtoms";
+} from "@/features/game-session/store/setupAtoms";
 import type { AddPlayerValues } from "@/entities/cosmetics";
 
 type UseAddPlayerModalArgs = {

@@ -2,8 +2,8 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { DEFAULT_PLAYER_AVATAR_URL } from "@/entities/players";
 
-import { finalActivePlayerIdAtom } from "@/shared/store/finalAtom";
-import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
+import { finalActivePlayerIdAtom } from "@/features/game-session/store/finalAtom";
+import { selectedQuestionPackAtom } from "@/features/game-session/store/questionAtom";
 import { useFinalPlayerQueue } from "@/pages/final/model/useFinalPlayerQueue";
 
 type UseFinalCloseEyesModelArgs = {

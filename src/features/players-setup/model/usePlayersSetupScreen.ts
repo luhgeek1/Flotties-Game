@@ -16,11 +16,11 @@ import {
   setupAddPlayerModalStateAtom,
   setupPlayersAtom,
   setupSelectedPlayerIdsAtom,
-} from "@/shared/store/setupAtoms";
+} from "@/features/game-session/store/setupAtoms";
 import {
   createDefaultShopPlayerInventory,
   shopPlayerInventoriesAtom,
-} from "@/shared/store/shopAtoms";
+} from "@/features/shop/store/shopAtoms";
 
 type UsePlayersSetupScreenArgs = {
   onContinue?: () => void;

@@ -3,10 +3,10 @@ import { useCallback, useMemo } from "react";
 
 import { useGameBoardData, useGamePlayers, useRoundSpecialMap } from "@/features/game-session";
 import { usePlayerPick } from "@/features/player-pick";
-import { adminModeEnabledAtom } from "@/shared/store/adminModeAtom";
-import { gameRoundFirstPickDoneAtom } from "@/shared/store/gameAtoms";
-import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
-import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { adminModeEnabledAtom } from "@/features/admin/store/adminModeAtom";
+import { gameRoundFirstPickDoneAtom } from "@/features/game-session/store/gameAtoms";
+import { selectedQuestionPackAtom } from "@/features/game-session/store/questionAtom";
+import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/features/game-session/store/setupAtoms";
 import { useGameQuestionFlow } from "./useGameQuestionFlow";
 import { useGameSpecialInteractions } from "./useGameSpecialInteractions";
 import { useGameSpecialQuestionData } from "./useGameSpecialQuestionData";

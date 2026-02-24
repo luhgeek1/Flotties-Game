@@ -7,9 +7,9 @@ import { ShopPlayerSelectModal } from "@/features/shop";
 import { PlayersSetupScreen } from "@/features/players-setup";
 import { PacksSetupScreen } from "@/features/packs-setup";
 import { Button } from "@/shared/components/ui/button";
-import { markOnboardingStartedGameAtom, onboardingStartedGameAtom } from "@/shared/store/onboardingAtom";
-import { setupStepAtom, setupPlayersAtom } from "@/shared/store/setupAtoms";
-import { shopActivePlayerIdAtom } from "@/shared/store/shopAtoms";
+import { markOnboardingStartedGameAtom, onboardingStartedGameAtom } from "@/features/onboarding/store/onboardingAtom";
+import { setupStepAtom, setupPlayersAtom } from "@/features/game-session/store/setupAtoms";
+import { shopActivePlayerIdAtom } from "@/features/shop/store/shopAtoms";
 
 type SetupPageProps = {
   onStartGame?: () => void;

@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { useEffect, useMemo } from "react";
 
-import { gameRound2StartPickerIdAtom } from "@/shared/store/gameAtoms";
+import { gameRound2StartPickerIdAtom } from "@/features/game-session/store/gameAtoms";
 
 import { getLowestScorePlayerId, resolveCurrentPickerId, resolveRoundStartPickerId } from "./selectors";
 import type { PlayerPickParticipant } from "./types";

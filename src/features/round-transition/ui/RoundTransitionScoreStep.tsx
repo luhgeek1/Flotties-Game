@@ -6,7 +6,7 @@ import { ScoreBarChart } from "@/shared/ui"
 
 import { roundTransitionStepVariants } from "../model/constants"
 import type { RoundTransitionScoreSlide } from "../model/types"
-import { RoundTransitionCarousel } from "./RoundTransitionCarousel"
+import { RoundTransitionCarousel } from "./roundTransitionCarousel"
 
 type MvpSlideProps = {
   players: Array<{ id: string; name: string; score: number }>

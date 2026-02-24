@@ -1,5 +1,5 @@
-import type { ShopPlayerInventory, ShopPlayerInventories } from "@/shared/store/shopAtoms";
-import { createDefaultShopPlayerInventory } from "@/shared/store/shopAtoms";
+import type { ShopPlayerInventory, ShopPlayerInventories } from "@/features/shop/store/shopAtoms";
+import { createDefaultShopPlayerInventory } from "@/features/shop/store/shopAtoms";
 import type { ItemStateMeta, ShopPricedItem } from "./types";
 
 //убираем дубликаты

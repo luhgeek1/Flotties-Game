@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-import { auctionBannerOpenAtom } from "./specialBannerAtom";
+import { auctionBannerOpenAtom } from "@/features/special-banner/store/specialBannerAtom";
 
 export type AuctionBidByPlayerIdState = Record<string, number>;
 export type AuctionBidByQuestionIdState = Record<string, number>;

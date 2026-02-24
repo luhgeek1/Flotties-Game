@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import type { QuestionPackQuestion } from "@/shared/api/questionPack";
-import { gameActiveQuestionIdAtom, gameOpenedQuestionIdsAtom, gameQuestionFlowStateAtom } from "@/shared/store/gameAtoms";
+import { gameActiveQuestionIdAtom, gameOpenedQuestionIdsAtom, gameQuestionFlowStateAtom } from "@/features/game-session/store/gameAtoms";
 import {
   ANSWERING_TIMER_DURATION_MS,
   createQuestionFlowState,

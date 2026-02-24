@@ -2,7 +2,7 @@ import { PLAYER_SELECTION_KEY_CODES } from "@/entities/players";
 import type { QuestionModalPlayer } from "@/features/question-modal";
 import defaultPlayerAvatar from "@/shared/assets/default-user-avatar.svg";
 import type { QuestionPackQuestion } from "@/shared/api/questionPack";
-import { ONBOARDING_DEMO_QUESTION_ID } from "@/shared/store/onboardingAtom";
+import { ONBOARDING_DEMO_QUESTION_ID } from "@/features/onboarding/store/onboardingAtom";
 
 export const DEMO_QUESTION: QuestionPackQuestion = {
   id: ONBOARDING_DEMO_QUESTION_ID,

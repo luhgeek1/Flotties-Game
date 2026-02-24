@@ -1,6 +1,6 @@
 import type { Variants } from "motion/react"
 
-import type { RoundTransitionStep } from "@/shared/store/round-transition-storage"
+import type { RoundTransitionStep } from "@/features/round-transition/store/round-transition-storage"
 
 export const roundTransitionStepVariants: Variants = {
   initial: { opacity: 0, x: 20 },

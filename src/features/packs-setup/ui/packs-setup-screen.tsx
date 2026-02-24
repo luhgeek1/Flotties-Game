@@ -4,13 +4,13 @@ import { ArrowLeft, Upload, Play } from "lucide-react";
 
 import { QuestionPackCard } from "@/entities/question-pack";
 import { Button } from "@/shared/components/ui/button";
-import { questionPacksAtom } from "@/shared/store/questionAtom";
+import { questionPacksAtom } from "@/features/game-session/store/questionAtom";
 import { cn } from "@/shared/lib/utils";
 import {
   PLAYERS_TO_START_GAME,
   setupSelectedPackIdAtom,
   setupSelectedPlayerIdsAtom,
-} from "@/shared/store/setupAtoms";
+} from "@/features/game-session/store/setupAtoms";
 import { SetupShell } from "@/widgets/setup-shell";
 
 type PacksSetupScreenProps = {

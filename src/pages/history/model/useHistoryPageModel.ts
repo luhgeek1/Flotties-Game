@@ -2,7 +2,7 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import { type GameCardData, useGameHistory } from "@/features/history";
-import { questionPacksAtom } from "@/shared/store/questionAtom";
+import { questionPacksAtom } from "@/features/game-session/store/questionAtom";
 
 function formatDuration(durationMs: number): string {
   const totalSeconds = Math.max(0, Math.floor(durationMs / 1000));

@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
-import { catInBagBannerOpenAtom } from "@/shared/store/specialBannerAtom";
+import { catInBagBannerOpenAtom } from "@/features/special-banner/store/specialBannerAtom";
 import {
   catInBagBidByQuestionIdAtom,
   catInBagBidModalOpenAtom,
@@ -10,7 +10,7 @@ import {
   catInBagPickerPlayerIdAtom,
   catInBagSelectedAnsweringPlayerIdAtom,
   catInBagTransferModalOpenAtom,
-} from "@/shared/store/specialCIBAtom";
+} from "@/features/cat-in-bag/store/specialCIBAtom";
 import type { CatInBagBidCompletePayload, CatInBagTransferModalMode, CatInBagTransferPlayer } from "./types";
 
 type UseCatInBagTransferArgs = {

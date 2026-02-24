@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAtom, useSetAtom } from "jotai";
 
-import type { GameQuestionFlowState } from "@/shared/store/gameAtoms";
+import type { GameQuestionFlowState } from "@/features/game-session/store/gameAtoms";
 import {
   onboardingDemoStateAtom,
   resetOnboardingDemoStateAtom,
-} from "@/shared/store/onboardingAtom";
+} from "@/features/onboarding/store/onboardingAtom";
 import {
   applyPlayerBuzz,
   createQuestionFlowState,
@@ -103,6 +103,8 @@ export function useOnboardingQuestionDemo() {
   useQuestionTimerEffect({
     activeQuestionId,
     flowPhase,
+    questionValue: DEMO_QUESTION.value,
+    onPlayerScoreDelta: () => {},
     setQuestionFlowState,
   });
 

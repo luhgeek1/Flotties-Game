@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { DEFAULT_PLAYER_AVATAR_URL } from "@/entities/players";
 
-import type { GameQuestionPhase } from "@/shared/store/gameAtoms";
+import type { GameQuestionPhase } from "@/features/game-session/store/gameAtoms";
 import { QuestionTimer } from "@/shared/ui";
 
 import type { QuestionModalPlayer } from "../model/types";

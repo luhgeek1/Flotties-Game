@@ -6,10 +6,10 @@ import {
   gameRoundMvpsAtom,
   gameStartedAtAtom,
   type GameHistoryEntry,
-} from "@/shared/store/gameHistoryAtom";
-import { gamePlayerScoresAtom, type GamePlayerScores } from "@/shared/store/gameAtoms";
-import { finalResultsStateAtom } from "@/shared/store/finalResultsAtom";
-import { setupPlayersAtom, setupSelectedPackIdAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+} from "@/features/history/store/gameHistoryAtom";
+import { gamePlayerScoresAtom, type GamePlayerScores } from "@/features/game-session/store/gameAtoms";
+import { finalResultsStateAtom } from "@/features/game-session/store/finalResultsAtom";
+import { setupPlayersAtom, setupSelectedPackIdAtom, setupSelectedPlayerIdsAtom } from "@/features/game-session/store/setupAtoms";
 
 function createSequentialHistoryId(history: readonly GameHistoryEntry[]): string {
   const maxIndex = history.reduce((max, entry) => {

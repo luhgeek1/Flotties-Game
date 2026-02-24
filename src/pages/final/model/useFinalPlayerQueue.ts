@@ -2,12 +2,12 @@ import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import { resolveSelectedPlayers } from "@/entities/players";
-import { gamePlayerScoresAtom } from "@/shared/store/gameAtoms";
+import { gamePlayerScoresAtom } from "@/features/game-session/store/gameAtoms";
 import {
   finalActivePlayerIdAtom,
   finalCurrentPlayerIndexAtom,
-} from "@/shared/store/finalAtom";
-import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+} from "@/features/game-session/store/finalAtom";
+import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/features/game-session/store/setupAtoms";
 
 type UseFinalPlayerQueueArgs = {
   preferActivePlayer?: boolean;

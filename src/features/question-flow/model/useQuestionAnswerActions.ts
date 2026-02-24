@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
 import type { QuestionPackQuestion } from "@/shared/api/questionPack";
-import type { GameQuestionFlowState } from "@/shared/store/gameAtoms";
+import type { GameQuestionFlowState } from "@/features/game-session/store/gameAtoms";
 
 import {
   checkAnswer,

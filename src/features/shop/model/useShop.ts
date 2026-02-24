@@ -2,9 +2,9 @@ import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import { SHOP_AVATAR_ITEMS, SHOP_BANNER_ITEMS, SHOP_DEFAULT_EQUIPPED_WEARABLE_VALUE, SHOP_WEARABLE_ITEMS } from "@/entities/cosmetics";
-import { adminModeEnabledAtom } from "@/shared/store/adminModeAtom";
-import { setupPlayersAtom } from "@/shared/store/setupAtoms";
-import { type ShopPlayerInventory, shopActivePlayerIdAtom, shopPlayerInventoriesAtom } from "@/shared/store/shopAtoms";
+import { adminModeEnabledAtom } from "@/features/admin/store/adminModeAtom";
+import { setupPlayersAtom } from "@/features/game-session/store/setupAtoms";
+import { type ShopPlayerInventory, shopActivePlayerIdAtom, shopPlayerInventoriesAtom } from "@/features/shop/store/shopAtoms";
 import {
   mapItemsToState,
   resolveActivePlayer,

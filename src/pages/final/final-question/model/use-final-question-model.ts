@@ -2,9 +2,9 @@ import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
 import { DEFAULT_PLAYER_AVATAR_URL } from "@/entities/players";
 
-import { finalAnswerByPlayerIdAtom, finalAnswerInputByPlayerIdAtom } from "@/shared/store/finalAtom";
+import { finalAnswerByPlayerIdAtom, finalAnswerInputByPlayerIdAtom } from "@/features/game-session/store/finalAtom";
 import { useFinalPlayerQueue } from "@/pages/final/model/useFinalPlayerQueue";
-import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
+import { selectedQuestionPackAtom } from "@/features/game-session/store/questionAtom";
 
 type UseFinalQuestionModelArgs = {
   onConfirmAnswer?: () => void;

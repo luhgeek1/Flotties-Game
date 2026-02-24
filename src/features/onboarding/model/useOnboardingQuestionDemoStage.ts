@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useAtom } from "jotai";
 
-import { onboardingStageAtom } from "@/shared/store/onboardingAtom";
+import { onboardingStageAtom } from "@/features/onboarding/store/onboardingAtom";
 
 type UseOnboardingQuestionDemoStageArgs = {
   isDemoQuestionCompleted: boolean;

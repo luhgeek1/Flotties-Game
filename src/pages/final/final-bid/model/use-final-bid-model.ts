@@ -1,10 +1,10 @@
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
 
-import { gamePlayerScoresAtom } from "@/shared/store/gameAtoms";
-import { finalBidByPlayerIdAtom, finalBidInputByPlayerIdAtom } from "@/shared/store/finalAtom";
+import { gamePlayerScoresAtom } from "@/features/game-session/store/gameAtoms";
+import { finalBidByPlayerIdAtom, finalBidInputByPlayerIdAtom } from "@/features/game-session/store/finalAtom";
 import { useFinalPlayerQueue } from "@/pages/final/model/useFinalPlayerQueue";
-import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
+import { selectedQuestionPackAtom } from "@/features/game-session/store/questionAtom";
 
 type UseFinalBidModelArgs = {
   onConfirmBid?: () => void;

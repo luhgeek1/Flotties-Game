@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import type { AuctionBidByPlayerIdState } from "@/shared/store/specialAuctionAtom";
+import type { AuctionBidByPlayerIdState } from "@/features/auction/store/specialAuctionAtom";
 
 import { finalizeAuctionPure } from "./finalize";
 import { resolveNextAuctionCursor } from "./selectors";

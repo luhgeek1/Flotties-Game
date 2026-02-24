@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react"
 import { useAtom, useSetAtom } from "jotai"
 
-import { gameRoundMvpsAtom } from "@/shared/store/gameHistoryAtom"
-import { resetRoundTransitionStorageAtom, roundTransitionCarouselIndexAtom, roundTransitionStepAtom } from "@/shared/store/round-transition-storage"
+import { gameRoundMvpsAtom } from "@/features/history/store/gameHistoryAtom"
+import { resetRoundTransitionStorageAtom, roundTransitionCarouselIndexAtom, roundTransitionStepAtom } from "@/features/round-transition/store/round-transition-storage"
 import { buildScoreChartItems, getTopScorePlayers, sortPlayersByScore } from "./selectors"
 import type { RoundTransitionModalProps, RoundTransitionScoreSlide } from "./types"
 import { useHoverReveal } from "./useHoverReveal"

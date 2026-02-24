@@ -11,7 +11,7 @@ import {
   auctionWinningBidByQuestionIdAtom,
   auctionWinningPlayerByQuestionIdAtom,
   resetAuctionFlowAtom,
-} from "@/shared/store/specialAuctionAtom";
+} from "@/features/auction/store/specialAuctionAtom";
 
 export function useAuctionState() {
   const [isModalOpen, setIsModalOpen] = useAtom(auctionModalOpenAtom);

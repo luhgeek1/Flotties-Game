@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { QuestionModalAnsweringState, QuestionModalResultTimeoutState } from "@/features/question-modal";
 import smileLottiImage from "@/shared/assets/smileLotti.png";
-import { adminModeEnabledAtom } from "@/shared/store/adminModeAtom";
+import { adminModeEnabledAtom } from "@/features/admin/store/adminModeAtom";
 import { QuestionTimer } from "@/shared/ui";
 import { Header } from "@/widgets/header";
 import { useFinalQuestionModel } from "../model/use-final-question-model";

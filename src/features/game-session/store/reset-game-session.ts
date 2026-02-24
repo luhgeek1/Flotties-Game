@@ -12,10 +12,10 @@ import {
 } from "./gameAtoms";
 import { resetFinalStateAtom } from "./finalAtom";
 import { resetFinalResultsStateAtom } from "./finalResultsAtom";
-import { resetRoundTransitionStorageAtom } from "./round-transition-storage";
+import { resetRoundTransitionStorageAtom } from "@/features/round-transition/store/round-transition-storage";
 import { setupStepAtom } from "./setupAtoms";
-import { resetAuctionStateAtom } from "./specialAuctionAtom";
-import { resetRoundSpecialMapsAtom } from "./specialCIBAtom";
+import { resetAuctionStateAtom } from "@/features/auction/store/specialAuctionAtom";
+import { resetRoundSpecialMapsAtom } from "@/features/cat-in-bag/store/specialCIBAtom";
 
 export const resetGameRoundStateAtom = atom(
   null,

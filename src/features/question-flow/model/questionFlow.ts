@@ -1,4 +1,4 @@
-import type { GameQuestionFlowState } from "@/shared/store/gameAtoms";
+import type { GameQuestionFlowState } from "@/features/game-session/store/gameAtoms";
 
 export const QUESTION_TIMER_DURATION_MS = 30_000;
 export const ANSWERING_TIMER_DURATION_MS = 15_000;

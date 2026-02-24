@@ -8,12 +8,12 @@ import {
   SHOP_DEFAULT_OWNED_BANNER_VALUES,
 } from "@/entities/cosmetics";
 import { useTheme } from "@/shared/lib/use-theme";
-import { setupPlayersAtom } from "@/shared/store/setupAtoms";
+import { setupPlayersAtom } from "@/features/game-session/store/setupAtoms";
 import {
   createDefaultShopPlayerInventory,
   shopActivePlayerIdAtom,
   shopPlayerInventoriesAtom,
-} from "@/shared/store/shopAtoms";
+} from "@/features/shop/store/shopAtoms";
 
 const DEFAULT_BANNER_VALUE = SHOP_DEFAULT_OWNED_BANNER_VALUES[0] ?? "";
 

@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { useMemo, useState } from "react";
 
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
-import { auctionBannerOpenAtom } from "@/shared/store/specialBannerAtom";
+import { auctionBannerOpenAtom } from "@/features/special-banner/store/specialBannerAtom";
 
 import { useAuctionActions } from "./useAuctionActions";
 import { useAuctionDerived } from "./useAuctionDerived";

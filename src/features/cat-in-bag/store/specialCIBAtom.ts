@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-import { catInBagBannerOpenAtom } from "./specialBannerAtom";
+import { catInBagBannerOpenAtom } from "@/features/special-banner/store/specialBannerAtom";
 
 export type SpecialQuestionType = "catInBag" | "auction";
 

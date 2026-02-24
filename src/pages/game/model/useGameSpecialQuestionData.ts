@@ -4,7 +4,7 @@ import { useAuctionQuestionData } from "@/features/auction/model";
 import { useCatInBagQuestionData } from "@/features/cat-in-bag/model";
 import type { QuestionModalPlayer } from "@/features/question-modal";
 import type { QuestionPackQuestion, QuestionPackSpecial } from "@/shared/api/questionPack";
-import type { RoundSpecialMap } from "@/shared/store/specialCIBAtom";
+import type { RoundSpecialMap } from "@/features/cat-in-bag/store/specialCIBAtom";
 
 type UseGameSpecialQuestionDataArgs = {
   roundSpecial: QuestionPackSpecial;

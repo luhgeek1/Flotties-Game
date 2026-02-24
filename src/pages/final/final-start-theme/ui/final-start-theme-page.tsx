@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai";
 
-import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
+import { selectedQuestionPackAtom } from "@/features/game-session/store/questionAtom";
 import { Header } from "@/widgets/header";
 
 import { TopicReveal } from "./topic-reveal";

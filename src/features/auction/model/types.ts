@@ -1,5 +1,5 @@
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
-import type { AuctionBidByPlayerIdState } from "@/shared/store/specialAuctionAtom";
+import type { AuctionBidByPlayerIdState } from "@/features/auction/store/specialAuctionAtom";
 
 export type AuctionPlayer = {
   id: string;

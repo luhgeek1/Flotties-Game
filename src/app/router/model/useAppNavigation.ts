@@ -3,16 +3,16 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { useGameHistory } from "@/features/history";
 import { useOnboarding } from "@/features/onboarding";
-import { prepareFinalAnswersStageAtom } from "@/shared/store/finalAtom";
-import { gamePlayerScoresAtom, gameRound2UnlockedAtom } from "@/shared/store/gameAtoms";
-import { resetGameRoundStateAtom, resetGameSessionAtom } from "@/shared/store/reset-game-session";
+import { prepareFinalAnswersStageAtom } from "@/features/game-session/store/finalAtom";
+import { gamePlayerScoresAtom, gameRound2UnlockedAtom } from "@/features/game-session/store/gameAtoms";
+import { resetGameRoundStateAtom, resetGameSessionAtom } from "@/features/game-session/store/reset-game-session";
 import {
   PLAYERS_TO_START_GAME,
   setupPlayersAtom,
   setupSelectedPackIdAtom,
   setupSelectedPlayerIdsAtom,
-} from "@/shared/store/setupAtoms";
-import { shopActivePlayerIdAtom } from "@/shared/store/shopAtoms";
+} from "@/features/game-session/store/setupAtoms";
+import { shopActivePlayerIdAtom } from "@/features/shop/store/shopAtoms";
 import {
   ROUTE_PATH,
   coerceRoute,

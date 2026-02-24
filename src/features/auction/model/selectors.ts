@@ -1,4 +1,4 @@
-import type { AuctionBidByPlayerIdState } from "@/shared/store/specialAuctionAtom";
+import type { AuctionBidByPlayerIdState } from "@/features/auction/store/specialAuctionAtom";
 
 import type { AuctionPlayer } from "./types";
 

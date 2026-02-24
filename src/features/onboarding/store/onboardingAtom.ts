@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import type { GameQuestionPhase } from "./gameAtoms";
+import type { GameQuestionPhase } from "@/features/game-session/store/gameAtoms";
 
 const ONBOARDING_STARTED_GAME_STORAGE_KEY = "onboarding-started-game-v1";
 const ONBOARDING_STAGE_STORAGE_KEY = "onboarding-stage-v1";

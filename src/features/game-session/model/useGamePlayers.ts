@@ -2,7 +2,7 @@ import { useEffect, useMemo, useCallback } from "react";
 import { useAtom } from "jotai";
 
 import { resolveSelectedPlayers, type PlayerId, type SetupPlayer } from "@/entities/players";
-import { gamePlayerScoresAtom, type GamePlayerScores } from "@/shared/store/gameAtoms";
+import { gamePlayerScoresAtom, type GamePlayerScores } from "@/features/game-session/store/gameAtoms";
 import type { QuestionModalPlayer } from "@/features/question-modal";
 
 function buildScoresByPlayerIds(

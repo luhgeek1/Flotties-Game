@@ -3,8 +3,8 @@ import { useAtomValue } from "jotai";
 
 import doFinalImage from "@/shared/assets/dofinal.png";
 import { Button } from "@/shared/components/ui/button";
-import { gamePlayerScoresAtom } from "@/shared/store/gameAtoms";
-import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { gamePlayerScoresAtom } from "@/features/game-session/store/gameAtoms";
+import { setupSelectedPlayerIdsAtom } from "@/features/game-session/store/setupAtoms";
 import { Header } from "@/widgets/header";
 
 type FinalPrepairingPageProps = {

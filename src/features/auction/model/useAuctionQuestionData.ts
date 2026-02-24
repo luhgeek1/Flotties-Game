@@ -2,8 +2,8 @@ import { useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import type { QuestionPackQuestion, QuestionPackSpecial, QuestionPackSpecialQuestion } from "@/shared/api/questionPack";
-import { auctionWinningBidByQuestionIdAtom, auctionWinningPlayerByQuestionIdAtom } from "@/shared/store/specialAuctionAtom";
-import type { RoundSpecialMap } from "@/shared/store/specialCIBAtom";
+import { auctionWinningBidByQuestionIdAtom, auctionWinningPlayerByQuestionIdAtom } from "@/features/auction/store/specialAuctionAtom";
+import type { RoundSpecialMap } from "@/features/cat-in-bag/store/specialCIBAtom";
 
 type UseAuctionQuestionDataArgs = {
   roundSpecial: QuestionPackSpecial;

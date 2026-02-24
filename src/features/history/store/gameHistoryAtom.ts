@@ -2,7 +2,7 @@ import { atomWithStorage } from "jotai/utils";
 
 import type { PlayerId } from "@/entities/players";
 import type { QuestionPack } from "@/shared/api/questionPack";
-import type { GamePlayerScores } from "./gameAtoms";
+import type { GamePlayerScores } from "@/features/game-session/store/gameAtoms";
 
 const GAME_HISTORY_STORAGE_KEY = "game-history";
 const GAME_ROUND_MVPS_STORAGE_KEY = "game-round-mvps";

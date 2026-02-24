@@ -2,11 +2,11 @@ import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { resolveSelectedPlayers } from "@/entities/players";
-import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
-import { gamePlayerScoresAtom } from "@/shared/store/gameAtoms";
-import { finalBidByPlayerIdAtom, finalAnswerByPlayerIdAtom } from "@/shared/store/finalAtom";
-import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
-import { finalResultsStateAtom, type FinalResultsPlayerState } from "@/shared/store/finalResultsAtom";
+import { selectedQuestionPackAtom } from "@/features/game-session/store/questionAtom";
+import { gamePlayerScoresAtom } from "@/features/game-session/store/gameAtoms";
+import { finalBidByPlayerIdAtom, finalAnswerByPlayerIdAtom } from "@/features/game-session/store/finalAtom";
+import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/features/game-session/store/setupAtoms";
+import { finalResultsStateAtom, type FinalResultsPlayerState } from "@/features/game-session/store/finalResultsAtom";
 
 type UseFinalResultsModelArgs = {
   onReset?: () => void;
