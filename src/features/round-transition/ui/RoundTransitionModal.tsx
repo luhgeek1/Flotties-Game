@@ -12,7 +12,7 @@ import {
 
 import type { RoundTransitionModalProps } from "../model/types"
 import { useRoundTransitionModel } from "../model/useRoundTransitionModel"
-import { RoundTransitionConfirmStep } from "./roundTransitionConfirmStep"
+import { RoundTransitionConfirmStep } from "./RoundTransitionConfirmStep"
 import { RoundTransitionScoreStep } from "./RoundTransitionScoreStep"
 
 export function RoundTransitionModal({
