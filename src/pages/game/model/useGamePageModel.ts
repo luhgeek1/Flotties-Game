@@ -1,15 +1,15 @@
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
 
-import { useAuctionInteraction, useAuctionQuestionData } from "@/features/auction/model";
-import { useCatInBagInteraction, useCatInBagQuestionData } from "@/features/cat-in-bag/model";
 import { useGameBoardData, useGamePlayers, useRoundSpecialMap } from "@/features/game-session";
 import { usePlayerPick } from "@/features/player-pick";
-import { useQuestionState } from "@/features/question-flow";
 import { adminModeEnabledAtom } from "@/shared/store/adminModeAtom";
 import { gameRoundFirstPickDoneAtom } from "@/shared/store/gameAtoms";
 import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
 import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
+import { useGameQuestionFlow } from "./useGameQuestionFlow";
+import { useGameSpecialInteractions } from "./useGameSpecialInteractions";
+import { useGameSpecialQuestionData } from "./useGameSpecialQuestionData";
 
 type UseGamePageModelArgs = {
   onExitToSetup?: () => void;
@@ -31,108 +31,41 @@ export function useGamePageModel({
   const { gamePlayers, questionPlayers, changePlayerScore } = useGamePlayers(setupPlayers, selectedPlayerIds);
   const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack, roundIndex);
   const { roundSpecialMap, roundSpecial } = useRoundSpecialMap(selectedPack, roundIndex);
-  const {
-    specialTypeByQuestionId,
-    catInBagThemeByQuestionId,
-    questionsByIdWithCatInBag,
-    questionPlayersForState,
-    isSingleAttemptQuestion: isCatInBagSingleAttemptQuestion,
-    catInBagSelectedAnsweringPlayerId,
-    setCatInBagSelectedAnsweringPlayerId,
-  } = useCatInBagQuestionData({
+
+  const specialQuestionData = useGameSpecialQuestionData({
     roundSpecial,
     roundSpecialMap,
     questionsById,
     questionPlayers,
   });
 
-  const { questionsByIdWithAuction, isSingleAttemptAuctionQuestion } = useAuctionQuestionData({
-    roundSpecial,
-    roundSpecialMap,
-    questionsById: questionsByIdWithCatInBag,
-  });
-
-  const isSingleAttemptQuestion = useCallback((questionId: string) => (
-    isSingleAttemptAuctionQuestion(questionId)
-    || isCatInBagSingleAttemptQuestion(questionId)
-  ), [isCatInBagSingleAttemptQuestion, isSingleAttemptAuctionQuestion]);
-  const {
-    activeQuestion,
-    activeQuestionId,
-    handleQuestionSelect,
-    startQuestionAnswering,
-    modalState,
-    questionTimerDurationMs,
-    setAnswerInput,
-    submitAnswer,
-    continueAfterWrong,
-    openedQuestionIds,
-    openAllQuestions,
-  } = useQuestionState({
-    questionsById: questionsByIdWithAuction,
-    players: questionPlayersForState,
-    isSingleAttemptQuestion,
+  const questionFlow = useGameQuestionFlow({
+    questionsById: specialQuestionData.questionsByIdWithAuction,
+    questionPlayers: specialQuestionData.questionPlayersForState,
+    isSingleAttemptQuestion: specialQuestionData.isSingleAttemptQuestion,
     onPlayerScoreDelta: changePlayerScore,
+    isAdminMode,
   });
-  const modalQuestionId = activeQuestionId ?? modalState?.questionId ?? null;
-  const modalQuestion = modalQuestionId ? questionsByIdWithAuction.get(modalQuestionId) ?? null : null;
-  const isQuestionModalOpen = modalQuestionId !== null;
-  const answerText = modalQuestion?.answers[0] ?? activeQuestion?.answers[0] ?? "Ответ не указан";
-  const adminPrefilledAnswer = isAdminMode
-    ? (modalQuestion?.answers[0] ?? activeQuestion?.answers[0] ?? "")
-    : "";
 
   const { currentPickerId, currentPicker } = usePlayerPick({
     players: gamePlayers,
     roundIndex,
-    completedPicksCount: openedQuestionIds.length,
+    completedPicksCount: questionFlow.openedQuestionIds.length,
   });
-  const {
-    isCatInBagQuestionActive,
-    isCatInBagQuestionTitleVisible,
-    isBannerOpen: isCatInBagBannerOpen,
-    isTransferModalOpen: isCatInBagTransferOpen,
-    modalMode: catInBagModalMode,
-    chooserName: catInBagChooserName,
-    answeringPlayerName: catInBagAnsweringPlayerName,
-    bidQuestionTheme: catInBagBidQuestionTheme,
-    transferPlayers: catInBagTransferPlayers,
-    bidOptions: catInBagBidOptions,
-    handleBoardQuestionSelect: handleCatInBagBoardQuestionSelect,
-    handleBannerClose: handleCatInBagBannerClose,
-    handleTransferPlayerSelect: handleCatInBagTransferPlayerSelect,
-    handleBidSelect: handleCatInBagBidSelect,
-  } = useCatInBagInteraction({
+
+  const specialInteractions = useGameSpecialInteractions({
     players: gamePlayers,
     roundIndex,
     currentPickerId,
-    specialTypeByQuestionId,
-    catInBagThemeByQuestionId,
-    onRegularQuestionSelect: handleQuestionSelect,
-    onStartQuestionAnswering: startQuestionAnswering,
-    selectedAnsweringPlayerId: catInBagSelectedAnsweringPlayerId,
-    setSelectedAnsweringPlayerId: setCatInBagSelectedAnsweringPlayerId,
-    isQuestionModalOpen,
-    modalQuestionId,
-  });
-
-  const handleAuctionComplete = useCallback(({ questionId, targetPlayerId }: { questionId: string; targetPlayerId: string }) => {
-    startQuestionAnswering(questionId, targetPlayerId);
-  }, [startQuestionAnswering]);
-
-  const getAuctionNominal = useCallback(
-    (questionId: string) => questionsById.get(questionId)!.value,
-    [questionsById],
-  );
-
-  const auction = useAuctionInteraction({
-    players: gamePlayers,
-    currentPickerId,
-    specialTypeByQuestionId,
-    getQuestionNominal: getAuctionNominal,
-    onNonAuctionQuestionSelect: handleCatInBagBoardQuestionSelect,
-    onAuctionComplete: handleAuctionComplete,
-    isBlocked: isCatInBagBannerOpen || isCatInBagTransferOpen || isQuestionModalOpen,
+    specialTypeByQuestionId: specialQuestionData.specialTypeByQuestionId,
+    catInBagThemeByQuestionId: specialQuestionData.catInBagThemeByQuestionId,
+    questionsById,
+    onRegularQuestionSelect: questionFlow.handleQuestionSelect,
+    onStartQuestionAnswering: questionFlow.startQuestionAnswering,
+    selectedAnsweringPlayerId: specialQuestionData.catInBagSelectedAnsweringPlayerId,
+    setSelectedAnsweringPlayerId: specialQuestionData.setCatInBagSelectedAnsweringPlayerId,
+    isQuestionModalOpen: questionFlow.isQuestionModalOpen,
+    modalQuestionId: questionFlow.modalQuestionId,
   });
 
   const handleBoardQuestionSelect = (questionId: string) => {
@@ -140,24 +73,24 @@ export function useGamePageModel({
       setIsRoundFirstPickDone(true);
     }
 
-    auction.handleBoardQuestionSelect(questionId);
+    specialInteractions.onBoardQuestionSelect(questionId);
   };
 
-  const questionsProgress = `Questions: ${openedQuestionIds.length}/${totalQuestions}`;
+  const questionsProgress = `Questions: ${questionFlow.openedQuestionIds.length}/${totalQuestions}`;
 
   const isRoundComplete = useMemo(() => (
     totalQuestions > 0
-    && openedQuestionIds.length >= totalQuestions
-    && !isQuestionModalOpen
-  ), [isQuestionModalOpen, openedQuestionIds, totalQuestions]);
+    && questionFlow.openedQuestionIds.length >= totalQuestions
+    && !questionFlow.isQuestionModalOpen
+  ), [questionFlow.isQuestionModalOpen, questionFlow.openedQuestionIds.length, totalQuestions]);
   const hasNextRound = roundIndex === 0 && Boolean(onRoundTransitionConfirm);
   const isRoundTransitionModalOpen = isRoundComplete && (hasNextRound || roundIndex > 0);
-  const hasQuestionsToPick = openedQuestionIds.length < totalQuestions;
+  const hasQuestionsToPick = questionFlow.openedQuestionIds.length < totalQuestions;
   const activePickerId = hasQuestionsToPick ? currentPickerId : null;
   const isRoundStartIntroOpen = hasQuestionsToPick
     && !isRoundFirstPickDone
-    && openedQuestionIds.length === 0
-    && !isQuestionModalOpen
+    && questionFlow.openedQuestionIds.length === 0
+    && !questionFlow.isQuestionModalOpen
     && !isRoundTransitionModalOpen;
 
   const navigateToSetup = useCallback(() => {
@@ -189,7 +122,7 @@ export function useGamePageModel({
       players: gamePlayers,
       activePickerId,
       onExitToSetup: navigateToSetup,
-      onOpenAllQuestionsClick: isAdminMode ? openAllQuestions : undefined,
+      onOpenAllQuestionsClick: isAdminMode ? questionFlow.openAllQuestions : undefined,
     },
     pickBanner: {
       playerName: currentPicker?.name ?? null,
@@ -197,77 +130,21 @@ export function useGamePageModel({
     },
     gameBoard: {
       themes: boardThemes,
-      specialTypeByQuestionId: isAdminMode ? specialTypeByQuestionId : {},
-      openedQuestionIds,
+      specialTypeByQuestionId: isAdminMode ? specialQuestionData.specialTypeByQuestionId : {},
+      openedQuestionIds: questionFlow.openedQuestionIds,
       onQuestionSelect: handleBoardQuestionSelect,
     },
-    catInBagBanner: {
-      open: isCatInBagBannerOpen,
-      onClose: handleCatInBagBannerClose,
-    },
-    auctionBanner: {
-      open: auction.isBannerOpen,
-      onClose: auction.handleBannerClose,
-    },
-    auctionModal: {
-      open: auction.isModalOpen,
-      nominal: auction.nominal,
-      currentBid: auction.currentBid,
-      leaderPlayerId: auction.leaderPlayerId,
-      players: auction.players,
-      isSinglePlayerMode: auction.isSinglePlayerMode,
-      excludedPlayersCount: auction.excludedPlayersCount,
-      turnPlayerId: auction.turnPlayerId,
-      turnPlayerName: auction.turnPlayerName,
-      turnPlayerBalance: auction.turnPlayerBalance,
-      bidInput: auction.bidInput,
-      minBid: auction.minBid,
-      passedPlayerIds: auction.passedPlayerIds,
-      isInputBidValid: auction.isInputBidValid,
-      onBidInputChange: auction.handleBidInputChange,
-      onSubmitBid: auction.handleSubmitBid,
-      onMinBid: auction.handleMinBid,
-      onAllIn: auction.handleAllIn,
-      onPass: auction.handlePass,
-    },
-    auctionGuardModal: {
-      open: auction.isEntryGuardModalOpen,
-      mode: auction.entryGuardMode ?? "unavailable",
-      nominal: auction.entryGuardNominal ?? auction.nominal,
-      eligiblePlayersCount: auction.entryGuardEligiblePlayersCount,
-      excludedPlayersCount: auction.entryGuardExcludedPlayersCount,
-      onContinue: auction.handleEntryGuardContinue,
-    },
+    catInBagBanner: specialInteractions.catInBagBanner,
+    auctionBanner: specialInteractions.auctionBanner,
+    auctionModal: specialInteractions.auctionModal,
+    auctionGuardModal: specialInteractions.auctionGuardModal,
     catInBagTransferModal: {
-      open: isCatInBagTransferOpen,
-      mode: catInBagModalMode ?? "transfer",
-      chooserName: catInBagChooserName ?? currentPicker?.name ?? null,
-      answeringPlayerName: catInBagAnsweringPlayerName,
-      questionTheme: catInBagBidQuestionTheme,
-      players: catInBagTransferPlayers,
-      bidOptions: catInBagBidOptions,
-      onSelectPlayer: handleCatInBagTransferPlayerSelect,
-      onSelectBid: handleCatInBagBidSelect,
+      ...specialInteractions.catInBagTransferModal,
+      chooserName: specialInteractions.catInBagTransferModal.chooserName ?? currentPicker?.name ?? null,
     },
-    isCatInBagQuestionTitleVisible,
     questionModal: {
-      isOpen: isQuestionModalOpen,
-      questionId: modalQuestionId,
-      questionValue: modalQuestion?.value ?? activeQuestion?.value ?? "",
-      questionText: modalQuestion?.question ?? activeQuestion?.question ?? "",
-      answerText,
-      prefilledAnswerText: adminPrefilledAnswer,
-      players: questionPlayersForState,
-      isSingleAttemptMode: isCatInBagQuestionActive,
-      phase: modalState?.phase ?? null,
-      remainingMs: modalState?.remainingMs ?? questionTimerDurationMs,
-      timerDurationMs: questionTimerDurationMs,
-      attemptedPlayerIds: modalState?.attemptedPlayerIds ?? [],
-      activePlayerId: modalState?.activePlayerId ?? null,
-      answerInput: modalState?.answerInput ?? "",
-      onAnswerInputChange: setAnswerInput,
-      onSubmitAnswer: submitAnswer,
-      onContinue: continueAfterWrong,
+      ...questionFlow.questionModalBase,
+      isSingleAttemptMode: specialInteractions.isCatInBagQuestionActive,
     },
     roundTransitionModal: {
       isOpen: isRoundTransitionModalOpen,

@@ -1,75 +1,11 @@
 import { useCallback } from "react";
 
-import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
 import type { AuctionBidByPlayerIdState } from "@/shared/store/specialAuctionAtom";
 
 import { finalizeAuctionPure } from "./finalize";
 import { resolveNextAuctionCursor } from "./selectors";
-import type { AuctionBidCompletePayload, AuctionPlayer } from "./types";
+import type { UseAuctionActionsArgs } from "./types";
 import { resolveMinBid } from "./utils";
-
-type UseAuctionActionsArgs = {
-  players: readonly AuctionPlayer[];
-  currentPickerId: string;
-  openerPlayerId: string;
-  specialTypeByQuestionId: GameBoardSpecialTypeByQuestionId;
-  getQuestionNominal: (questionId: string) => number;
-  onNonAuctionQuestionSelect: (questionId: string) => void;
-  onAuctionComplete: (payload: AuctionBidCompletePayload) => void;
-  isBlocked: boolean;
-  isBannerOpen: boolean;
-  isEntryGuardModalOpen: boolean;
-  setIsBannerOpen: (open: boolean) => void;
-  setIsEntryGuardModalOpen: (open: boolean) => void;
-  entryGuard: {
-    mode: "unavailable" | "limited";
-    questionId: string;
-    nominal: number;
-    eligiblePlayersCount: number;
-    excludedPlayersCount: number;
-  } | null;
-  setEntryGuard: (value: {
-    mode: "unavailable" | "limited";
-    questionId: string;
-    nominal: number;
-    eligiblePlayersCount: number;
-    excludedPlayersCount: number;
-  } | null) => void;
-  state: {
-    isModalOpen: boolean;
-    setIsModalOpen: (open: boolean) => void;
-    pendingQuestionId: string | null;
-    setPendingQuestionId: (next: string | null) => void;
-    setOpenerPlayerId: (next: string | null) => void;
-    setTurnCursor: (update: number | ((prev: number) => number)) => void;
-    bidInput: string;
-    setBidInput: (value: string) => void;
-    bidsByPlayerId: AuctionBidByPlayerIdState;
-    setBidsByPlayerId: (
-      update:
-        | AuctionBidByPlayerIdState
-        | ((prev: AuctionBidByPlayerIdState) => AuctionBidByPlayerIdState),
-    ) => void;
-    passedPlayerIds: string[];
-    setPassedPlayerIds: (update: string[] | ((prev: string[]) => string[])) => void;
-    setWinningBidByQuestionId: (update: (prev: Record<string, number>) => Record<string, number>) => void;
-    setWinningPlayerByQuestionId: (update: (prev: Record<string, string>) => Record<string, string>) => void;
-    resetFlow: () => void;
-  };
-  derived: {
-    nominal: number;
-    orderPlayerIds: string[];
-    passedPlayerIdSet: ReadonlySet<string>;
-    turnPlayerId: string | null;
-    turnPlayerBalance: number;
-    leaderBid: number;
-    leaderBalance: number | null;
-    isLeaderAllIn: boolean;
-    minBid: number | null;
-    parsedBidInput: number | null;
-    isInputBidValid: boolean;
-  };
-};
 
 export function useAuctionActions({
   players,

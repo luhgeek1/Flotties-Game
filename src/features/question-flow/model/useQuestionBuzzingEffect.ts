@@ -25,7 +25,7 @@ export function useQuestionBuzzingEffect({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.repeat) return; // исключает абуз зажатия клавиши
 
-    
+    //определяем какой игрок нажал клавишу
     let buzzPlayer: QuestionStatePlayer | undefined;;
     for (const player of players) {
       if (player.keyCode === event.code) {
@@ -36,7 +36,7 @@ export function useQuestionBuzzingEffect({
 
     if (!buzzPlayer) return;
 
-      event.preventDefault();
+      event.preventDefault(); // отменяем действие стандартное у кнопки
       setQuestionFlowState(prev => applyPlayerBuzz(prev, activeQuestionId, buzzPlayer.id));
     };
 
