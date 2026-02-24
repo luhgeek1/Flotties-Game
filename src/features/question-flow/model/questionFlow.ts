@@ -40,7 +40,7 @@ export function createQuestionFlowAnsweringState(
     answerInput: "",
   };
 }
-
+//" ПрИвЕт, Ёж! " -> "привет еж"
 export function normalizeAnswer(value: string): string {
   return value
     .trim()

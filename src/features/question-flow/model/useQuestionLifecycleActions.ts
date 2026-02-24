@@ -17,6 +17,7 @@ export function useQuestionLifecycleActions({
   setOpenedQuestionIds,
   setQuestionFlowState,
 }: UseQuestionLifecycleActionsArgs) {
+  //добавить айди в массив айди открытых вопросов если его там нет
   const markOpened = useCallback((id: string) => {
     setOpenedQuestionIds(prev => (prev.includes(id) ? prev : [...prev, id]));
   }, [setOpenedQuestionIds]);
@@ -43,25 +44,9 @@ export function useQuestionLifecycleActions({
     setQuestionFlowState(createQuestionFlowAnsweringState(questionId, playerId));
   }, [isOpened, setActiveQuestionId, setQuestionFlowState]);
 
-  const resetQuestionState = useCallback(() => {
-    setActiveQuestionId(null);
-    setOpenedQuestionIds(() => []);
-    setQuestionFlowState(null);
-  }, [setActiveQuestionId, setOpenedQuestionIds, setQuestionFlowState]);
-
-  const markQuestionOpened = useCallback((questionId: string) => {
-    if (isOpened(questionId)) return;
-
-    markOpened(questionId);
-    setActiveQuestionId(null);
-    setQuestionFlowState(null);
-  }, [isOpened, markOpened, setActiveQuestionId, setQuestionFlowState]);
-
   return {
     closeQuestionModal,
     handleQuestionSelect,
     startQuestionAnswering,
-    resetQuestionState,
-    markQuestionOpened,
   };
 }

@@ -47,8 +47,6 @@ export function useQuestionState({
     closeQuestionModal,
     handleQuestionSelect,
     startQuestionAnswering,
-    resetQuestionState,
-    markQuestionOpened,
   } = useQuestionLifecycleActions({
     activeQuestionId,
     isOpened,
@@ -109,7 +107,5 @@ export function useQuestionState({
     submitAnswer,
     continueAfterWrong,
     openAllQuestions,
-    resetQuestionState,
-    markQuestionOpened,
   };
 }
