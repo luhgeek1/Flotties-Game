@@ -9,6 +9,8 @@ type SetupOnboardingDemoIntroOverlayProps = {
   onClose?: () => void;
 };
 
+const INTRO_OVERLAY_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
 export function SetupOnboardingDemoIntroOverlay({ onClose }: SetupOnboardingDemoIntroOverlayProps) {
   return (
     <motion.button
@@ -17,14 +19,14 @@ export function SetupOnboardingDemoIntroOverlay({ onClose }: SetupOnboardingDemo
       className="absolute inset-0 z-20 block h-full w-full cursor-pointer bg-white/25 p-0 backdrop-blur-md"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.4, ease: INTRO_OVERLAY_EASE }}
     >
       <div className="absolute bottom-0 right-[clamp(0.5rem,2vw,2rem)] flex items-center gap-3 sm:gap-5 md:gap-7">
         <motion.div
           className="pointer-events-none w-[min(38vw,520px)]"
-          initial={{ x: -16, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ x: -10, y: 8, opacity: 0, scale: 0.985 }}
+          animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+          transition={{ duration: 0.55, delay: 0.12, ease: INTRO_OVERLAY_EASE }}
         >
           <OnboardingTextCard className="p-4 sm:p-6 md:p-8">
             <p className="text-sm font-semibold leading-relaxed text-slate-900 sm:text-base md:text-xl">
@@ -38,9 +40,9 @@ export function SetupOnboardingDemoIntroOverlay({ onClose }: SetupOnboardingDemo
           src={demoLottiImage}
           alt="Demo Lotti"
           className="pointer-events-none select-none h-auto w-[min(46vw,640px)] sm:w-[min(50vw,700px)] md:w-[min(54vw,780px)]"
-          initial={{ y: 26, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.32, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ y: 18, opacity: 0, scale: 0.99 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          transition={{ duration: 0.62, delay: 0.16, ease: INTRO_OVERLAY_EASE }}
           draggable={false}
         />
       </div>
