@@ -221,9 +221,8 @@ export function usePlayersSetupScreen({ onContinue }: UsePlayersSetupScreenArgs 
   }, [deleteCandidateId, setPlayerInventories, setPlayers, setSelectedPlayerIds]);
 
   const handleContinue = useCallback(() => {
-    if (!canContinue) return;
     onContinue?.();
-  }, [canContinue, onContinue]);
+  }, [onContinue]);
 
   return {
     players,

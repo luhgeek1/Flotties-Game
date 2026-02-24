@@ -93,10 +93,7 @@ export function PacksSetupScreen({ onBack, onStart }: PacksSetupScreenProps) {
           <Button
             type="button"
             disabled={!canStart}
-            onClick={() => {
-              if (!canStart) return;
-              onStart?.();
-            }}
+            onClick={() => onStart?.()}
             className={cn(
               "w-full text-lg h-14 rounded-xl font-bold",
               canStart
