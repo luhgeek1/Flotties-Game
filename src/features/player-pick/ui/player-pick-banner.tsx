@@ -71,11 +71,16 @@ export function PlayerPickBanner({
                   ease: ["easeOut", "linear", "easeIn"],
                 },
               }}
-              className="w-[min(68vw,760px)] rounded-3xl border border-black/10 bg-white px-6 py-8 md:px-10 md:py-11"
+              className="relative w-[min(68vw,760px)] rounded-3xl border border-black/10 bg-white px-6 py-8 md:px-10 md:py-11"
             >
-              <h1 className="text-center text-lg font-black leading-none tracking-tighter text-black md:text-4xl xl:text-5xl">
-                Выбирает {playerName}
-              </h1>
+              <p className="absolute left-4 top-3 text-left text-xs font-semibold uppercase tracking-[0.08em] text-slate-400 md:left-6 md:top-4">
+                Флотти
+              </p>
+              <div className="flex min-h-16 items-center justify-center md:min-h-20">
+                <h1 className="text-center text-lg font-black leading-none tracking-tighter text-black md:text-4xl xl:text-5xl">
+                  Выбирает {playerName}
+                </h1>
+              </div>
             </motion.div>
           </div>
         </motion.div>

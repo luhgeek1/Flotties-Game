@@ -37,7 +37,7 @@ export function SetupShell({ children }: SetupShellProps) {
         >
           <div className="text-center space-y-2 mb-10">
             <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-foreground">
-              Твоя Игра
+              Flottie's Game
             </h1>
           </div>
 

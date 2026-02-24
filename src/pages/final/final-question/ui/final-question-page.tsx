@@ -134,12 +134,15 @@ export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer, onAllAnswers
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <motion.section
-                className="z-10 flex w-full max-w-2xl -translate-x-14 translate-y-20 flex-col items-center gap-4 rounded-2xl border border-neutral-200 bg-white/90 px-12 py-10 text-center shadow-md backdrop-blur-sm md:-translate-x-70 md:translate-y-50"
+                className="relative z-10 flex w-full max-w-2xl -translate-x-14 translate-y-20 flex-col items-center gap-4 rounded-2xl border border-neutral-200 bg-white/90 px-12 py-10 text-center shadow-md backdrop-blur-sm md:-translate-x-70 md:translate-y-50"
                 initial={{ x: -160, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: 80, y: 20, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
               >
+                <p className="absolute left-4 top-3 text-xs font-semibold uppercase tracking-[0.08em] text-slate-400 md:left-6 md:top-4">
+                  Флотти
+                </p>
                 <h2 className="text-3xl font-bold text-black md:text-4xl">Ответы приняты</h2>
                 <p className="text-base text-neutral-500">
                   Все игроки ответили на финальный вопрос.

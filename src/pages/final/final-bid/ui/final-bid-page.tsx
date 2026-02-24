@@ -73,6 +73,9 @@ export function FinalBidPage({ onExitToSetup, onConfirmBid, onAllBidsDone }: Fin
                 exit={{ x: 80, y: 20, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
               >
+                <p className="self-start text-xs font-semibold uppercase tracking-[0.08em] text-slate-400 dark:text-slate-400">
+                  Флотти
+                </p>
                 <h2 className="text-3xl font-bold text-black dark:text-slate-100 md:text-4xl">Ставки приняты</h2>
                 <p className="text-base text-neutral-500 dark:text-slate-300">
                   Все игроки сделали секретные ставки.

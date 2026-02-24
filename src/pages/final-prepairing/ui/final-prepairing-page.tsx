@@ -54,6 +54,9 @@ export function FinalPrepairingPage({
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
             >
+              <p className="self-start text-xs font-semibold uppercase tracking-[0.08em] text-slate-400">
+                Флотти
+              </p>
               <div className="flex max-w-34rem flex-col items-center gap-3">
                 <p className="text-2xl font-black leading-tight text-foreground md:text-3xl">
                   Вы проделали длинный путь и вот он Финал!

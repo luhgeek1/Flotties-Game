@@ -17,12 +17,21 @@ export function OnboardingTextCard({
 }: OnboardingTextCardProps) {
   return (
     <div className={cn("rounded-[2rem] border border-slate-200 bg-white/95 shadow-lg", className)}>
+      <p className="text-left text-xs font-semibold uppercase tracking-[0.08em] text-slate-400">
+        Флотти
+      </p>
+
       {text ? (
-        <p className={cn("font-semibold leading-relaxed text-slate-900", textClassName)}>
+        <p className={cn("mt-1 font-semibold leading-relaxed text-slate-900", textClassName)}>
           {text}
         </p>
       ) : null}
-      {children}
+
+      {children ? (
+        <div className={text ? "mt-3" : "mt-2"}>
+          {children}
+        </div>
+      ) : null}
     </div>
   );
 }
