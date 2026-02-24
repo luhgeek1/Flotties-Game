@@ -1,4 +1,4 @@
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import { useAuctionInteraction, useAuctionQuestionData } from "@/features/auction/model";
@@ -6,8 +6,9 @@ import { useCatInBagInteraction, useCatInBagQuestionData } from "@/features/cat-
 import { useGameBoardData, useGamePlayers, useRoundSpecialMap } from "@/features/game-session";
 import { usePlayerPick } from "@/features/player-pick";
 import { useQuestionState } from "@/features/question-flow";
-import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
 import { adminModeEnabledAtom } from "@/shared/store/adminModeAtom";
+import { gameRoundFirstPickDoneAtom } from "@/shared/store/gameAtoms";
+import { selectedQuestionPackAtom } from "@/shared/store/questionAtom";
 import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 
 type UseGamePageModelArgs = {
@@ -25,6 +26,7 @@ export function useGamePageModel({
   const setupPlayers = useAtomValue(setupPlayersAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const isAdminMode = useAtomValue(adminModeEnabledAtom);
+  const [isRoundFirstPickDone, setIsRoundFirstPickDone] = useAtom(gameRoundFirstPickDoneAtom);
 
   const { gamePlayers, questionPlayers, changePlayerScore } = useGamePlayers(setupPlayers, selectedPlayerIds);
   const { boardThemes, questionsById, totalQuestions, packTitle } = useGameBoardData(selectedPack, roundIndex);
@@ -133,6 +135,14 @@ export function useGamePageModel({
     isBlocked: isCatInBagBannerOpen || isCatInBagTransferOpen || isQuestionModalOpen,
   });
 
+  const handleBoardQuestionSelect = (questionId: string) => {
+    if (!isRoundFirstPickDone) {
+      setIsRoundFirstPickDone(true);
+    }
+
+    auction.handleBoardQuestionSelect(questionId);
+  };
+
   const questionsProgress = `Questions: ${openedQuestionIds.length}/${totalQuestions}`;
 
   const isRoundComplete = useMemo(() => (
@@ -145,6 +155,7 @@ export function useGamePageModel({
   const hasQuestionsToPick = openedQuestionIds.length < totalQuestions;
   const activePickerId = hasQuestionsToPick ? currentPickerId : null;
   const isRoundStartIntroOpen = hasQuestionsToPick
+    && !isRoundFirstPickDone
     && openedQuestionIds.length === 0
     && !isQuestionModalOpen
     && !isRoundTransitionModalOpen;
@@ -188,7 +199,7 @@ export function useGamePageModel({
       themes: boardThemes,
       specialTypeByQuestionId: isAdminMode ? specialTypeByQuestionId : {},
       openedQuestionIds,
-      onQuestionSelect: auction.handleBoardQuestionSelect,
+      onQuestionSelect: handleBoardQuestionSelect,
     },
     catInBagBanner: {
       open: isCatInBagBannerOpen,

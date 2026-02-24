@@ -7,6 +7,7 @@ const PLAYER_SCORES_STORAGE_KEY = "game-player-scores";
 const QUESTION_FLOW_STORAGE_KEY = "game-question-flow";
 const ROUND_2_UNLOCKED_STORAGE_KEY = "game-round-2-unlocked";
 const ROUND_2_START_PICKER_ID_STORAGE_KEY = "game-round-2-start-picker-id";
+const ROUND_FIRST_PICK_DONE_STORAGE_KEY = "game-round-first-pick-done";
 
 export const gameActiveQuestionIdAtom = atomWithStorage<string | null>(
   ACTIVE_QUESTION_ID_STORAGE_KEY,
@@ -71,6 +72,13 @@ export const gameRound2UnlockedAtom = atomWithStorage<boolean>(
 export const gameRound2StartPickerIdAtom = atomWithStorage<string | null>(
   ROUND_2_START_PICKER_ID_STORAGE_KEY,
   null,
+  undefined,
+  { getOnInit: true },
+);
+
+export const gameRoundFirstPickDoneAtom = atomWithStorage<boolean>(
+  ROUND_FIRST_PICK_DONE_STORAGE_KEY,
+  false,
   undefined,
   { getOnInit: true },
 );

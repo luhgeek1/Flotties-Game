@@ -6,6 +6,7 @@ import {
   gameOpenedQuestionIdsAtom,
   gamePlayerScoresAtom,
   gameQuestionFlowStateAtom,
+  gameRoundFirstPickDoneAtom,
   gameRound2StartPickerIdAtom,
   gameRound2UnlockedAtom,
 } from "./gameAtoms";
@@ -24,6 +25,7 @@ export const resetGameRoundStateAtom = atom(
     set(gameOpenedQuestionIdsAtom, []);
     set(gameQuestionFlowStateAtom, null);
     set(gameRound2StartPickerIdAtom, null);
+    set(gameRoundFirstPickDoneAtom, false);
     set(resetRoundSpecialMapsAtom);
     set(resetAuctionStateAtom);
     set(resetFinalStateAtom);
