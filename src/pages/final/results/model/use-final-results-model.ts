@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from "jotai";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { resolveSelectedPlayers } from "@/entities/players";
 import { selectedQuestionPackAtom } from "@/features/game-session/store/questionAtom";
@@ -7,31 +7,21 @@ import { gamePlayerScoresAtom } from "@/features/game-session/store/gameAtoms";
 import { finalBidByPlayerIdAtom, finalAnswerByPlayerIdAtom } from "@/features/game-session/store/finalAtom";
 import { setupPlayersAtom, setupSelectedPlayerIdsAtom } from "@/features/game-session/store/setupAtoms";
 import { finalResultsStateAtom, type FinalResultsPlayerState } from "@/features/game-session/store/finalResultsAtom";
+import { normalizeAnswer } from "@/features/question-flow/model/questionFlow";
 
 type UseFinalResultsModelArgs = {
   onReset?: () => void;
 };
 
-type DisplayPlayer = FinalResultsPlayerState;
-
-function normalize(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
-    .trim();
-}
-
 function isAnswerCorrect(playerAnswer: string, correctAnswer: string): boolean {
-  const playerNormalized = normalize(playerAnswer);
-  const correctNormalized = normalize(correctAnswer);
+  const playerNormalized = normalizeAnswer(playerAnswer);
+  const correctNormalized = normalizeAnswer(correctAnswer);
 
   if (!playerNormalized || !correctNormalized) {
     return false;
   }
 
-  return playerNormalized === correctNormalized
-    || (playerNormalized.length > 3 && correctNormalized.includes(playerNormalized))
-    || (correctNormalized.length > 3 && playerNormalized.includes(correctNormalized));
+  return playerNormalized === correctNormalized;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -73,7 +63,7 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
     ? SINGLE_WINNER_RESULTS_SEQUENCE_TIMING
     : DEFAULT_RESULTS_SEQUENCE_TIMING;
 
-  const basePlayers = useMemo<DisplayPlayer[]>(() => {
+  const basePlayers = useMemo<FinalResultsPlayerState[]>(() => {
     const correctAnswer = selectedPack.rounds.final.answers[0] ?? "";
 
     const playersWithScores = resolveSelectedPlayers(setupPlayers, selectedPlayerIds).map(player => {
@@ -121,7 +111,7 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
     && savedResults.sourceKey === sourceKey
     && savedResults.players.length === basePlayers.length;
 
-  const [displayPlayers, setDisplayPlayers] = useState<DisplayPlayer[]>(() => (
+  const [displayPlayers, setDisplayPlayers] = useState<FinalResultsPlayerState[]>(() => (
     canRestoreSavedResults ? savedResults.players : basePlayers
   ));
   const [isSorting, setIsSorting] = useState(() => (
@@ -221,10 +211,6 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
     [displayPlayers],
   );
 
-  const handleReset = useCallback(() => {
-    onReset?.();
-  }, [onReset]);
-
   return {
     packTitle: selectedPack.title,
     displayPlayers,
@@ -233,6 +219,6 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
     isSinglePositiveScoreWinner,
     isRestoredResults: canRestoreSavedResults,
     winnerScore,
-    onReset: handleReset,
+    onReset,
   };
 }
