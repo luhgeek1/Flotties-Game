@@ -12,6 +12,8 @@ dist
 public
 dist-ssr
 *.local
+test-results
+tests-results
 
 # Editor directories and files
 .vscode/*

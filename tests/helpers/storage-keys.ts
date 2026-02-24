@@ -1,0 +1,13 @@
+export const ONBOARDING_STARTED_GAME_KEY = "onboarding-started-game-v1";
+export const ADMIN_MODE_KEY = "admin-mode-enabled";
+export const SETUP_STEP_KEY = "setup-step";
+export const SETUP_SELECTED_PLAYERS_KEY = "setup-selected-players";
+export const SETUP_SELECTED_PACK_KEY = "setup-selected-pack-id";
+export const ROUND_SPECIAL_MAPS_KEY = "game-round-special-maps";
+export const GAME_PLAYER_SCORES_KEY = "game-player-scores";
+export const GAME_OPENED_IDS_KEY = "game-opened-question-ids";
+export const GAME_ACTIVE_QUESTION_ID_KEY = "game-active-question-id";
+export const GAME_QUESTION_FLOW_KEY = "game-question-flow";
+export const GAME_ROUND_2_UNLOCKED_KEY = "game-round-2-unlocked";
+export const GAME_ROUND_FIRST_PICK_DONE_KEY = "game-round-first-pick-done";
+export const GAME_ROUTE_LOCK_KEY = "game-route-lock";
