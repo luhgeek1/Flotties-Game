@@ -3,7 +3,10 @@ import { HistoryPage } from "@/pages/history";
 import { ShopPage } from "@/pages/shop";
 import { FinalPrepairingPage } from "@/pages/final-prepairing";
 import { FinalBidPage, FinalCloseEyesPage, FinalQuestionPage, FinalResultsPage, FinalStartThemePage } from "@/pages/final";
+import { useAtomValue } from "jotai";
 import { SetupPage } from "@/pages/setup";
+import { gamePlayerScoresAtom } from "@/shared/store/gameAtoms";
+import { setupSelectedPlayerIdsAtom } from "@/shared/store/setupAtoms";
 import type { AppRoute } from "../lib/route-guard";
 import type { NavigateOptions } from "../model/useAppNavigation";
 
@@ -30,6 +33,12 @@ export function RouteView({
   onPrepareFinalAnswersStage,
   navigateTo,
 }: RouteViewProps) {
+  const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
+  const playerScores = useAtomValue(gamePlayerScoresAtom);
+  const positiveScorePlayersCount = selectedPlayerIds
+    .filter(playerId => (playerScores[playerId] ?? 0) > 0)
+    .length;
+
   if (route === "shop") {
     return (
       <ShopPage onBackToSetup={onCloseShop} />
@@ -59,11 +68,17 @@ export function RouteView({
     return (
       <GamePage
         onExitToSetup={onExitToSetup}
-        onRoundTransitionConfirm={() => navigateTo("finalprepairing", {
-          replace: true,
-          resetState: "round",
-          round2Access: "unlock",
-        })}
+        onRoundTransitionConfirm={() => {
+          const targetRoute = positiveScorePlayersCount === 1
+            ? "finalresults"
+            : "finalprepairing";
+
+          navigateTo(targetRoute, {
+            replace: true,
+            resetState: "round",
+            round2Access: "unlock",
+          });
+        }}
         roundIndex={1}
       />
     );

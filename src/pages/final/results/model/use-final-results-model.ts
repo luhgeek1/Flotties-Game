@@ -42,6 +42,18 @@ function sleep(ms: number): Promise<void> {
 
 const WINNER_COINS_BONUS = 150;
 
+const DEFAULT_RESULTS_SEQUENCE_TIMING = {
+  initialDelayMs: 500,
+  perPlayerRevealDelayMs: 1600,
+  beforeControlsDelayMs: 800,
+} as const;
+
+const SINGLE_WINNER_RESULTS_SEQUENCE_TIMING = {
+  initialDelayMs: 0,
+  perPlayerRevealDelayMs: 0,
+  beforeControlsDelayMs: 120,
+} as const;
+
 export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {}) {
   const selectedPack = useAtomValue(selectedQuestionPackAtom);
   const [setupPlayers, setSetupPlayers] = useAtom(setupPlayersAtom);
@@ -50,6 +62,14 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
   const finalBids = useAtomValue(finalBidByPlayerIdAtom);
   const finalAnswers = useAtomValue(finalAnswerByPlayerIdAtom);
   const [savedResults, setSavedResults] = useAtom(finalResultsStateAtom);
+  const positiveScorePlayersCount = useMemo(
+    () => selectedPlayerIds.filter(playerId => (playerScores[playerId] ?? 0) > 0).length,
+    [playerScores, selectedPlayerIds],
+  );
+  const isSinglePositiveScoreWinner = positiveScorePlayersCount === 1;
+  const sequenceTiming = isSinglePositiveScoreWinner
+    ? SINGLE_WINNER_RESULTS_SEQUENCE_TIMING
+    : DEFAULT_RESULTS_SEQUENCE_TIMING;
 
   const basePlayers = useMemo<DisplayPlayer[]>(() => {
     const correctAnswer = selectedPack.rounds.final.answers[0] ?? "";
@@ -115,17 +135,32 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
     let isCancelled = false;
 
     const runSequence = async () => {
-      await sleep(500);
+      await sleep(sequenceTiming.initialDelayMs);
       if (isCancelled) return;
 
-      for (const player of basePlayers) {
-        if (isCancelled) return;
+      if (isSinglePositiveScoreWinner) {
+        setDisplayPlayers(prev => prev.map(player => ({
+          ...player,
+          isRevealed: true,
+        })));
+      } else {
+        const revealPlayers = basePlayers.filter(player => (
+          player.wager > 0 || player.answer.trim().length > 0
+        ));
 
-        setDisplayPlayers(prev => prev.map(item => (
-          item.id === player.id ? { ...item, isRevealed: true } : item
-        )));
+        for (let index = 0; index < revealPlayers.length; index += 1) {
+          const player = revealPlayers[index];
+          if (isCancelled) return;
 
-        await sleep(1600);
+          setDisplayPlayers(prev => prev.map(item => (
+            item.id === player.id ? { ...item, isRevealed: true } : item
+          )));
+
+          const hasNextRevealStep = index < revealPlayers.length - 1;
+          if (hasNextRevealStep) {
+            await sleep(sequenceTiming.perPlayerRevealDelayMs);
+          }
+        }
       }
 
       if (isCancelled) return;
@@ -142,7 +177,7 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
           .map(player => [player.id, player.winnerBonus] as const),
       );
 
-      await sleep(800);
+      await sleep(sequenceTiming.beforeControlsDelayMs);
       if (isCancelled) return;
 
       setShowControls(true);
@@ -173,7 +208,7 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
     return () => {
       isCancelled = true;
     };
-  }, [basePlayers, canRestoreSavedResults, setSavedResults, setSetupPlayers, sourceKey]);
+  }, [basePlayers, canRestoreSavedResults, isSinglePositiveScoreWinner, sequenceTiming, setSavedResults, setSetupPlayers, sourceKey]);
 
   const winnerScore = useMemo(
     () => displayPlayers.reduce((max, player) => Math.max(max, player.finalScore), Number.NEGATIVE_INFINITY),
@@ -189,6 +224,7 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
     displayPlayers,
     isSorting,
     showControls,
+    isSinglePositiveScoreWinner,
     isRestoredResults: canRestoreSavedResults,
     winnerScore,
     onReset: handleReset,

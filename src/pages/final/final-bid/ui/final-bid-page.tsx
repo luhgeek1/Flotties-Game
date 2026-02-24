@@ -116,7 +116,7 @@ export function FinalBidPage({ onExitToSetup, onConfirmBid, onAllBidsDone }: Fin
                   value={model.bidInput}
                   onChange={event => model.onBidInputChange(event.target.value)}
                   placeholder={`Введите сумму (1 - ${model.currentScore})`}
-                  className="h-14 w-full rounded-xl border border-neutral-300 px-5 text-lg text-neutral-700 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-black dark:border-slate-600 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:ring-slate-200"
+                  className="h-14 w-full rounded-xl border border-neutral-300 px-5 text-lg text-neutral-700 placeholder:text-neutral-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:ring-2 focus:ring-black dark:border-slate-600 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:ring-slate-200"
                 />
               </div>
 
