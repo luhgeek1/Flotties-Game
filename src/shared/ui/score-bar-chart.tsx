@@ -21,7 +21,21 @@ type ScoreBarChartProps = {
   emptyStateText?: string
 }
 
+const CHART_TEXT_COLOR = "#f4f4f5"
+const PLAYER_LABEL_FONT_SIZE = 14
+const PLAYER_LABEL_FONT_WEIGHT = 700
+const SCORE_LABEL_FONT_SIZE = 13
+const SCORE_LABEL_FONT_WEIGHT = 700
+const PLAYER_LABEL_X_PADDING = 16
+const SCORE_LABEL_X_OFFSET = 16
+const SCORE_LABEL_MIN_GAP_FROM_PLAYER_LABEL = 14
+const DEFAULT_SCORE_LABEL_MIN_OFFSET = 110
+
 const chartConfig = {
+  displayScore: {
+    label: "Score",
+    color: "#3b82f6",
+  },
   score: {
     label: "Score",
     color: "#3b82f6",
@@ -39,6 +53,8 @@ type BarLabelProps = {
   value?: number | string
   payload?: {
     score?: number
+    displayScore?: number
+    scoreLabelMinOffset?: number
     label?: string
   }
 }
@@ -49,29 +65,32 @@ function toNumber(value: number | string | undefined): number {
   return 0
 }
 
+function estimateTextWidth(text: string, fontSize: number, fontWeight: number): number {
+  if (!text) return 0
+
+  const weightFactor = fontWeight >= 700 ? 0.62 : fontWeight >= 600 ? 0.6 : 0.58
+  return text.length * fontSize * weightFactor
+}
+
 function renderPlayerLabel(props: BarLabelProps) {
   const x = toNumber(props.x)
   const y = toNumber(props.y)
   const height = toNumber(props.height)
-  const score = Number(props.payload?.score ?? 0)
   const label = String(props.value ?? "")
-  const isPositiveScore = score > 0
 
   return (
     <text
-      x={x + 16}
+      x={x + PLAYER_LABEL_X_PADDING}
       y={y + height / 2}
       dy={5}
-      fill={isPositiveScore ? "#ffffff" : "rgb(71 85 105)"}
-      fontSize={14}
-      fontWeight={700}
-      style={isPositiveScore
-        ? {
-          paintOrder: "stroke",
-          stroke: "rgb(15 23 42 / 0.35)",
-          strokeWidth: 2,
-        }
-        : undefined}
+      fill={CHART_TEXT_COLOR}
+      fontSize={PLAYER_LABEL_FONT_SIZE}
+      fontWeight={PLAYER_LABEL_FONT_WEIGHT}
+      style={{
+        paintOrder: "stroke",
+        stroke: "rgb(2 6 23 / 0.55)",
+        strokeWidth: 2,
+      }}
     >
       {label}
     </text>
@@ -84,20 +103,28 @@ function renderScoreLabel(props: BarLabelProps) {
   const width = toNumber(props.width)
   const height = toNumber(props.height)
   const score = Number(props.value ?? props.payload?.score ?? 0)
-  const labelLength = String(props.payload?.label ?? "").length
-  const zeroScoreOffset = Math.max(88, labelLength * 11 + 24)
-  const offset = score === 0 ? zeroScoreOffset : 16
+  const scoreText = String(score)
+  const scoreLabelMinOffset = toNumber(props.payload?.scoreLabelMinOffset) || DEFAULT_SCORE_LABEL_MIN_OFFSET
+
+  const naturalScoreX = x + width + SCORE_LABEL_X_OFFSET
+  const minSafeScoreX = x + scoreLabelMinOffset
+  const scoreLabelX = Math.max(naturalScoreX, minSafeScoreX)
 
   return (
     <text
-      x={x + width + offset}
+      x={scoreLabelX}
       y={y + height / 2}
       dy={5}
-      fill="hsl(var(--foreground))"
-      fontSize={13}
-      fontWeight={600}
+      fill={CHART_TEXT_COLOR}
+      fontSize={SCORE_LABEL_FONT_SIZE}
+      fontWeight={SCORE_LABEL_FONT_WEIGHT}
+      style={{
+        paintOrder: "stroke",
+        stroke: "rgb(2 6 23 / 0.65)",
+        strokeWidth: 2,
+      }}
     >
-      {score}
+      {scoreText}
     </text>
   )
 }
@@ -109,9 +136,9 @@ export function ScoreBarChart({
 }: ScoreBarChartProps) {
   if (!items.length) {
     return (
-      <div className="w-full h-55 flex flex-col items-center justify-center rounded-lg border border-border/60 bg-muted/20 px-4 text-center">
-        <h3 className="text-sm font-semibold text-muted-foreground">{title}</h3>
-        <p className="mt-3 text-sm text-muted-foreground">{emptyStateText}</p>
+      <div className="w-full h-55 flex flex-col items-center justify-center rounded-lg border border-white/10 bg-slate-950/70 px-4 text-center">
+        <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
+        <p className="mt-3 text-sm text-zinc-300">{emptyStateText}</p>
       </div>
     )
   }
@@ -120,20 +147,34 @@ export function ScoreBarChart({
     id: item.id,
     label: item.label,
     score: item.value,
+    displayScore: Math.max(item.value, 0),
+  }))
+  const maxPlayerLabelWidth = Math.max(
+    ...chartData.map(item => estimateTextWidth(item.label, PLAYER_LABEL_FONT_SIZE, PLAYER_LABEL_FONT_WEIGHT)),
+  )
+  const scoreLabelMinOffset = Math.ceil(
+    PLAYER_LABEL_X_PADDING + maxPlayerLabelWidth + SCORE_LABEL_MIN_GAP_FROM_PLAYER_LABEL,
+  )
+  const chartDataWithLayout = chartData.map(item => ({
+    ...item,
+    scoreLabelMinOffset,
   }))
   const maxScoreLabelLength = Math.max(...chartData.map(item => String(item.score).length))
-  const scoreLabelsRightPadding = Math.max(46, maxScoreLabelLength * 11 + 20)
+  const scoreLabelsRightPadding = Math.max(
+    64,
+    Math.ceil(maxScoreLabelLength * SCORE_LABEL_FONT_SIZE * 0.62) + 32,
+  )
 
   return (
-    <Card className="w-full h-55 py-3 gap-3 border-border/60 shadow-none">
+    <Card className="w-full h-55 py-3 gap-3 border-white/10 bg-slate-950/70 text-zinc-100 shadow-none">
       <CardHeader className="px-4 py-0">
-        <CardTitle className="text-center text-sm font-semibold text-muted-foreground">{title}</CardTitle>
+        <CardTitle className="text-center text-sm font-semibold text-zinc-100">{title}</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 min-h-0 px-3">
         <ChartContainer config={chartConfig} className="h-full w-full aspect-auto">
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={chartDataWithLayout}
             layout="vertical"
             margin={{
               right: scoreLabelsRightPadding,
@@ -149,13 +190,13 @@ export function ScoreBarChart({
               tickFormatter={(value: string) => value.slice(0, 3)}
               hide
             />
-            <XAxis dataKey="score" type="number" hide />
+            <XAxis dataKey="displayScore" type="number" hide />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
             <Bar
-              dataKey="score"
+              dataKey="displayScore"
               layout="vertical"
               fill="var(--color-score)"
               radius={4}

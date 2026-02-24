@@ -88,7 +88,7 @@ export function CatInBagTransferModal({
                       )}
                     >
                       <div className="mx-auto h-20 w-20 overflow-hidden rounded-full border border-border bg-muted">
-                        <PlayerAvatar value={player.avatarUrl} alt={player.name} className="grayscale" />
+                        <PlayerAvatar value={player.avatarUrl} alt={player.name} />
                       </div>
 
                       <div className="mt-5 text-[38px] font-black leading-none tracking-tight text-foreground">
