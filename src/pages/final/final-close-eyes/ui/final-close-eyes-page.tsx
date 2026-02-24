@@ -47,7 +47,6 @@ export function FinalCloseEyesPage({
         title={model.packTitle}
         subtitle={mode === "WAGER" ? "Секретные ставки" : "Секретные ответы"}
         onExitToSetup={onExitToSetup}
-        isThemeToggleDisabled
       />
 
       <main className="relative flex-1 overflow-hidden">

@@ -26,7 +26,6 @@ export function FinalPrepairingPage({
         title="FinalPrepairing"
         subtitle="Подготовка к финалу"
         onExitToSetup={onExitToSetup}
-        isThemeToggleDisabled
       />
 
       <main className="relative flex-1 overflow-hidden">

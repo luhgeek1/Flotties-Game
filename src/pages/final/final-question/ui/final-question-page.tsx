@@ -119,7 +119,6 @@ export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer, onAllAnswers
         title={model.packTitle}
         subtitle={`Ответ игрока: ${model.currentPlayerName}`}
         onExitToSetup={onExitToSetup}
-        isThemeToggleDisabled
       />
 
       <main className="relative flex flex-1 items-center justify-center overflow-hidden px-4 py-8">

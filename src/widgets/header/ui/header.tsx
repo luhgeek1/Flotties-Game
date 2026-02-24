@@ -12,7 +12,6 @@ type HeaderProps = {
   subtitle?: string;
   onExitToSetup?: () => void;
   onThemeToggle?: () => void;
-  isThemeToggleDisabled?: boolean;
   rightSlot?: ReactNode;
 };
 
@@ -21,7 +20,6 @@ export function Header({
   subtitle,
   onExitToSetup,
   onThemeToggle,
-  isThemeToggleDisabled = false,
   rightSlot,
 }: HeaderProps) {
   const { isDark, toggleTheme } = useTheme();
@@ -64,14 +62,9 @@ export function Header({
             variant="ghost"
             size="icon"
             title="Переключить тему"
-            disabled={isThemeToggleDisabled}
             onClick={handleThemeToggle}
           >
-            {isDark ? (
-              <Sun className={isThemeToggleDisabled ? "w-5 h-5 opacity-45" : "w-5 h-5"} />
-            ) : (
-              <Moon className={isThemeToggleDisabled ? "w-5 h-5 opacity-45" : "w-5 h-5"} />
-            )}
+            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </Button>
         </div>
       </header>

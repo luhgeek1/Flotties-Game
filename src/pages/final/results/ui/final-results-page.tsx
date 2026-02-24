@@ -20,7 +20,6 @@ export function FinalResultsPage({ onExitToSetup, onReset }: FinalResultsPagePro
         title={model.packTitle}
         subtitle="Финальные результаты"
         onExitToSetup={onExitToSetup}
-        isThemeToggleDisabled
       />
 
       <main className="flex flex-1 justify-center px-4 py-8 md:px-8 md:py-10 overflow-y-auto">

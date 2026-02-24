@@ -21,7 +21,6 @@ export function FinalStartThemePage({ onExitToSetup, onNext }: FinalStartThemePa
         title={packTitle}
         subtitle="Объявление темы"
         onExitToSetup={onExitToSetup}
-        isThemeToggleDisabled
       />
 
       <main className="flex flex-1 items-center justify-center p-4 md:p-8">
