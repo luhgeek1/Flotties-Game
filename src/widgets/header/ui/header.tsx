@@ -5,7 +5,7 @@ import { LogOut, Moon, Sun } from "lucide-react";
 import { AdminModeSwitch } from "@/features/admin";
 import { ExitGameModal } from "@/features/exit-game";
 import { Button } from "@/shared/components/ui/button";
-import { useTheme } from "@/shared/lib/use-theme";
+import { useTheme } from "@/app/lib/use-theme";
 
 type HeaderProps = {
   title: string;

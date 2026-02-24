@@ -1,16 +1,9 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
+import type { RoundSpecialMap } from "@/entities/special-map";
 import { catInBagBannerOpenAtom } from "@/features/special-banner/store/specialBannerAtom";
 
-export type SpecialQuestionType = "catInBag" | "auction";
-
-export type RoundSpecialCell = {
-  type: SpecialQuestionType;
-  specialQuestionId: string;
-};
-
-export type RoundSpecialMap = Record<string, RoundSpecialCell>;
 export type RoundSpecialMapsState = Record<string, RoundSpecialMap>;
 export type CatInBagBidByQuestionIdState = Record<string, number>;
 

@@ -1,9 +1,9 @@
 import { useAtom } from "jotai";
 import { useEffect, useMemo } from "react";
 
-import { createRoundSpecialMap } from "@/entities/special-map";
+import { createRoundSpecialMap, type RoundSpecialMap } from "@/entities/special-map";
+import { roundSpecialMapsAtom } from "@/features/cat-in-bag/store/specialCIBAtom";
 import type { QuestionPack, QuestionPackSpecial } from "@/shared/api/questionPack";
-import { roundSpecialMapsAtom, type RoundSpecialMap } from "@/features/cat-in-bag/store/specialCIBAtom";
 
 function buildRoundSpecialKey(packId: string, roundId: string): string {
   return `${packId}:${roundId}`;

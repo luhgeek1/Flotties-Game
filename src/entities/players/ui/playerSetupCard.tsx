@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 
 import { Button } from "@/shared/components/ui/button";
 import { formatKeyCode } from "@/shared/lib/format-key-code";
-import { useTheme } from "@/shared/lib/use-theme";
+import { useTheme } from "@/app/lib/use-theme";
 import { cn } from "@/shared/lib/utils";
 import { PlayerAvatar } from "./playerAvatar";
 

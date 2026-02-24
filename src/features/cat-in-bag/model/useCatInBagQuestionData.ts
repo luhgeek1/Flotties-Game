@@ -2,9 +2,10 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
+import type { RoundSpecialMap } from "@/entities/special-map";
+import { catInBagBidByQuestionIdAtom, catInBagSelectedAnsweringPlayerIdAtom } from "@/features/cat-in-bag/store/specialCIBAtom";
 import type { QuestionModalPlayer } from "@/features/question-modal";
 import type { QuestionPackQuestion, QuestionPackSpecial, QuestionPackSpecialQuestion } from "@/shared/api/questionPack";
-import { catInBagBidByQuestionIdAtom, catInBagSelectedAnsweringPlayerIdAtom, type RoundSpecialMap } from "@/features/cat-in-bag/store/specialCIBAtom";
 
 type UseCatInBagQuestionDataArgs = {
   roundSpecial: QuestionPackSpecial;

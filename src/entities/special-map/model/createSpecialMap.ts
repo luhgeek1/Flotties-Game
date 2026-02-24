@@ -1,6 +1,4 @@
-import type { RoundSpecialMap, SpecialQuestionType } from "@/features/cat-in-bag/store/specialCIBAtom";
-
-import type { CreateRoundSpecialMapArgs } from "./types";
+import type { CreateRoundSpecialMapArgs, RoundSpecialMap, SpecialQuestionType } from "./types";
 
 type SpecialCandidate = {
   type: SpecialQuestionType;

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ExitGameModal } from "@/features/exit-game";
 import { GameCard } from "@/features/history";
 import { Button } from "@/shared/components/ui/button";
-import { useTheme } from "@/shared/lib/use-theme";
+import { useTheme } from "@/app/lib/use-theme";
 import { useHistoryPageModel } from "../model";
 
 type HistoryPageProps = {

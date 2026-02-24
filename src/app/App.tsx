@@ -1,5 +1,5 @@
 import { AppRouter } from "@/app/router";
-import { useSyncThemeClass } from "@/shared/lib/use-theme";
+import { useSyncThemeClass } from "@/app/lib/use-theme";
 
 function App() {
   useSyncThemeClass();

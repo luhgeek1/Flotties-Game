@@ -7,7 +7,7 @@ import {
   SHOP_DEFAULT_OWNED_AVATAR_VALUE,
   SHOP_DEFAULT_OWNED_BANNER_VALUES,
 } from "@/entities/cosmetics";
-import { useTheme } from "@/shared/lib/use-theme";
+import { useTheme } from "@/app/lib/use-theme";
 import { setupPlayersAtom } from "@/features/game-session/store/setupAtoms";
 import {
   createDefaultShopPlayerInventory,

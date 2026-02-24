@@ -11,7 +11,7 @@ import {
   setupSelectedPackIdAtom,
   setupSelectedPlayerIdsAtom,
 } from "@/features/game-session/store/setupAtoms";
-import { SetupShell } from "@/widgets/setup-shell";
+import { SetupShell } from "@/shared/ui";
 
 type PacksSetupScreenProps = {
   onBack?: () => void;

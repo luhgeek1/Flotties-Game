@@ -8,7 +8,7 @@ import { AddPlayerModal } from "@/features/add-player-modal";
 import { ExitGameModal } from "@/features/exit-game";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
-import { SetupShell } from "@/widgets/setup-shell";
+import { SetupShell } from "@/shared/ui";
 import { usePlayersSetupScreen } from "../model";
 
 type PlayersSetupScreenProps = {

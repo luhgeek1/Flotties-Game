@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 
 import { AdminModeSwitch } from "@/features/admin";
 import { Button } from "@/shared/components/ui/button";
-import { useTheme } from "@/shared/lib/use-theme";
+import { useTheme } from "@/app/lib/use-theme";
 
 type SetupShellProps = {
   children: ReactNode;

@@ -12,7 +12,7 @@ import type { PlayerId } from "@/entities/players";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Modal } from "@/shared/components/ui/modal";
-import { useTheme } from "@/shared/lib/use-theme";
+import { useTheme } from "@/app/lib/use-theme";
 import { cn } from "@/shared/lib/utils";
 
 import { useAddPlayerModal } from "../model/use-add-player-modal";
