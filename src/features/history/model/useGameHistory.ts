@@ -44,6 +44,11 @@ export function useGameHistory() {
     const endedAt = new Date().toISOString();
     const startedAt = gameStartedAt ?? endedAt;
     const durationMs = Math.max(0, new Date(endedAt).getTime() - new Date(startedAt).getTime());
+    const hasSecondRoundMvp = roundMvps.some(round => round.roundNumber === 2);
+    const areAllSelectedPlayersNonPositive = selectedPlayers.length > 0
+      && selectedPlayers.every(player => (playerScores[player.id] ?? 0) <= 0);
+    const isFinalImpossible = hasSecondRoundMvp && areAllSelectedPlayersNonPositive;
+    const isCompleted = finalResultsState.isCompleted || isFinalImpossible;
     const finalScoresByPlayerId = finalResultsState.isCompleted
       ? finalResultsState.players.reduce<GamePlayerScores>((acc, player) => {
         acc[player.id] = player.finalScore;
@@ -75,6 +80,7 @@ export function useGameHistory() {
         })),
         playerScores: scoresBySelectedPlayers,
         roundMvps,
+        isCompleted,
       };
 
       return [entry, ...prev];

@@ -33,6 +33,7 @@ export type GameHistoryEntry = {
   selectedPlayers: GameHistorySelectedPlayer[];
   playerScores: GamePlayerScores;
   roundMvps: GameRoundMvp[];
+  isCompleted?: boolean;
 };
 
 export const gameHistoryAtom = atomWithStorage<GameHistoryEntry[]>(

@@ -27,9 +27,13 @@ export function useHistoryPageModel() {
     const packTitleById = new Map(questionPacks.map(pack => [pack.id, pack.title]));
 
     return history.map(entry => {
+      const isCompleted = entry.isCompleted ?? true;
       const playersById = new Map(entry.selectedPlayers.map(player => [player.id, player]));
       const scores = entry.selectedPlayers.map(player => entry.playerScores[player.id] ?? 0);
       const topScore = scores.length > 0 ? Math.max(...scores) : 0;
+      const hasSecondRoundMvp = entry.roundMvps.some(round => round.roundNumber === 2);
+      const areAllScoresNonPositive = scores.length > 0 && scores.every(score => score <= 0);
+      const shouldHideWinners = !isCompleted || (hasSecondRoundMvp && areAllScoresNonPositive);
       const players = entry.selectedPlayers.map(player => {
         const score = entry.playerScores[player.id] ?? 0;
 
@@ -38,7 +42,7 @@ export function useHistoryPageModel() {
           name: player.name,
           avatarUrl: player.avatarUrl,
           score,
-          isWinner: score === topScore,
+          isWinner: shouldHideWinners ? false : score === topScore,
         };
       });
 
@@ -67,6 +71,7 @@ export function useHistoryPageModel() {
         mvp1: resolveMvpRound(1),
         mvp2: resolveMvpRound(2),
         players,
+        isCompleted,
       };
     });
   }, [history, questionPacks]);

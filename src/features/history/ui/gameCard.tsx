@@ -30,6 +30,7 @@ export type GameCardData = {
   mvp1: GameCardMvpRound | null;
   mvp2: GameCardMvpRound | null;
   players: GameCardPlayer[];
+  isCompleted: boolean;
 };
 
 type GameCardProps = {
@@ -92,9 +93,11 @@ export function GameCard({ game, index, onDelete }: GameCardProps) {
         <div className="flex flex-col sm:flex-row sm:items-stretch">
           <div className="flex-1 p-5 flex flex-col gap-4">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="font-mono text-[10px] tracking-wider text-muted-foreground">
-                #{game.id}
-              </Badge>
+              {!game.isCompleted ? (
+                <Badge variant="secondary" className="text-[10px] tracking-wider">
+                  Незавершенная
+                </Badge>
+              ) : null}
               <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
                 {new Date(game.startTime).toLocaleDateString(undefined, {
