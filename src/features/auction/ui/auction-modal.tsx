@@ -86,40 +86,40 @@ export function AuctionModal({
           exit={{ opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.3 } }}
           className="fixed inset-0 z-60 flex flex-col items-center justify-center p-4"
         >
-          <div className="absolute inset-0 bg-slate-200/80 backdrop-blur-md z-[-1]" />
+          <div className="absolute inset-0 z-[-1] bg-background/80 backdrop-blur-md" />
 
-          <div className="w-full max-w-5xl min-h-[70vh] flex flex-col items-center justify-center relative bg-white shadow-2xl shadow-slate-200/50 rounded-[34px] border border-slate-200 px-6 py-10 sm:px-10">
+          <div className="relative flex min-h-[70vh] w-full max-w-5xl flex-col items-center justify-center rounded-[34px] border border-border bg-card px-6 py-10 text-card-foreground shadow-2xl shadow-black/15 sm:px-10">
             <div className="w-full max-w-4xl flex flex-col items-center">
               <div className="mb-10 text-center">
-                <h2 className="text-4xl font-black uppercase tracking-tight text-slate-900 mb-2">
+                <h2 className="mb-2 text-4xl font-black uppercase tracking-tight text-foreground">
                   ВОПРОС-АУКЦИОН
                 </h2>
-                <div className="inline-block bg-slate-100 px-4 py-1 rounded-full">
-                  <p className="text-slate-500 font-medium text-sm">
-                    Номинал: <span className="text-slate-900 font-bold">{nominal}</span>
+                <div className="inline-block rounded-full bg-muted px-4 py-1">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Номинал: <span className="font-bold text-foreground">{nominal}</span>
                   </p>
                 </div>
               </div>
 
               <div className="w-full mb-12 flex flex-col items-center gap-8 px-4 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center">
                 <div className="flex flex-col items-center md:items-start md:justify-self-start min-w-200px">
-                  <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-1">
+                  <span className="mb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
                     ТЕКУЩАЯ СТАВКА
                   </span>
-                  <span className="text-7xl font-black text-slate-900 tabular-nums tracking-tighter">
+                  <span className="text-7xl font-black text-foreground tabular-nums tracking-tighter">
                     {currentBidLabel}
                   </span>
 
                   {leaderPlayer ? (
                     <div className="mt-2 flex items-center space-x-2">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                         ЛИДЕР
                       </span>
-                      <div className="flex items-center space-x-2 bg-slate-100 pr-3 pl-1 py-0.5 rounded-full">
+                      <div className="flex items-center space-x-2 rounded-full bg-muted py-0.5 pl-1 pr-3">
                         <div className="w-5 h-5 rounded-full overflow-hidden">
                           <PlayerAvatar value={leaderPlayer.avatarUrl} alt={leaderPlayer.name} />
                         </div>
-                        <span className="text-sm font-bold text-slate-900">
+                        <span className="text-sm font-bold text-foreground">
                           {leaderPlayer.name}
                         </span>
                       </div>
@@ -127,7 +127,7 @@ export function AuctionModal({
                   ) : null}
                 </div>
 
-                <div className="hidden md:flex items-center justify-center text-slate-200 md:justify-self-center">
+                <div className="hidden items-center justify-center text-muted-foreground/40 md:flex md:justify-self-center">
                   <Gavel size={48} strokeWidth={1.5} />
                 </div>
 
@@ -141,7 +141,7 @@ export function AuctionModal({
                         <div
                           className={cn(
                             "w-14 h-14 rounded-full border-2 transition-all duration-300 relative overflow-hidden",
-                            isCurrent ? "border-slate-900 scale-125 shadow-lg z-10" : "border-slate-100",
+                            isCurrent ? "z-10 scale-125 border-foreground shadow-lg" : "border-border",
                             isFolded ? "opacity-20 grayscale" : "",
                           )}
                         >
@@ -150,7 +150,7 @@ export function AuctionModal({
                         <div
                           className={cn(
                             "mt-3 text-xs font-bold px-2 py-0.5 rounded transition-colors",
-                            isCurrent ? "bg-slate-900 text-white" : "text-slate-400",
+                            isCurrent ? "bg-foreground text-background" : "text-muted-foreground",
                           )}
                         >
                           {player.score}
@@ -165,28 +165,28 @@ export function AuctionModal({
                 <div className="w-full max-w-lg">
                   <div className="flex items-end justify-between mb-4 px-1">
                     <div>
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                      <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
                         {isSinglePlayerMode ? "СТАВКА ИГРОКА" : "ВАШ ХОД"}
                       </span>
-                      <h3 className="text-3xl font-black text-slate-900 leading-none mt-1">
+                      <h3 className="mt-1 text-3xl font-black leading-none text-foreground">
                         {turnPlayerName ?? "Игрок"}
                       </h3>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                      <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
                         БАЛАНС
                       </span>
-                      <p className="text-2xl font-black text-slate-900 leading-none mt-1">
+                      <p className="mt-1 text-2xl font-black leading-none text-foreground">
                         {turnPlayerBalance}
                       </p>
                     </div>
                   </div>
 
                   {canAffordBid ? (
-                    <div className="bg-white p-2 space-y-3">
+                    <div className="space-y-3 bg-card p-2">
                       {isSinglePlayerMode ? (
-                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                          <span className="font-bold text-slate-900">К торгам допущен только этот игрок.</span>
+                        <div className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
+                          <span className="font-bold text-foreground">К торгам допущен только этот игрок.</span>
                           {excludedPlayersCount > 0 ? ` Остальные (${excludedPlayersCount}) не допущены.` : ""}
                         </div>
                       ) : null}
@@ -203,7 +203,7 @@ export function AuctionModal({
                             event.preventDefault();
                             onSubmitBid();
                           }}
-                          className="grow bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-4 text-xl font-bold outline-none focus-visible:border-slate-900 focus-visible:bg-white transition-all placeholder:text-slate-300 text-slate-900"
+                          className="grow rounded-xl border-2 border-border bg-muted/40 px-4 py-4 text-xl font-bold text-foreground outline-none transition-all placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:bg-card"
                         />
                         <Button
                           type="button"
@@ -220,7 +220,7 @@ export function AuctionModal({
                         <Button
                           type="button"
                           variant="outline"
-                          className="flex-1 py-3 h-auto text-slate-900 border-slate-200 hover:border-slate-900"
+                          className="h-auto flex-1 border-border py-3 text-foreground hover:border-ring hover:bg-muted"
                           disabled={minBid === null}
                           onClick={onMinBid}
                         >
@@ -229,7 +229,7 @@ export function AuctionModal({
                         <Button
                           type="button"
                           variant="outline"
-                          className="flex-1 py-3 h-auto text-slate-900 border-slate-200 hover:border-slate-900"
+                          className="h-auto flex-1 border-border py-3 text-foreground hover:border-ring hover:bg-muted"
                           disabled={!turnPlayerId || turnPlayerBalance <= 0}
                           onClick={onAllIn}
                         >
@@ -238,7 +238,7 @@ export function AuctionModal({
                         <Button
                           type="button"
                           variant="ghost"
-                          className="w-auto px-5 h-auto py-3 text-slate-500 hover:text-red-600 hover:bg-red-50 border-2 border-transparent hover:border-red-100"
+                          className="h-auto w-auto border-2 border-transparent px-5 py-3 text-muted-foreground hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:hover:border-red-900/40 dark:hover:bg-red-900/20"
                           disabled={!turnPlayerId}
                           onClick={onPass}
                           hidden={isSinglePlayerMode}
@@ -248,10 +248,10 @@ export function AuctionModal({
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-8 bg-slate-50 rounded-2xl border border-slate-100">
-                      <div className="flex flex-col items-center text-slate-400 mb-6">
+                    <div className="rounded-2xl border border-border bg-muted/40 py-8 text-center">
+                      <div className="mb-6 flex flex-col items-center text-muted-foreground">
                         <AlertCircle size={40} className="mb-2 opacity-50" />
-                        <p className="font-bold text-slate-900">Ставка невозможна</p>
+                        <p className="font-bold text-foreground">Ставка невозможна</p>
                         <p className="text-sm">Недостаточно средств для повышения</p>
                       </div>
                       <Button type="button" variant="outline" onClick={onPass} className="w-48">

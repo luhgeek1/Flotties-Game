@@ -33,7 +33,7 @@ export function CatInBagTransferModal({
 
     return (
       <>
-        <span className="font-extrabold text-slate-900">{chooserName}</span> выбирает, кому передать вопрос
+        <span className="font-extrabold text-foreground">{chooserName}</span> выбирает, кому передать вопрос
       </>
     );
   }, [chooserName]);
@@ -49,7 +49,7 @@ export function CatInBagTransferModal({
           transition={{ duration: 0.2 }}
         >
           <motion.div
-            className="absolute inset-0 bg-slate-200/70 backdrop-blur-sm"
+            className="absolute inset-0 bg-background/75 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -60,15 +60,15 @@ export function CatInBagTransferModal({
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 20, scale: 0.98, filter: "blur(4px)" }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 w-full max-w-5xl rounded-[34px] border border-slate-200 bg-white px-6 pb-12 pt-9 shadow-[0_28px_85px_rgba(15,23,42,0.18)] sm:px-10 md:px-14"
+            className="relative z-10 w-full max-w-5xl rounded-[34px] border border-border bg-card px-6 pb-12 pt-9 text-card-foreground shadow-[0_28px_85px_rgba(2,6,23,0.24)] sm:px-10 md:px-14"
           >
             {mode === "transfer" ? (
               <>
                 <div className="mx-auto mt-8 flex max-w-3xl flex-col items-center text-center">
-                  <h2 className="text-4xl font-black uppercase tracking-tight text-slate-900 sm:text-5xl">
+                  <h2 className="text-4xl font-black uppercase tracking-tight text-foreground sm:text-5xl">
                     Кот в мешке
                   </h2>
-                  <p className="mt-3 text-xl font-medium text-slate-500 sm:text-2xl">{transferTitle}</p>
+                  <p className="mt-3 text-xl font-medium text-muted-foreground sm:text-2xl">{transferTitle}</p>
                 </div>
 
                 <div className="mx-auto mt-14 grid max-w-3xl gap-4 sm:grid-cols-2">
@@ -83,19 +83,19 @@ export function CatInBagTransferModal({
                       whileTap={{ scale: 0.99 }}
                       onClick={() => onSelectPlayer(player.id)}
                       className={cn(
-                        "group rounded-3xl border-2 border-slate-200 bg-slate-50 px-4 py-8 text-center transition-colors hover:border-slate-300 hover:bg-white",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2",
+                        "group rounded-3xl border-2 border-border bg-card/70 px-4 py-8 text-center transition-colors hover:border-border hover:bg-card",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                       )}
                     >
-                      <div className="mx-auto h-20 w-20 overflow-hidden rounded-full border border-slate-300 bg-slate-200">
+                      <div className="mx-auto h-20 w-20 overflow-hidden rounded-full border border-border bg-muted">
                         <PlayerAvatar value={player.avatarUrl} alt={player.name} className="grayscale" />
                       </div>
 
-                      <div className="mt-5 text-[38px] font-black leading-none tracking-tight text-slate-900">
+                      <div className="mt-5 text-[38px] font-black leading-none tracking-tight text-foreground">
                         {player.name}
                       </div>
 
-                      <div className="mt-2 text-3xl font-mono font-semibold tracking-tight text-slate-400">
+                      <div className="mt-2 text-3xl font-mono font-semibold tracking-tight text-muted-foreground">
                         {player.score}
                       </div>
                     </motion.button>
@@ -104,17 +104,17 @@ export function CatInBagTransferModal({
               </>
             ) : (
               <div className="mx-auto mt-8 flex max-w-3xl flex-col items-center text-center">
-                <div className="inline-flex items-center rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-500">
+                <div className="inline-flex items-center rounded-full bg-muted px-4 py-2 text-sm font-semibold text-muted-foreground">
                   Отвечает&nbsp;
-                  <span className="font-black text-slate-900">{answeringPlayerName ?? "Игрок"}</span>
+                  <span className="font-black text-foreground">{answeringPlayerName ?? "Игрок"}</span>
                 </div>
 
-                <h2 className="mt-7 text-5xl font-black tracking-tight text-slate-900 sm:text-6xl">
-                  Тема: <span className="font-black text-slate-900">{questionTheme}</span>
+                <h2 className="mt-7 text-5xl font-black tracking-tight text-foreground sm:text-6xl">
+                  Тема: <span className="font-black text-foreground">{questionTheme}</span>
                 </h2>
 
                 {questionTheme ? (
-                  <p className="mt-4 text-lg font-semibold text-slate-500">
+                  <p className="mt-4 text-lg font-semibold text-muted-foreground">
                       Выберите ставку
                   </p>
                 ) : null}
@@ -131,11 +131,11 @@ export function CatInBagTransferModal({
                       whileTap={{ scale: 0.99 }}
                       onClick={() => onSelectBid(bid)}
                       className={cn(
-                        "group rounded-3xl border-2 border-slate-200 bg-slate-50 px-4 py-12 text-center transition-colors hover:border-slate-300 hover:bg-white",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2",
+                        "group rounded-3xl border-2 border-border bg-card/70 px-4 py-12 text-center transition-colors hover:border-border hover:bg-card",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                       )}
                     >
-                      <span className="text-8xl font-black tracking-tight text-slate-900">
+                      <span className="text-8xl font-black tracking-tight text-foreground">
                         {bid}
                       </span>
                     </motion.button>

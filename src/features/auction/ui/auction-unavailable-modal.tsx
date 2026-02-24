@@ -47,17 +47,17 @@ export function AuctionUnavailableModal({
           exit={{ opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.25 } }}
           className="fixed inset-0 z-60 flex items-center justify-center p-4"
         >
-          <div className="absolute inset-0 bg-slate-200/80 backdrop-blur-md z-[-1]" />
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-md z-[-1]" />
 
-          <div className="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white px-8 py-10 text-center shadow-2xl shadow-slate-200/50">
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+          <div className="w-full max-w-2xl rounded-3xl border border-border bg-card px-8 py-10 text-center text-card-foreground shadow-2xl shadow-black/15">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
               <AlertCircle size={34} />
             </div>
 
-            <h3 className="text-3xl font-black uppercase tracking-tight text-slate-900">{title}</h3>
+            <h3 className="text-3xl font-black uppercase tracking-tight text-foreground">{title}</h3>
 
-            <p className="mt-4 text-base leading-relaxed text-slate-600">{summaryText}</p>
-            <p className="mt-2 text-base leading-relaxed text-slate-600">{detailText}</p>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">{summaryText}</p>
+            <p className="mt-2 text-base leading-relaxed text-muted-foreground">{detailText}</p>
 
             <Button
               type="button"
