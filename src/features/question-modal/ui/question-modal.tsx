@@ -74,7 +74,7 @@ export function QuestionModal({
                 </div>
               </div>
 
-              {currentPhase === "reading" ? (
+              {currentPhase === "reading" || currentPhase === "answering" ? (
                 <QuestionTimer durationMs={timerDurationMs} remainingMs={remainingMs} />
               ) : null}
             </div>

@@ -97,7 +97,7 @@ export function useQuestionAnswerActions({
     setQuestionFlowState(prev => {
       if (!prev || prev.phase !== "result-wrong") return prev;
 
-      if (!hasPlayersForReplay || prev.remainingMs <= 0) {
+      if (!hasPlayersForReplay) {
         return setTimeoutResult(prev);
       }
 

@@ -1,6 +1,7 @@
 import type { GameQuestionFlowState } from "@/shared/store/gameAtoms";
 
 export const QUESTION_TIMER_DURATION_MS = 30_000;
+export const ANSWERING_TIMER_DURATION_MS = 15_000;
 export const QUESTION_TIMER_TICK_MS = 100;
 export const RESULT_CORRECT_AUTO_CLOSE_MS = 1_600;
 
@@ -34,7 +35,7 @@ export function createQuestionFlowAnsweringState(
   return {
     questionId,
     phase: "answering",
-    remainingMs: QUESTION_TIMER_DURATION_MS,
+    remainingMs: ANSWERING_TIMER_DURATION_MS,
     attemptedPlayerIds: [],
     activePlayerId: playerId,
     answerInput: "",
@@ -84,6 +85,7 @@ export function setReadingReplay(state: GameQuestionFlowState): GameQuestionFlow
   return {
     ...state,
     phase: "reading",
+    remainingMs: QUESTION_TIMER_DURATION_MS,
     activePlayerId: null,
     answerInput: "",
   };
@@ -105,10 +107,18 @@ export function applyTimerTick(
   activeQuestionId: string,
 ): GameQuestionFlowState | null {
   const state = ensureQuestionFlowState(prev, activeQuestionId);
-  if (state.phase !== "reading") return state;
+  if (state.phase !== "reading" && state.phase !== "answering") return state;
 
   const nextRemainingMs = Math.max(0, state.remainingMs - QUESTION_TIMER_TICK_MS);
   if (nextRemainingMs <= 0) {
+    if (state.phase === "answering") {
+      return setWrongAnswerResult({
+        ...state,
+        remainingMs: 0,
+        answerInput: "",
+      });
+    }
+
     return {
       ...setTimeoutResult(state),
       remainingMs: 0,
@@ -133,6 +143,7 @@ export function applyPlayerBuzz(
   return {
     ...state,
     phase: "answering",
+    remainingMs: ANSWERING_TIMER_DURATION_MS,
     activePlayerId: playerId,
     answerInput: "",
   };

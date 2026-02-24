@@ -3,7 +3,12 @@ import { useCallback, useMemo } from "react";
 
 import type { QuestionPackQuestion } from "@/shared/api/questionPack";
 import { gameActiveQuestionIdAtom, gameOpenedQuestionIdsAtom, gameQuestionFlowStateAtom } from "@/shared/store/gameAtoms";
-import { createQuestionFlowState, QUESTION_TIMER_DURATION_MS, type QuestionStatePlayer } from "./questionFlow";
+import {
+  ANSWERING_TIMER_DURATION_MS,
+  createQuestionFlowState,
+  QUESTION_TIMER_DURATION_MS,
+  type QuestionStatePlayer,
+} from "./questionFlow";
 import { useQuestionAnswerActions } from "./useQuestionAnswerActions";
 import { useQuestionAutoCloseEffect } from "./useQuestionAutoCloseEffect";
 import { useQuestionBuzzingEffect } from "./useQuestionBuzzingEffect";
@@ -69,6 +74,8 @@ export function useQuestionState({
   useQuestionTimerEffect({
     activeQuestionId,
     flowPhase,
+    questionValue: activeQuestion?.value ?? null,
+    onPlayerScoreDelta,
     setQuestionFlowState,
   });
 
@@ -94,12 +101,16 @@ export function useQuestionState({
     setOpenedQuestionIds(Array.from(questionsById.keys()));
   }, [questionsById, setOpenedQuestionIds]);
 
+  const questionTimerDurationMs = flowPhase === "answering"
+    ? ANSWERING_TIMER_DURATION_MS
+    : QUESTION_TIMER_DURATION_MS;
+
   return {
     activeQuestion,
     activeQuestionId,
     openedQuestionIds,
     modalState,
-    questionTimerDurationMs: QUESTION_TIMER_DURATION_MS,
+    questionTimerDurationMs,
     handleQuestionSelect,
     startQuestionAnswering,
     closeQuestionModal,
