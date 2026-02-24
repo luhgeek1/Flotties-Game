@@ -9,6 +9,8 @@ import {
 } from "@/features/game-session/store/setupAtoms";
 import type { AddPlayerValues } from "@/entities/cosmetics";
 
+const MAX_PLAYER_NICKNAME_LENGTH = 15;
+
 type UseAddPlayerModalArgs = {
   isOpen: boolean;
   onClose: () => void;
@@ -52,7 +54,7 @@ export function useAddPlayerModal({
 
     setModalState(prev => ({
       ...prev,
-      nickname: editingPlayer.name,
+      nickname: editingPlayer.name.slice(0, MAX_PLAYER_NICKNAME_LENGTH),
       avatar: editingPlayer.avatarUrl,
       banner: editingPlayer.banner,
     }));
@@ -124,7 +126,8 @@ export function useAddPlayerModal({
   };
 
   const onNicknameChange = (value: string) => {
-    setModalState(prev => ({ ...prev, nickname: value }));
+    const normalizedValue = value.slice(0, MAX_PLAYER_NICKNAME_LENGTH);
+    setModalState(prev => ({ ...prev, nickname: normalizedValue }));
     if (error) {
       setError("");
     }
@@ -145,5 +148,6 @@ export function useAddPlayerModal({
     onFileChange,
     submit,
     onNicknameChange,
+    maxNicknameLength: MAX_PLAYER_NICKNAME_LENGTH,
   };
 }

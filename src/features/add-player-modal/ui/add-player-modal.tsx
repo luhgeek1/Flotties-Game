@@ -65,6 +65,7 @@ export function AddPlayerModal({
     onFileChange,
     submit,
     onNicknameChange,
+    maxNicknameLength,
   } = useAddPlayerModal({
     isOpen,
     onClose,
@@ -159,6 +160,7 @@ export function AddPlayerModal({
               id="nickname"
               placeholder="Введите имя..."
               value={nickname}
+              maxLength={maxNicknameLength}
               onChange={event => onNicknameChange(event.target.value)}
               className={cn(
                 "pl-10",

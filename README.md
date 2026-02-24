@@ -26,6 +26,7 @@
 - [Сохранение данных (Persist)](#сохранение-данных-persist)
 - [Паки вопросов](#паки-вопросов)
 - [Проверка ответов](#проверка-ответов)
+- [Статистика между раундами](#статистика-между-раундами)
 - [Оптимизация загрузки ассетов](#оптимизация-загрузки-ассетов)
 - [Архитектура и стек](#архитектура-и-стек)
 - [Тестирование (Playwright)](#тестирование-playwright)
@@ -288,6 +289,14 @@ npm run build
 
 После нормализации ответ сравнивается с вариантами из `answers[]`.
 
+## Статистика между раундами
+
+После завершения каждого основного раунда показывается экран промежуточной статистики:
+
+- `MVP`: отображается лучший игрок раунда (или несколько игроков при равенстве очков), вместе с лучшим текущим счетом.
+- `Прогресс по игрокам`: показывается график очков (bar chart), где видно текущие баллы всех игроков.
+- Статистика показывается на переходе `Раунд 1 -> Раунд 2` и перед переходом к следующему этапу после второго раунда.
+
 ## Оптимизация загрузки ассетов
 
 Для ускорения загрузки на GitLab Pages используется предзагрузка изображений.
@@ -332,20 +341,20 @@ Route guard ограничивает переходы в зависимости 
 Hash-формат URL нужен для GitLab Pages: при обновлении страницы на вложенных путях приложение не получает `404`.
 Реализация находится в `src/app/router/model/routeLocation.ts` (`getLocationPath`, `toHashUrl`, `replaceHashPath`, `pushHashPath`).
 
-| Путь | Экран | Назначение |
-| --- | --- | --- |
-| `/` | Setup | Выбор игроков, пака, вход в игру |
-| `/shop` | Shop | Магазин/косметика |
-| `/history` | History | История игр |
-| `/game` | Game Round 1 | Первый раунд |
-| `/game2r` | Game Round 2 | Второй раунд |
-| `/final-prepairing` | FinalPrepairing | Подготовка к финалу |
-| `/final-start-theme` | FinalStartTheme | Объявление темы финала |
-| `/final-close-eyes` | FinalCloseEyes | Подготовка перед ставками/ответами |
-| `/final-bid` | FinalBid | Секретные ставки |
-| `/final-close-eyes-question` | FinalCloseEyes | Подготовка перед ответами |
-| `/final-question` | FinalQuestion | Ответы на финальный вопрос |
-| `/final-results` | FinalResults | Итоги и победитель |
+| Route key | URL в браузере (hash) | Экран | Назначение |
+| --- | --- | --- | --- |
+| `setup` | `/#/` | Setup | Выбор игроков, пака, вход в игру |
+| `shop` | `/#/shop` | Shop | Магазин/косметика |
+| `history` | `/#/history` | History | История игр |
+| `game` | `/#/game` | Game Round 1 | Первый раунд |
+| `game2r` | `/#/game2r` | Game Round 2 | Второй раунд |
+| `finalprepairing` | `/#/final-prepairing` | FinalPrepairing | Подготовка к финалу |
+| `finalstarttheme` | `/#/final-start-theme` | FinalStartTheme | Объявление темы финала |
+| `finalcloseeyes` | `/#/final-close-eyes` | FinalCloseEyes | Подготовка перед ставками/ответами |
+| `finalbid` | `/#/final-bid` | FinalBid | Секретные ставки |
+| `finalcloseeyesquestion` | `/#/final-close-eyes-question` | FinalCloseEyes | Подготовка перед ответами |
+| `finalquestion` | `/#/final-question` | FinalQuestion | Ответы на финальный вопрос |
+| `finalresults` | `/#/final-results` | FinalResults | Итоги и победитель |
 
 ### Взаимодействие модулей
 
