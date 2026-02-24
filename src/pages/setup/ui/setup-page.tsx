@@ -65,7 +65,7 @@ export function SetupPage({ onStartGame, onOpenShop, onOpenHistory }: SetupPageP
         </Button>
       </div>
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         {step === "players" ? (
           <PlayersSetupScreen key="players-screen" onContinue={() => setStep("packs")} />
         ) : (

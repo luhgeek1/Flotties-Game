@@ -32,7 +32,7 @@ export function FinalResultsPage({ onExitToSetup, onReset }: FinalResultsPagePro
           </div>
 
           <motion.ul className="space-y-4" layout>
-            <AnimatePresence>
+            <AnimatePresence initial={false}>
               {model.displayPlayers.map(player => {
                 const isWinner = model.isSorting && player.finalScore === model.winnerScore;
 
@@ -50,7 +50,7 @@ export function FinalResultsPage({ onExitToSetup, onReset }: FinalResultsPagePro
                       isWinner ? "border-yellow-500 ring-1 ring-yellow-500" : "border-neutral-200 dark:border-slate-700"
                     }`}
                   >
-                    <AnimatePresence>
+                    <AnimatePresence initial={false}>
                       {isWinner ? (
                         <motion.div
                           initial={{ y: -20, opacity: 0 }}
@@ -81,7 +81,7 @@ export function FinalResultsPage({ onExitToSetup, onReset }: FinalResultsPagePro
                       </div>
 
                       <div className="relative flex min-h-16 w-full flex-col items-center justify-center text-center md:w-2/4">
-                        <AnimatePresence mode="wait">
+                        <AnimatePresence mode="wait" initial={false}>
                           {!player.isRevealed ? (
                             <motion.div
                               key="hidden"
@@ -140,7 +140,7 @@ export function FinalResultsPage({ onExitToSetup, onReset }: FinalResultsPagePro
             </AnimatePresence>
           </motion.ul>
 
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             {model.showControls ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

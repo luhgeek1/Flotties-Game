@@ -56,7 +56,7 @@ export function FinalBidPage({ onExitToSetup, onConfirmBid, onAllBidsDone }: Fin
       />
 
       <main className="relative flex flex-1 items-center justify-center overflow-hidden px-4 py-8">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           {model.isAllPlayersBidDone ? (
             <motion.div
               key="final-bid-complete"

@@ -72,7 +72,7 @@ export function AuctionModal({
   const isOnePlayerLeft = !isSinglePlayerMode && passedPlayerIdSet.size >= Math.max(0, players.length - 1);
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" initial={false}>
       {open ? (
         <motion.div
           key="auction-betting"

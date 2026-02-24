@@ -17,7 +17,7 @@ export function PlayerPickBanner({
   const shouldRender = isOpen && Boolean(playerName);
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" initial={false}>
       {shouldRender ? (
         <motion.div
           key={`intro-overlay-${playerName}`}

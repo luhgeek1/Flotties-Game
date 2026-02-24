@@ -39,7 +39,7 @@ export function CatInBagTransferModal({
   }, [chooserName]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {open ? (
         <motion.div
           className="fixed inset-0 z-60 flex items-center justify-center p-4"

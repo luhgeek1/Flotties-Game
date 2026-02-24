@@ -55,7 +55,7 @@ export function Modal({
   }, [isOpen]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {isOpen ? (
         <motion.div
           initial={{ opacity: 0 }}

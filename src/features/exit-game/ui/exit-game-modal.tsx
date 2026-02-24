@@ -23,7 +23,7 @@ export function ExitGameModal({
   confirmLabel = "End game",
 }: ExitGameModalProps) {
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {isOpen ? (
         <motion.div
           initial={{ opacity: 0 }}

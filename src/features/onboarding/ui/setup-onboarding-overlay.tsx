@@ -31,7 +31,7 @@ export function SetupOnboardingOverlay({ onClose }: SetupOnboardingOverlayProps)
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
-      <AnimatePresence mode="sync">
+      <AnimatePresence mode="sync" >
         {step === "question-demo" ? (
           <motion.div
             key="onboarding-question-demo"

@@ -33,7 +33,7 @@ export function AuctionUnavailableModal({
     : `Недопущенные игроки имеют счёт ниже номинала ${nominal}.`;
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" initial={false}>
       {open ? (
         <motion.div
           key="auction-unavailable"

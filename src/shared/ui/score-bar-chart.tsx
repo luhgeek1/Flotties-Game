@@ -31,6 +31,77 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+type BarLabelProps = {
+  x?: number | string
+  y?: number | string
+  width?: number | string
+  height?: number | string
+  value?: number | string
+  payload?: {
+    score?: number
+    label?: string
+  }
+}
+
+function toNumber(value: number | string | undefined): number {
+  if (typeof value === "number") return value
+  if (typeof value === "string") return Number(value)
+  return 0
+}
+
+function renderPlayerLabel(props: BarLabelProps) {
+  const x = toNumber(props.x)
+  const y = toNumber(props.y)
+  const height = toNumber(props.height)
+  const score = Number(props.payload?.score ?? 0)
+  const label = String(props.value ?? "")
+  const isPositiveScore = score > 0
+
+  return (
+    <text
+      x={x + 16}
+      y={y + height / 2}
+      dy={5}
+      fill={isPositiveScore ? "#ffffff" : "rgb(71 85 105)"}
+      fontSize={14}
+      fontWeight={700}
+      style={isPositiveScore
+        ? {
+          paintOrder: "stroke",
+          stroke: "rgb(15 23 42 / 0.35)",
+          strokeWidth: 2,
+        }
+        : undefined}
+    >
+      {label}
+    </text>
+  )
+}
+
+function renderScoreLabel(props: BarLabelProps) {
+  const x = toNumber(props.x)
+  const y = toNumber(props.y)
+  const width = toNumber(props.width)
+  const height = toNumber(props.height)
+  const score = Number(props.value ?? props.payload?.score ?? 0)
+  const labelLength = String(props.payload?.label ?? "").length
+  const zeroScoreOffset = Math.max(88, labelLength * 11 + 24)
+  const offset = score === 0 ? zeroScoreOffset : 16
+
+  return (
+    <text
+      x={x + width + offset}
+      y={y + height / 2}
+      dy={5}
+      fill="hsl(var(--foreground))"
+      fontSize={13}
+      fontWeight={600}
+    >
+      {score}
+    </text>
+  )
+}
+
 export function ScoreBarChart({
   title = "Общий счет игроков",
   items,
@@ -50,6 +121,8 @@ export function ScoreBarChart({
     label: item.label,
     score: item.value,
   }))
+  const maxScoreLabelLength = Math.max(...chartData.map(item => String(item.score).length))
+  const scoreLabelsRightPadding = Math.max(46, maxScoreLabelLength * 11 + 20)
 
   return (
     <Card className="w-full h-55 py-3 gap-3 border-border/60 shadow-none">
@@ -63,7 +136,7 @@ export function ScoreBarChart({
             data={chartData}
             layout="vertical"
             margin={{
-              right: 22,
+              right: scoreLabelsRightPadding,
             }}
           >
             <CartesianGrid horizontal={false} />
@@ -89,22 +162,11 @@ export function ScoreBarChart({
             >
               <LabelList
                 dataKey="label"
-                position="insideLeft"
-                offset={8}
-                className="fill-white font-bold"
-                style={{
-                  paintOrder: "stroke",
-                  stroke: "rgb(15 23 42 / 0.35)",
-                  strokeWidth: 2,
-                }}
-                fontSize={14}
+                content={renderPlayerLabel}
               />
               <LabelList
                 dataKey="score"
-                position="right"
-                offset={8}
-                className="fill-foreground font-semibold"
-                fontSize={13}
+                content={renderScoreLabel}
               />
             </Bar>
           </BarChart>

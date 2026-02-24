@@ -12,7 +12,7 @@ import {
 
 import type { RoundTransitionModalProps } from "../model/types"
 import { useRoundTransitionModel } from "../model/useRoundTransitionModel"
-import { RoundTransitionConfirmStep } from "./RoundTransitionConfirmStep"
+import { RoundTransitionConfirmStep } from "./roundTransitionConfirmStep"
 import { RoundTransitionScoreStep } from "./RoundTransitionScoreStep"
 
 export function RoundTransitionModal({
@@ -61,7 +61,7 @@ export function RoundTransitionModal({
           onMouseEnter={model.onMouseEnter}
           onMouseLeave={model.onMouseLeave}
         >
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             {model.isLeaderSlideBackgroundVisible ? (
               <motion.div
                 key="leader-slide-background"
@@ -84,7 +84,7 @@ export function RoundTransitionModal({
           </div>
 
           <div className="relative z-10 px-4 sm:px-16 pb-10 pt-2 min-h-95">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" initial={false}>
               {model.step === "score" ? (
                 <RoundTransitionScoreStep
                   key="score"

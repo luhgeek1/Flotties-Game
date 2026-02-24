@@ -51,7 +51,7 @@ export function FinalCloseEyesPage({
       />
 
       <main className="relative flex-1 overflow-hidden">
-        <AnimatePresence onExitComplete={() => model.onReadyClick()}>
+        <AnimatePresence initial={false} onExitComplete={() => model.onReadyClick()}>
           {isOutroImageVisible ? (
             <motion.img
               key="close-eyes-outro"
@@ -67,7 +67,7 @@ export function FinalCloseEyesPage({
           ) : null}
         </AnimatePresence>
 
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {isCardVisible ? (
             <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-4">
               <motion.section

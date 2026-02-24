@@ -168,7 +168,7 @@ export function AddPlayerModal({
             />
           </div>
 
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             {error ? (
               <motion.p
                 initial={{ opacity: 0, y: -4, height: 0 }}

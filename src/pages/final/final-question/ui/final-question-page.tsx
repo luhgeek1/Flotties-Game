@@ -123,7 +123,7 @@ export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer, onAllAnswers
       />
 
       <main className="relative flex flex-1 items-center justify-center overflow-hidden px-4 py-8">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           {model.isAllPlayersAnswerDone ? (
             <motion.div
               key="final-answer-complete"
