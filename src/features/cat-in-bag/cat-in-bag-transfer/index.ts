@@ -1,1 +1,0 @@
-export { CatInBagTransferModal } from "./ui";

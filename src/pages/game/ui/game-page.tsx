@@ -1,7 +1,7 @@
 import { GameBoard } from "@/entities/game-board";
 import { AuctionModal, AuctionUnavailableModal } from "@/features/auction";
 import { RayGifBanner } from "@/features/special-banner";
-import { CatInBagTransferModal } from "@/features/cat-in-bag/cat-in-bag-transfer";
+import { CatInBagTransferModal } from "@/features/cat-in-bag";
 import { PlayerScoreCard } from "@/entities/players";
 import { PlayerPickBanner } from "@/features/player-pick";
 import { QuestionModal } from "@/features/question-modal";
