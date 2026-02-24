@@ -45,12 +45,14 @@ const WINNER_COINS_BONUS = 150;
 const DEFAULT_RESULTS_SEQUENCE_TIMING = {
   initialDelayMs: 500,
   perPlayerRevealDelayMs: 1600,
+  afterLastRevealDelayMs: 900,
   beforeControlsDelayMs: 800,
 } as const;
 
 const SINGLE_WINNER_RESULTS_SEQUENCE_TIMING = {
   initialDelayMs: 0,
   perPlayerRevealDelayMs: 0,
+  afterLastRevealDelayMs: 0,
   beforeControlsDelayMs: 120,
 } as const;
 
@@ -156,9 +158,13 @@ export function useFinalResultsModel({ onReset }: UseFinalResultsModelArgs = {})
             item.id === player.id ? { ...item, isRevealed: true } : item
           )));
 
-          const hasNextRevealStep = index < revealPlayers.length - 1;
-          if (hasNextRevealStep) {
-            await sleep(sequenceTiming.perPlayerRevealDelayMs);
+          const isLastRevealStep = index === revealPlayers.length - 1;
+          const revealDelayMs = isLastRevealStep
+            ? sequenceTiming.afterLastRevealDelayMs
+            : sequenceTiming.perPlayerRevealDelayMs;
+
+          if (revealDelayMs > 0) {
+            await sleep(revealDelayMs);
           }
         }
       }
