@@ -1,12 +1,11 @@
 import { COSMETICS_AVATAR_CATALOG, COSMETICS_WEARABLE_CATALOG } from "@/entities/cosmetics/model/shop";
+import { SPECIAL_BANNER_THEME_BY_TYPE } from "@/features/special-banner/model";
 import readingLottiImage from "@/shared/assets/izuglalotti.png";
 import lottiCongrImage from "@/shared/assets/lotti_congr.png";
 import demoLottiImage from "@/shared/assets/lottipryamoi.png";
 import mainImage from "@/shared/assets/main.png";
 import leftLottiImage from "@/shared/assets/slevalotti.png";
 import smileLottiImage from "@/shared/assets/smileLotti.png";
-import specialAuImage from "@/shared/assets/specialAu.png";
-import specialCatImage from "@/shared/assets/specialCat.png";
 import doFinalImage from "@/shared/assets/dofinal.png";
 import { FINAL_FLOW_IMAGE_URLS, getFinalStagePreloadPlan } from "@/pages/final/model/preloadFinalAssets";
 
@@ -36,12 +35,22 @@ const SHOP_IMAGE_URLS = uniqueUrls([
   ...SHOP_WEARABLE_IMAGE_URLS,
 ]);
 
+const SPECIAL_BANNER_INTRO_IMAGE_URLS = uniqueUrls(
+  Object.values(SPECIAL_BANNER_THEME_BY_TYPE).map(theme => theme.introImageUrl),
+);
+
+const SPECIAL_BANNER_GIF_URLS = uniqueUrls(
+  Object.values(SPECIAL_BANNER_THEME_BY_TYPE).map(theme => theme.defaultGifUrl),
+);
+
 const SETUP_ONBOARDING_IMAGE_URLS = uniqueUrls([
   doFinalImage,
   demoLottiImage,
   leftLottiImage,
   readingLottiImage,
   smileLottiImage,
+  ...SPECIAL_BANNER_INTRO_IMAGE_URLS,
+  ...SPECIAL_BANNER_GIF_URLS,
 ]);
 
 const GAME_CORE_IMAGE_URLS = uniqueUrls([
@@ -51,8 +60,8 @@ const GAME_CORE_IMAGE_URLS = uniqueUrls([
 ]);
 
 const GAME_SPECIAL_IMAGE_URLS = uniqueUrls([
-  specialAuImage,
-  specialCatImage,
+  ...SPECIAL_BANNER_INTRO_IMAGE_URLS,
+  ...SPECIAL_BANNER_GIF_URLS,
 ]);
 
 const ROUTE_IMAGE_PRELOAD: Record<AppRoute, RouteImagePreloadPlan> = {
@@ -61,6 +70,7 @@ const ROUTE_IMAGE_PRELOAD: Record<AppRoute, RouteImagePreloadPlan> = {
     idle: uniqueUrls([
       ...SETUP_ONBOARDING_IMAGE_URLS,
       ...GAME_CORE_IMAGE_URLS,
+      ...SHOP_WEARABLE_IMAGE_URLS,
     ]),
   },
   shop: {
