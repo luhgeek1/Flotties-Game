@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from "jotai";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 import { useGameBoardData, useGamePlayers, useRoundSpecialMap } from "@/features/game-session";
 import { usePlayerPick } from "@/features/player-pick";
@@ -92,6 +92,21 @@ export function useGamePageModel({
     && questionFlow.openedQuestionIds.length === 0
     && !questionFlow.isQuestionModalOpen
     && !isRoundTransitionModalOpen;
+
+  useEffect(() => {
+    if (!isRoundFirstPickDone) return;
+    if (questionFlow.openedQuestionIds.length > 0) return;
+    if (questionFlow.isQuestionModalOpen) return;
+    if (isRoundTransitionModalOpen) return;
+
+    setIsRoundFirstPickDone(false);
+  }, [
+    isRoundFirstPickDone,
+    isRoundTransitionModalOpen,
+    questionFlow.isQuestionModalOpen,
+    questionFlow.openedQuestionIds.length,
+    setIsRoundFirstPickDone,
+  ]);
 
   const navigateToSetup = useCallback(() => {
     onExitToSetup?.();
