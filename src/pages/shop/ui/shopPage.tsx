@@ -1,5 +1,6 @@
 import { ArrowLeft, Moon, ShoppingBag, Sun } from "lucide-react";
 import { PlayerAvatar } from "@/entities/players";
+import { AdminModeSwitch } from "@/features/admin";
 import { ShopPlayerSelectModal, ShopSection } from "@/features/shop";
 import { Button } from "@/shared/components/ui/button";
 import { useShopPage } from "../model/useShopPage";
@@ -27,17 +28,6 @@ export function ShopPage({ onBackToSetup }: ShopPageProps) {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 transition-colors duration-300">
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        title="Переключить тему"
-        onClick={toggleTheme}
-        className="fixed right-4 top-4 z-30 rounded-full border border-border bg-card/70 backdrop-blur hover:bg-card md:right-8 md:top-8"
-      >
-        {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-      </Button>
-
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Button
@@ -50,7 +40,7 @@ export function ShopPage({ onBackToSetup }: ShopPageProps) {
             К настройке
           </Button>
 
-          <div className="flex items-center gap-2 text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-2 text-muted-foreground sm:justify-end">
             <ShoppingBag className="w-4 h-4" />
             <span className="text-sm font-semibold tracking-wide uppercase">Магазин</span>
 
@@ -70,6 +60,18 @@ export function ShopPage({ onBackToSetup }: ShopPageProps) {
                 {activePlayer?.name ?? "Выбрать игрока"}
               </span>
             </button>
+
+            <AdminModeSwitch />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              title="Переключить тему"
+              onClick={toggleTheme}
+              className="rounded-full border border-border bg-card/70 backdrop-blur hover:bg-card"
+            >
+              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
           </div>
         </div>
 
