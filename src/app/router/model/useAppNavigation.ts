@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { useGameHistory } from "@/features/history";
@@ -17,12 +17,12 @@ import {
   ROUTE_PATH,
   coerceRoute,
   getInitialRoute,
-  resolveRoute,
   type AppRoute,
 } from "../lib/route-guard";
 import { readRouteLockRoute, writeRouteLockRoute } from "./routeLockStorage";
-import { getRouteImagePreloadPlan } from "./routeImagePreload";
-import { preloadImages, preloadImagesWhenIdle } from "@/shared/lib/imagePreload";
+import { getLocationPath, pushHashPath, replaceHashPath } from "./routeLocation";
+import { useRouteImagePreload } from "./useRouteImagePreload";
+import { useRouteHistorySync } from "./useRouteHistorySync";
 
 export type NavigateOptions = {
   replace?: boolean;
@@ -38,25 +38,6 @@ function resolveRound2Access(current: boolean, mode: NavigateOptions["round2Acce
 
 function isGameFlowRoute(route: AppRoute): boolean {
   return route !== "setup" && route !== "shop" && route !== "history";
-}
-
-function normalizePath(path: string): string {
-  if (path.length === 0) return "/";
-  return path.startsWith("/") ? path : `/${path}`;
-}
-
-function getLocationPath(): string {
-  const { hash, pathname } = window.location;
-
-  if (!hash || hash === "#") {
-    return normalizePath(pathname);
-  }
-
-  return normalizePath(hash.slice(1));
-}
-
-function toHashUrl(path: string): string {
-  return path === ROUTE_PATH.setup ? "/#/" : `/#${path}`;
 }
 
 export function useAppNavigation() {
@@ -97,82 +78,27 @@ export function useAppNavigation() {
   const { markOnboardingStartedGame } = useOnboarding();
   const prepareFinalAnswersStage = useSetAtom(prepareFinalAnswersStageAtom);
   const [isHistoryExitModalOpen, setIsHistoryExitModalOpen] = useState(false);
-  const cancelIdleImagePreloadRef = useRef<(() => void) | null>(null);
 
-  useEffect(() => {
-    const { immediate, idle } = getRouteImagePreloadPlan(route);
+  const openHistoryExitModal = useCallback(() => {
+    setIsHistoryExitModalOpen(true);
+  }, []);
 
-    if (immediate.length > 0) {
-      void preloadImages(immediate, {
-        fetchPriority: "high",
-      });
-    }
-
-    cancelIdleImagePreloadRef.current?.();
-    cancelIdleImagePreloadRef.current = preloadImagesWhenIdle(idle, {
-      fetchPriority: "low",
-      timeoutMs: 2500,
-      delayMs: 280,
-    });
-
-    return () => {
-      cancelIdleImagePreloadRef.current?.();
-      cancelIdleImagePreloadRef.current = null;
-    };
-  }, [route]);
+  useRouteImagePreload(route);
+  useRouteHistorySync({
+    route,
+    isRound2Unlocked,
+    canEnterGame,
+    canEnterShop,
+    canEnterFinal,
+    setRoute,
+    onHistoryExitRequested: openHistoryExitModal,
+  });
 
   useEffect(() => {
     if (canEnterGame) return;
 
     writeRouteLockRoute(null);
   }, [canEnterGame]);
-
-  useEffect(() => {
-    const handleLocationChange = () => {
-      const requestedRoute = resolveRoute(getLocationPath());
-
-      if (isGameFlowRoute(route) && requestedRoute !== route) {
-        const currentPath = ROUTE_PATH[route];
-        if (getLocationPath() !== currentPath) {
-          window.history.pushState(null, "", toHashUrl(currentPath));
-        }
-
-        setIsHistoryExitModalOpen(true);
-        return;
-      }
-
-      const nextRoute = coerceRoute({
-        requestedRoute,
-        currentRoute: route,
-        isRound2Unlocked,
-        canEnterGame,
-        canEnterShop,
-        canEnterFinal,
-      });
-      const nextPath = ROUTE_PATH[nextRoute];
-
-      if (getLocationPath() !== nextPath) {
-        window.history.replaceState(null, "", toHashUrl(nextPath));
-      }
-
-      setRoute(nextRoute);
-    };
-
-    window.addEventListener("popstate", handleLocationChange);
-    window.addEventListener("hashchange", handleLocationChange);
-
-    return () => {
-      window.removeEventListener("popstate", handleLocationChange);
-      window.removeEventListener("hashchange", handleLocationChange);
-    };
-  }, [canEnterFinal, canEnterGame, canEnterShop, isRound2Unlocked, route]);
-
-  useEffect(() => {
-    const expectedPath = ROUTE_PATH[route];
-    if (getLocationPath() === expectedPath) return;
-
-    window.history.replaceState(null, "", toHashUrl(expectedPath));
-  }, [route]);
 
   const navigateTo = useCallback((
     nextRoute: AppRoute,
@@ -211,9 +137,9 @@ export function useAppNavigation() {
 
     if (getLocationPath() !== nextPath) {
       if (options?.replace) {
-        window.history.replaceState(null, "", toHashUrl(nextPath));
+        replaceHashPath(nextPath);
       } else {
-        window.history.pushState(null, "", toHashUrl(nextPath));
+        pushHashPath(nextPath);
       }
     }
 
@@ -256,11 +182,7 @@ export function useAppNavigation() {
     navigateTo("shop", { replace: true, resetState: "none" });
   }, [navigateTo]);
 
-  const handleCloseHistory = useCallback(() => {
-    navigateTo("setup", { replace: true, resetState: "none" });
-  }, [navigateTo]);
-
-  const handleCloseShop = useCallback(() => {
+  const handleCloseToSetup = useCallback(() => {
     navigateTo("setup", { replace: true, resetState: "none" });
   }, [navigateTo]);
 
@@ -271,8 +193,8 @@ export function useAppNavigation() {
     handleStartGame,
     handleOpenHistory,
     handleOpenShop,
-    handleCloseHistory,
-    handleCloseShop,
+    handleCloseHistory: handleCloseToSetup,
+    handleCloseShop: handleCloseToSetup,
     handleExitToSetup,
     isHistoryExitModalOpen,
     handleHistoryExitCancel,

@@ -153,8 +153,7 @@ export function useAuctionActions({
   };
 
   const handleBoardQuestionSelect = (questionId: string) => {
-    if (isBlocked) return;
-    if (isBannerOpen || isModalOpen || isEntryGuardModalOpen) return;
+    if (isBlocked || isBannerOpen || isModalOpen || isEntryGuardModalOpen) return;
 
     if (specialTypeByQuestionId[questionId] === "auction") {
       const nominal = getQuestionNominal(questionId);
