@@ -257,7 +257,6 @@ export function useAuctionActions({
   ]);
 
   return {
-    placeBid,
     handlePass,
     handleSubmitBid,
     handleMinBid,

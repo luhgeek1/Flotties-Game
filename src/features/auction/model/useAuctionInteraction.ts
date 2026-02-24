@@ -7,7 +7,7 @@ import { auctionBannerOpenAtom } from "@/shared/store/specialBannerAtom";
 import { useAuctionActions } from "./useAuctionActions";
 import { useAuctionDerived } from "./useAuctionDerived";
 import { useAuctionState } from "./useAuctionState";
-import type { AuctionBidCompletePayload, AuctionPlayer } from "./types";
+import type { AuctionBidCompletePayload, AuctionEntryGuard, AuctionPlayer } from "./types";
 
 type UseAuctionInteractionArgs = {
   players: AuctionPlayer[];
@@ -30,13 +30,7 @@ export function useAuctionInteraction({
 }: UseAuctionInteractionArgs) {
   const [isBannerOpen, setIsBannerOpen] = useAtom(auctionBannerOpenAtom);
   const [isEntryGuardModalOpen, setIsEntryGuardModalOpen] = useState(false);
-  const [entryGuard, setEntryGuard] = useState<{
-    mode: "unavailable" | "limited";
-    questionId: string;
-    nominal: number;
-    eligiblePlayersCount: number;
-    excludedPlayersCount: number;
-  } | null>(null);
+  const [entryGuard, setEntryGuard] = useState<AuctionEntryGuard | null>(null);
 
   const state = useAuctionState();
   const pendingNominal = useMemo(

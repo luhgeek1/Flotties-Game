@@ -2,8 +2,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { useMemo } from "react";
 
 import { PlayerAvatar } from "@/entities/players";
+import type { CatInBagTransferModalMode, CatInBagTransferPlayer } from "@/features/cat-in-bag/model";
 import { cn } from "@/shared/lib/utils";
-import type { CatInBagTransferModalMode, CatInBagTransferPlayer } from "../model";
 
 type CatInBagTransferModalProps = {
   open: boolean;

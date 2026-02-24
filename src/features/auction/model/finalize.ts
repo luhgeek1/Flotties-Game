@@ -3,7 +3,7 @@ import type { AuctionBidByPlayerIdState } from "@/shared/store/specialAuctionAto
 import { resolveAuctionLeader } from "./selectors";
 import type { AuctionPlayer } from "./types";
 
-export type FinalizeAuctionArgs = {
+type FinalizeAuctionArgs = {
   players: readonly AuctionPlayer[];
   orderPlayerIds: readonly string[];
   openerPlayerId: string;
@@ -12,7 +12,7 @@ export type FinalizeAuctionArgs = {
   passedPlayerIds: readonly string[];
 };
 
-export type FinalizeAuctionResult = {
+type FinalizeAuctionResult = {
   winnerId: string;
   winningBid: number;
 };

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo } from "react";
 
 import type { GameBoardSpecialTypeByQuestionId } from "@/entities/game-board";
-import { type CatInBagBidCompletePayload, type CatInBagTransferPlayer, useCatInBagTransfer } from "@/features/cat-in-bag/cat-in-bag-transfer";
+import type { CatInBagBidCompletePayload, CatInBagTransferPlayer } from "./types";
+import { useCatInBagTransfer } from "./useCatInBagTransfer";
 
 type UseCatInBagInteractionArgs = {
   players: CatInBagTransferPlayer[];
@@ -82,7 +83,6 @@ export function useCatInBagInteraction({
 
   return {
     isCatInBagQuestionActive,
-    isCatInBagQuestionTitleVisible: isQuestionModalOpen && isCatInBagQuestionActive,
     isBannerOpen,
     isTransferModalOpen,
     modalMode,

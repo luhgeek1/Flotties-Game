@@ -2,7 +2,7 @@ import type { AuctionBidByPlayerIdState } from "@/shared/store/specialAuctionAto
 
 import type { AuctionPlayer } from "./types";
 
-export type AuctionLeader = {
+type AuctionLeader = {
   playerId: string;
   bid: number;
 };

@@ -1,4 +1,4 @@
-export type ResolveMinBidArgs = {
+type ResolveMinBidArgs = {
   nominal: number;
   leaderBid: number;
   leaderBalance: number | null;
@@ -35,4 +35,3 @@ export function parseBidInput(value: string): number | null {
   if (!Number.isFinite(parsed)) return null;
   return parsed;
 }
-

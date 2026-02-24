@@ -11,7 +11,6 @@ import {
   catInBagSelectedAnsweringPlayerIdAtom,
   catInBagTransferModalOpenAtom,
 } from "@/shared/store/specialCIBAtom";
-
 import type { CatInBagBidCompletePayload, CatInBagTransferModalMode, CatInBagTransferPlayer } from "./types";
 
 type UseCatInBagTransferArgs = {
@@ -80,7 +79,7 @@ export function useCatInBagTransfer({
     if (!pendingQuestionId) return;
 
     setIsTransferOpen(true);
-  }, [pendingQuestionId, setIsTransferOpen]);
+  }, [pendingQuestionId, setIsBannerOpen, setIsTransferOpen]);
 
   const handleTransferPlayerSelect = useCallback((playerId: string) => {
     if (!pendingQuestionId) return;
@@ -135,6 +134,7 @@ export function useCatInBagTransfer({
     isBannerOpen,
     isTransferModalOpen,
     onRegularQuestionSelect,
+    setIsBannerOpen,
     setIsBidOpen,
     setIsTransferOpen,
     setPendingQuestionId,
