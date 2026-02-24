@@ -4,7 +4,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useGameHistory } from "@/features/history";
 import { useOnboarding } from "@/features/onboarding";
 import { prepareFinalAnswersStageAtom } from "@/shared/store/finalAtom";
-import { gameRound2UnlockedAtom } from "@/shared/store/gameAtoms";
+import { gamePlayerScoresAtom, gameRound2UnlockedAtom } from "@/shared/store/gameAtoms";
 import { resetGameRoundStateAtom, resetGameSessionAtom } from "@/shared/store/reset-game-session";
 import {
   PLAYERS_TO_START_GAME,
@@ -44,16 +44,31 @@ export function useAppNavigation() {
   const activeShopPlayerId = useAtomValue(shopActivePlayerIdAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
   const selectedPackId = useAtomValue(setupSelectedPackIdAtom);
+  const playerScores = useAtomValue(gamePlayerScoresAtom);
   const canEnterGame = selectedPlayerIds.length === PLAYERS_TO_START_GAME && selectedPackId !== null;
   const canEnterShop = setupPlayers.some(player => player.id === activeShopPlayerId);
+  const canEnterFinal = selectedPlayerIds.some(playerId => (playerScores[playerId] ?? 0) > 0);
   const [route, setRoute] = useState<AppRoute>(() => {
     const routeLockRoute = readRouteLockRoute();
 
     if (routeLockRoute && canEnterGame) {
-      return routeLockRoute;
+      return coerceRoute({
+        requestedRoute: routeLockRoute,
+        currentRoute: "setup",
+        isRound2Unlocked,
+        canEnterGame,
+        canEnterShop,
+        canEnterFinal,
+      });
     }
 
-    return getInitialRoute(window.location.pathname, isRound2Unlocked, canEnterGame, canEnterShop);
+    return getInitialRoute(
+      window.location.pathname,
+      isRound2Unlocked,
+      canEnterGame,
+      canEnterShop,
+      canEnterFinal,
+    );
   });
   const resetGameRoundState = useSetAtom(resetGameRoundStateAtom);
   const resetGameSession = useSetAtom(resetGameSessionAtom);
@@ -88,6 +103,7 @@ export function useAppNavigation() {
         isRound2Unlocked,
         canEnterGame,
         canEnterShop,
+        canEnterFinal,
       });
       const nextPath = ROUTE_PATH[nextRoute];
 
@@ -103,7 +119,7 @@ export function useAppNavigation() {
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [canEnterGame, canEnterShop, isRound2Unlocked, route]);
+  }, [canEnterFinal, canEnterGame, canEnterShop, isRound2Unlocked, route]);
 
   useEffect(() => {
     const expectedPath = ROUTE_PATH[route];
@@ -125,6 +141,7 @@ export function useAppNavigation() {
       isRound2Unlocked: nextIsRound2Unlocked,
       canEnterGame,
       canEnterShop,
+      canEnterFinal,
     });
 
     if (options?.resetState === "session") {
@@ -155,7 +172,7 @@ export function useAppNavigation() {
     }
 
     setRoute(guardedRoute);
-  }, [canEnterGame, canEnterShop, isRound2Unlocked, resetGameRoundState, resetGameSession, resetRoundMvps, route, setIsRound2Unlocked]);
+  }, [canEnterFinal, canEnterGame, canEnterShop, isRound2Unlocked, resetGameRoundState, resetGameSession, resetRoundMvps, route, setIsRound2Unlocked]);
 
   const handleExitToSetup = useCallback(() => {
     appendCurrentGameToHistory();

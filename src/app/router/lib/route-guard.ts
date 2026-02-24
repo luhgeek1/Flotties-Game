@@ -81,6 +81,7 @@ type CoerceRouteArgs = {
   isRound2Unlocked: boolean;
   canEnterGame: boolean;
   canEnterShop: boolean;
+  canEnterFinal: boolean;
 };
 
 export function coerceRoute({
@@ -89,6 +90,7 @@ export function coerceRoute({
   isRound2Unlocked,
   canEnterGame,
   canEnterShop,
+  canEnterFinal,
 }: CoerceRouteArgs): AppRoute {
   if (requestedRoute === "shop" && !canEnterShop) {
     return "setup";
@@ -127,6 +129,18 @@ export function coerceRoute({
     return "game2r";
   }
 
+  if (
+    (requestedRoute === "finalstarttheme"
+      || requestedRoute === "finalcloseeyes"
+      || requestedRoute === "finalbid"
+      || requestedRoute === "finalcloseeyesquestion"
+      || requestedRoute === "finalquestion"
+      || requestedRoute === "finalresults")
+    && !canEnterFinal
+  ) {
+    return "finalprepairing";
+  }
+
   return requestedRoute;
 }
 
@@ -135,6 +149,7 @@ export function getInitialRoute(
   isRound2Unlocked: boolean,
   canEnterGame: boolean,
   canEnterShop: boolean,
+  canEnterFinal: boolean,
 ): AppRoute {
   return coerceRoute({
     requestedRoute: resolveRoute(pathname),
@@ -142,5 +157,6 @@ export function getInitialRoute(
     isRound2Unlocked,
     canEnterGame,
     canEnterShop,
+    canEnterFinal,
   });
 }

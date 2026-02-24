@@ -72,14 +72,6 @@ export function GamePage({ onExitToSetup, onRoundTransitionConfirm, roundIndex =
 
       <CatInBagTransferModal {...model.catInBagTransferModal} />
 
-      {model.isCatInBagQuestionTitleVisible ? (
-        <div className="fixed left-1/2 top-4 z-60 -translate-x-1/2 pointer-events-none">
-          <div className="rounded-full border border-slate-200 bg-white/95 px-5 py-2 text-sm font-black uppercase tracking-wide text-slate-900 shadow-md">
-            Кот в мешке
-          </div>
-        </div>
-      ) : null}
-
       <QuestionModal {...model.questionModal} />
 
       <RoundTransitionModal {...model.roundTransitionModal} />

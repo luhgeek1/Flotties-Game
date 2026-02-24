@@ -2,6 +2,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import { resolveSelectedPlayers } from "@/entities/players";
+import { gamePlayerScoresAtom } from "@/shared/store/gameAtoms";
 import {
   finalActivePlayerIdAtom,
   finalCurrentPlayerIndexAtom,
@@ -15,15 +16,19 @@ type UseFinalPlayerQueueArgs = {
 export function useFinalPlayerQueue({ preferActivePlayer = false }: UseFinalPlayerQueueArgs = {}) {
   const setupPlayers = useAtomValue(setupPlayersAtom);
   const selectedPlayerIds = useAtomValue(setupSelectedPlayerIdsAtom);
+  const playerScores = useAtomValue(gamePlayerScoresAtom);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useAtom(finalCurrentPlayerIndexAtom);
   const [activePlayerId, setActivePlayerId] = useAtom(finalActivePlayerIdAtom);
 
   const playersQueue = useMemo(
-    () => resolveSelectedPlayers(setupPlayers, selectedPlayerIds),
-    [selectedPlayerIds, setupPlayers],
+    () => resolveSelectedPlayers(setupPlayers, selectedPlayerIds)
+      .filter(player => (playerScores[player.id] ?? 0) > 0),
+    [playerScores, selectedPlayerIds, setupPlayers],
   );
 
-  const boundedPlayerIndex = Math.min(currentPlayerIndex, playersQueue.length - 1);
+  const boundedPlayerIndex = playersQueue.length > 0
+    ? Math.min(currentPlayerIndex, playersQueue.length - 1)
+    : 0;
   const queuePlayer = playersQueue[boundedPlayerIndex] ?? null;
   const activePlayer = useMemo(
     () => playersQueue.find(player => player.id === activePlayerId) ?? null,
@@ -35,7 +40,11 @@ export function useFinalPlayerQueue({ preferActivePlayer = false }: UseFinalPlay
     : queuePlayer;
 
   const advancePlayerIndex = useCallback(() => {
-    setCurrentPlayerIndex(prev => Math.min(prev + 1, playersQueue.length - 1));
+    setCurrentPlayerIndex(prev => (
+      playersQueue.length > 0
+        ? Math.min(prev + 1, playersQueue.length - 1)
+        : 0
+    ));
   }, [playersQueue.length, setCurrentPlayerIndex]);
 
   return {
