@@ -8,7 +8,6 @@ export type CatInBagTransferPlayer = {
 export type CatInBagBidCompletePayload = {
   questionId: string;
   targetPlayerId: string;
-  bid: number;
 };
 
 export type CatInBagTransferModalMode = "transfer" | "bid";

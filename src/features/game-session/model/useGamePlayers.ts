@@ -25,14 +25,9 @@ export function useGamePlayers(
     [selectedPlayerIds, setupPlayers],
   );
 
-  const selectedPlayerIdsForGame = useMemo(
-    () => selectedPlayers.map(p => p.id),
-    [selectedPlayers],
-  );
-
   useEffect(() => {
-    setPlayerScores(prev => buildScoresByPlayerIds(selectedPlayerIdsForGame, prev));
-  }, [selectedPlayerIdsForGame, setPlayerScores]);
+    setPlayerScores(prev => buildScoresByPlayerIds(selectedPlayers.map(player => player.id), prev));
+  }, [selectedPlayers, setPlayerScores]);
 
   const gamePlayers = useMemo(
     () => selectedPlayers.map(p => ({ ...p, score: playerScores[p.id] ?? 0 })),
@@ -49,10 +44,6 @@ export function useGamePlayers(
     [gamePlayers],
   );
 
-  const resetScores = useCallback(() => {
-    setPlayerScores(buildScoresByPlayerIds(selectedPlayerIdsForGame));
-  }, [setPlayerScores, selectedPlayerIdsForGame]);
-
   const changePlayerScore = useCallback((playerId: string, delta: number) => {
     setPlayerScores(prev => ({
       ...prev,
@@ -63,8 +54,6 @@ export function useGamePlayers(
   return {
     gamePlayers,
     questionPlayers,
-    selectedPlayerIdsForGame,
-    resetScores,
     changePlayerScore,
   };
 }

@@ -98,7 +98,6 @@ export function useCatInBagTransfer({
     onBidComplete({
       questionId: pendingQuestionId,
       targetPlayerId: selectedAnsweringPlayerId,
-      bid,
     });
     setIsTransferOpen(false);
     setIsBidOpen(false);

@@ -6,9 +6,6 @@ import type { QuestionPack, QuestionPackQuestion } from "@/shared/api/questionPa
 export function useGameBoardData(selectedPack: QuestionPack, roundIndex = 0) {
   return useMemo(() => {
     const activeRound = selectedPack.rounds.main[roundIndex];
-    if (!activeRound) {
-      throw new Error("НЕТ РАУНДОВ В ПАКЕ");
-    }
 
     const questionsById = new Map<string, QuestionPackQuestion>();
 
