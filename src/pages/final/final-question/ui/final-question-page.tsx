@@ -1,13 +1,10 @@
-import { useAtomValue } from "jotai";
 import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
 
 import { QuestionModalAnsweringState, QuestionModalResultTimeoutState } from "@/features/question-modal";
 import smileLottiImage from "@/shared/assets/smileLotti.png";
-import { adminModeEnabledAtom } from "@/features/admin/store/adminModeAtom";
 import { QuestionTimer } from "@/shared/ui";
 import { Header } from "@/widgets/header";
-import { useFinalQuestionModel } from "../model/use-final-question-model";
+import { useFinalQuestionPageModel } from "../model/use-final-question-page-model";
 
 type FinalQuestionPageProps = {
   onExitToSetup?: () => void;
@@ -15,103 +12,11 @@ type FinalQuestionPageProps = {
   onAllAnswersDone?: () => void;
 };
 
-const FINAL_ANSWER_TIMER_DURATION_MS = 30_000;
-const FINAL_COMPLETE_SCREEN_DURATION_MS = 3000;
-
 export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer, onAllAnswersDone }: FinalQuestionPageProps) {
-  const model = useFinalQuestionModel({ onConfirmAnswer });
-  const isAdminMode = useAtomValue(adminModeEnabledAtom);
-  const [isLeaving, setIsLeaving] = useState(false);
-  const [remainingMs, setRemainingMs] = useState(FINAL_ANSWER_TIMER_DURATION_MS);
-  const [isTimeoutModalOpen, setIsTimeoutModalOpen] = useState(false);
-  const leaveTimerRef = useRef<number | null>(null);
-  const allAnswersDoneTimerRef = useRef<number | null>(null);
-  const timerIntervalRef = useRef<number | null>(null);
-  const timeoutTimerRef = useRef<number | null>(null);
-  const timeoutAtRef = useRef<number | null>(null);
-
-  const handleSubmit = useCallback(() => {
-    if (model.isSubmitDisabled || isLeaving || isTimeoutModalOpen) return;
-
-    setIsLeaving(true);
-    leaveTimerRef.current = window.setTimeout(() => {
-      model.onSubmitAnswer();
-    }, 260);
-  }, [isLeaving, isTimeoutModalOpen, model]);
-
-  const handleTimeoutContinue = useCallback(() => {
-    if (isLeaving) return;
-
-    setIsLeaving(true);
-    leaveTimerRef.current = window.setTimeout(() => {
-      model.onTimeoutAnswer();
-    }, 260);
-  }, [isLeaving, model]);
-
-  useEffect(() => {
-    if (!model.isAllPlayersAnswerDone || !onAllAnswersDone || allAnswersDoneTimerRef.current !== null) {
-      return;
-    }
-
-    allAnswersDoneTimerRef.current = window.setTimeout(() => {
-      onAllAnswersDone();
-    }, FINAL_COMPLETE_SCREEN_DURATION_MS);
-  }, [model.isAllPlayersAnswerDone, onAllAnswersDone]);
-
-  useEffect(() => {
-    if (!model.currentPlayerId || model.isAllPlayersAnswerDone || isLeaving) return;
-
-    timeoutAtRef.current = window.performance.now() + FINAL_ANSWER_TIMER_DURATION_MS;
-
-    timerIntervalRef.current = window.setInterval(() => {
-      if (timeoutAtRef.current === null) return;
-
-      const nextRemaining = Math.max(0, Math.round(timeoutAtRef.current - window.performance.now()));
-      setRemainingMs(nextRemaining);
-    }, 100);
-
-    timeoutTimerRef.current = window.setTimeout(() => {
-      setRemainingMs(0);
-      setIsTimeoutModalOpen(true);
-
-      if (timerIntervalRef.current !== null) {
-        window.clearInterval(timerIntervalRef.current);
-        timerIntervalRef.current = null;
-      }
-    }, FINAL_ANSWER_TIMER_DURATION_MS);
-
-    return () => {
-      if (timerIntervalRef.current !== null) {
-        window.clearInterval(timerIntervalRef.current);
-        timerIntervalRef.current = null;
-      }
-
-      if (timeoutTimerRef.current !== null) {
-        window.clearTimeout(timeoutTimerRef.current);
-        timeoutTimerRef.current = null;
-      }
-
-      timeoutAtRef.current = null;
-    };
-  }, [isLeaving, model.currentPlayerId, model.isAllPlayersAnswerDone]);
-
-  useEffect(() => () => {
-    if (leaveTimerRef.current !== null) {
-      window.clearTimeout(leaveTimerRef.current);
-    }
-
-    if (allAnswersDoneTimerRef.current !== null) {
-      window.clearTimeout(allAnswersDoneTimerRef.current);
-    }
-
-    if (timerIntervalRef.current !== null) {
-      window.clearInterval(timerIntervalRef.current);
-    }
-
-    if (timeoutTimerRef.current !== null) {
-      window.clearTimeout(timeoutTimerRef.current);
-    }
-  }, []);
+  const model = useFinalQuestionPageModel({
+    onConfirmAnswer,
+    onAllAnswersDone,
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/30 transition-colors duration-300">
@@ -166,27 +71,27 @@ export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer, onAllAnswers
               key={`final-question-form-${model.currentPlayerName}`}
               className="w-full max-w-5xl"
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
-              animate={isLeaving
+              animate={model.isLeaving
                 ? { opacity: 0, y: 30, scale: 0.98 }
                 : { opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -16, scale: 0.98 }}
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             >
-              {isTimeoutModalOpen ? (
+              {model.isTimeoutModalOpen ? (
                 <section className="flex w-full justify-center bg-card border rounded-2xl shadow-2xl px-6 py-8 md:px-12 md:py-12 text-center">
                   <QuestionModalResultTimeoutState
                     answerText={model.finalAnswerText}
                     isTimeoutByClock
                     showCorrectAnswer={false}
-                    onContinue={handleTimeoutContinue}
+                    onContinue={model.handleTimeoutContinue}
                   />
                 </section>
               ) : (
                 <>
                   <div className="mb-4 flex w-full justify-end">
                     <QuestionTimer
-                      durationMs={FINAL_ANSWER_TIMER_DURATION_MS}
-                      remainingMs={remainingMs}
+                      durationMs={model.finalAnswerTimerDurationMs}
+                      remainingMs={model.remainingMs}
                     />
                   </div>
 
@@ -196,9 +101,9 @@ export function FinalQuestionPage({ onExitToSetup, onConfirmAnswer, onAllAnswers
                       playerAvatarUrl={model.currentPlayerAvatarUrl}
                       questionText={model.finalQuestionText}
                       answerInput={model.answerInput}
-                      prefilledAnswerText={isAdminMode ? model.finalAnswerText : ""}
+                      prefilledAnswerText={model.isAdminMode ? model.finalAnswerText : ""}
                       onAnswerInputChange={model.onAnswerInputChange}
-                      onSubmitAnswer={handleSubmit}
+                      onSubmitAnswer={model.handleSubmit}
                     />
                   </section>
                 </>
