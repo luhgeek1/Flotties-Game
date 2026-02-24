@@ -44,6 +44,8 @@ export function SetupOnboardingDemoIntroOverlay({ onClose }: SetupOnboardingDemo
           animate={{ y: 0, opacity: 1, scale: 1 }}
           transition={{ duration: 0.62, delay: 0.16, ease: INTRO_OVERLAY_EASE }}
           draggable={false}
+          loading="eager"
+          decoding="async"
         />
       </div>
     </motion.button>
@@ -100,6 +102,8 @@ export function SetupOnboardingDemoPostOverlay({
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         draggable={false}
+        loading="lazy"
+        decoding="async"
       />
     </motion.div>
   );
@@ -116,6 +120,8 @@ export function SetupOnboardingDemoReadingOverlay() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
         draggable={false}
+        loading="lazy"
+        decoding="async"
       />
 
       <motion.div

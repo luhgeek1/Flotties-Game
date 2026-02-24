@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { useGameHistory } from "@/features/history";
@@ -21,6 +21,8 @@ import {
   type AppRoute,
 } from "../lib/route-guard";
 import { readRouteLockRoute, writeRouteLockRoute } from "./routeLockStorage";
+import { getRouteImagePreloadPlan } from "./routeImagePreload";
+import { preloadImages, preloadImagesWhenIdle } from "@/shared/lib/imagePreload";
 
 export type NavigateOptions = {
   replace?: boolean;
@@ -95,6 +97,29 @@ export function useAppNavigation() {
   const { markOnboardingStartedGame } = useOnboarding();
   const prepareFinalAnswersStage = useSetAtom(prepareFinalAnswersStageAtom);
   const [isHistoryExitModalOpen, setIsHistoryExitModalOpen] = useState(false);
+  const cancelIdleImagePreloadRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    const { immediate, idle } = getRouteImagePreloadPlan(route);
+
+    if (immediate.length > 0) {
+      void preloadImages(immediate, {
+        fetchPriority: "high",
+      });
+    }
+
+    cancelIdleImagePreloadRef.current?.();
+    cancelIdleImagePreloadRef.current = preloadImagesWhenIdle(idle, {
+      fetchPriority: "low",
+      timeoutMs: 2500,
+      delayMs: 280,
+    });
+
+    return () => {
+      cancelIdleImagePreloadRef.current?.();
+      cancelIdleImagePreloadRef.current = null;
+    };
+  }, [route]);
 
   useEffect(() => {
     if (canEnterGame) return;

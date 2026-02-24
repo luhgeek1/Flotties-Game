@@ -105,6 +105,8 @@ export function RayGifBannerFullscreen({
               exit={{ opacity: 0, y: -6, filter: "blur(6px)" }}
               transition={{ duration: 0.4, ease: "easeOut" }}
               draggable={false}
+              loading="eager"
+              decoding="async"
               onClick={handleClose}
             />
           ) : (
@@ -133,6 +135,8 @@ export function RayGifBannerFullscreen({
                   className="w-auto object-contain select-none"
                   style={{ maxWidth: "90vw", maxHeight: 500 }}
                   draggable={false}
+                  loading="eager"
+                  decoding="async"
                 />
               </div>
             </motion.div>

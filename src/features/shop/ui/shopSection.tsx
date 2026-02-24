@@ -105,6 +105,8 @@ export function ShopSection({
                       src={item.value}
                       alt={item.name}
                       className="size-14 rounded-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
 

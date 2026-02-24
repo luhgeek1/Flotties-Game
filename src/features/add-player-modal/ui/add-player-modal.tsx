@@ -102,7 +102,13 @@ export function AddPlayerModal({
                 isDarkDefaultBanner ? "border-slate-200 bg-slate-900/40" : "border-slate-900 bg-slate-50",
               )}
             >
-              <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
+              <img
+                src={avatar}
+                alt="Avatar"
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
             </motion.button>
 
             <motion.button

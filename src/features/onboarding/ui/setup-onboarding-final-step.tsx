@@ -25,6 +25,8 @@ export function SetupOnboardingFinalStep({ onFinish }: SetupOnboardingFinalStepP
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           draggable={false}
+          loading="eager"
+          decoding="async"
         />
       </div>
 

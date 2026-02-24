@@ -16,6 +16,7 @@ export function PlayerAvatar({
       src={value}
       alt={alt}
       className={cn("h-full w-full object-cover", className)}
+      decoding="async"
     />
   );
 }

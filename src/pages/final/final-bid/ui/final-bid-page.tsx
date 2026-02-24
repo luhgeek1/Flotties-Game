@@ -90,6 +90,8 @@ export function FinalBidPage({ onExitToSetup, onConfirmBid, onAllBidsDone }: Fin
                 exit={{ y: 240, opacity: 0 }}
                 transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </motion.div>
           ) : (

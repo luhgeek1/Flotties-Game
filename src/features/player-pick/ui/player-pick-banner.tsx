@@ -42,6 +42,8 @@ export function PlayerPickBanner({
             alt=""
             aria-hidden="true"
             draggable={false}
+            loading="eager"
+            decoding="async"
             initial={{ opacity: 0, x: 120, y: 36, scale: 0.96 }}
             animate={{
               opacity: [0, 1, 1, 0],

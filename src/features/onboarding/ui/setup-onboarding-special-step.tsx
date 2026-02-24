@@ -56,6 +56,8 @@ export function SetupOnboardingSpecialStep({ onContinue }: SetupOnboardingSpecia
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           draggable={false}
+          loading="lazy"
+          decoding="async"
         />
       </div>
     </motion.button>

@@ -41,6 +41,9 @@ export function ShopProfile({
             src={baseLottiImage}
             alt="Battle Arena"
             className="block w-full h-auto object-cover"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
           />
           {selectedItem.overlaySrc ? (
             <img
@@ -48,6 +51,8 @@ export function ShopProfile({
               alt=""
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 h-full w-full -translate-x-1 object-cover"
+              loading="eager"
+              decoding="async"
             />
           ) : null}
         </div>
@@ -94,6 +99,8 @@ export function ShopProfile({
                     src={item.cardSrc}
                     alt={item.title}
                     className="h-16 w-16 md:h-20 md:w-20 object-cover rounded-md"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </button>
               );

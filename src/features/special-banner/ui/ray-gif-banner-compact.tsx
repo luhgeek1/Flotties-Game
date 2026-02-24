@@ -58,6 +58,8 @@ export function RayGifBannerCompact({
               exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
               transition={{ duration: 0.25, ease: "easeOut" }}
               draggable={false}
+              loading="eager"
+              decoding="async"
             />
           ) : (
             <motion.div
@@ -74,6 +76,8 @@ export function RayGifBannerCompact({
                 alt={`${title} gif`}
                 className="relative z-10 h-full w-full object-cover select-none"
                 draggable={false}
+                loading="eager"
+                decoding="async"
               />
             </motion.div>
           )}

@@ -37,6 +37,8 @@ export function CosmeticsWearableCard({
             src={cardSrc}
             alt={name}
             className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
 
           {!isOwned ? (

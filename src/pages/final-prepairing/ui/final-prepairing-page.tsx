@@ -83,6 +83,9 @@ export function FinalPrepairingPage({
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
               draggable={false}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
             />
           </>
         )}

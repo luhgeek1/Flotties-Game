@@ -62,6 +62,8 @@ export function FinalCloseEyesPage({
               exit={{ y: 180, opacity: 0 }}
               transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
               draggable={false}
+              loading="eager"
+              decoding="async"
             />
           ) : null}
         </AnimatePresence>

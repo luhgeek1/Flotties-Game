@@ -84,6 +84,8 @@ export function SetupOnboardingOverlay({ onClose }: SetupOnboardingOverlayProps)
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
               draggable={false}
+              loading="eager"
+              decoding="async"
             />
           </motion.button>
         )}

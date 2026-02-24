@@ -45,7 +45,13 @@ export function CosmeticsAvatarPicker({
             )}
           >
             <motion.button whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }}>
-              <img src={option.value} alt="Preset avatar" className="h-full w-full object-cover rounded-full" />
+              <img
+                src={option.value}
+                alt="Preset avatar"
+                className="h-full w-full object-cover rounded-full"
+                loading="lazy"
+                decoding="async"
+              />
             </motion.button>
           </Button>
         );
