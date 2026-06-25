@@ -1,4 +1,4 @@
-import { Check, Coins, Palette, User } from "lucide-react";
+import { Check, Coins, Palette, User } from "@/shared/ui/icons";
 import { useCallback, useRef } from "react";
 
 import { CosmeticsWearableCard } from "@/entities/cosmetics";

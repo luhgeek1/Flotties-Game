@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight } from "@/shared/ui/icons"
 import { AnimatePresence, motion } from "motion/react"
 
 import { Button } from "@/shared/components/ui/button"

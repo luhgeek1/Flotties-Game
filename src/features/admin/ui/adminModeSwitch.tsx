@@ -1,4 +1,4 @@
-import { Shield } from "lucide-react";
+import { Shield } from "@/shared/ui/icons";
 
 import { Switch } from "@/shared/components/ui/switch";
 import { cn } from "@/shared/lib/utils";

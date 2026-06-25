@@ -1,4 +1,4 @@
-import { ArrowLeft, History, Moon, Sun } from "lucide-react";
+import { ArrowLeft, History, Moon, Sun } from "@/shared/ui/icons";
 import { useState } from "react";
 
 import { ExitGameModal } from "@/features/exit-game";

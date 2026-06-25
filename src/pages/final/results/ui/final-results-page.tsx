@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { CheckCircle2, Coins, Trophy, XCircle } from "lucide-react";
+import { CheckCircle2, Coins, Trophy, XCircle } from "@/shared/ui/icons";
 
 import { Button } from "@/shared/components/ui/button";
 import { Header } from "@/widgets/header";

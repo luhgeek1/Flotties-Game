@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/shared/ui/icons";
 
 import { PlayerAvatar, type SetupPlayer } from "@/entities/players";
 import { Button } from "@/shared/components/ui/button";

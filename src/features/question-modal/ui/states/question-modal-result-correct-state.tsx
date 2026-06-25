@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check } from "@/shared/ui/icons";
 
 type QuestionModalResultCorrectStateProps = {
   answerText: string;

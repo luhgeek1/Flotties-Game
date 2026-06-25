@@ -1,4 +1,4 @@
-import { ChevronRight, Plus } from "lucide-react";
+import { ChevronRight, Plus } from "@/shared/ui/icons";
 import { motion } from "motion/react";
 import {
   PLAYER_SELECTION_KEY_CODES,

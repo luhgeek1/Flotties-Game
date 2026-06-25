@@ -1,4 +1,4 @@
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "@/shared/ui/icons";
 import { AnimatePresence, motion } from "motion/react";
 
 import { Button } from "@/shared/components/ui/button";

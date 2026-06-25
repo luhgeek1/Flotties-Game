@@ -1,4 +1,4 @@
-import { Palette, Plus, UserCircle2 } from "lucide-react";
+import { Palette, Plus, UserCircle2 } from "@/shared/ui/icons";
 import { AnimatePresence, motion } from "motion/react";
 
 import {

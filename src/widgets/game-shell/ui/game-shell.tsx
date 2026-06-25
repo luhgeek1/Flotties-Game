@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Users } from "lucide-react";
+import { Users } from "@/shared/ui/icons";
 
 import { Button } from "@/shared/components/ui/button";
 import { Header } from "@/widgets/header";

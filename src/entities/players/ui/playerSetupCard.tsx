@@ -1,4 +1,4 @@
-import { CheckCircle2, Pencil, Trash2 } from "lucide-react";
+import { CheckCircle2, Pencil, Trash2 } from "@/shared/ui/icons";
 import { motion } from "motion/react";
 
 import { Button } from "@/shared/components/ui/button";

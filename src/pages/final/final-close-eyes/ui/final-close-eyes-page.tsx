@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { EyeOff } from "lucide-react";
+import { EyeOff } from "@/shared/ui/icons";
 import { useEffect, useRef, useState } from "react";
 
 import { PlayerAvatar } from "@/entities/players";

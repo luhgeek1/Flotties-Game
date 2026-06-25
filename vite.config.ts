@@ -14,7 +14,10 @@ export default defineConfig({
   base: "./",
   publicDir: false,
   build: {
-    outDir: "public",
+    outDir: "docs",
     emptyOutDir: true,
+    rollupOptions: {
+      maxParallelFileOps: 32,
+    },
   },
 });

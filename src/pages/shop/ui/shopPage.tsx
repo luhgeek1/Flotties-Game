@@ -1,4 +1,4 @@
-import { ArrowLeft, Moon, ShoppingBag, Sun } from "lucide-react";
+import { ArrowLeft, Moon, ShoppingBag, Sun } from "@/shared/ui/icons";
 import { PlayerAvatar } from "@/entities/players";
 import { AdminModeSwitch } from "@/features/admin";
 import { ShopPlayerSelectModal, ShopSection } from "@/features/shop";

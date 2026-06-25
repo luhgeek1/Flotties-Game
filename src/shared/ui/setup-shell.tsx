@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "@/shared/ui/icons";
 import { motion } from "motion/react";
 
 import { AdminModeSwitch } from "@/features/admin";

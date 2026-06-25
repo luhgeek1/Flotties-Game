@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { History, ShoppingBag } from "lucide-react";
+import { History, ShoppingBag } from "@/shared/ui/icons";
 import { AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { SetupOnboardingOverlay } from "@/features/onboarding";

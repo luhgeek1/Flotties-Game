@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
-import { LogOut, Moon, Sun } from "lucide-react";
+import { LogOut, Moon, Sun } from "@/shared/ui/icons";
 
 import { AdminModeSwitch } from "@/features/admin";
 import { ExitGameModal } from "@/features/exit-game";

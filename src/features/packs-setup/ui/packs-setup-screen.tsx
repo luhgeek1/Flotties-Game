@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from "jotai";
 import { motion } from "motion/react";
-import { ArrowLeft, Play } from "lucide-react";
+import { ArrowLeft, Play } from "@/shared/ui/icons";
 
 import { QuestionPackCard } from "@/entities/question-pack";
 import { Button } from "@/shared/components/ui/button";

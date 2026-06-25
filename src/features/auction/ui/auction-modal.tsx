@@ -1,4 +1,4 @@
-import { AlertCircle, Gavel } from "lucide-react";
+import { AlertCircle, Gavel } from "@/shared/ui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import { useMemo } from "react";
 

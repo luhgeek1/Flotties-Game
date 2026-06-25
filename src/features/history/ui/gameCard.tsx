@@ -1,4 +1,4 @@
-import { Calendar, Clock, Crown, Star, Trash2, Trophy, Zap } from "lucide-react";
+import { Calendar, Clock, Crown, Star, Trash2, Trophy, Zap } from "@/shared/ui/icons";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 

@@ -1,4 +1,4 @@
-import { CheckCircle2, FileText } from "lucide-react";
+import { CheckCircle2, FileText } from "@/shared/ui/icons";
 
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";

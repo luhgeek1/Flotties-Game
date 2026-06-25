@@ -1,4 +1,4 @@
-import { ArrowRight, LogOut, Trophy } from "lucide-react"
+import { ArrowRight, LogOut, Trophy } from "@/shared/ui/icons"
 import { motion } from "motion/react"
 
 import { Button } from "@/shared/components/ui/button"

@@ -1,4 +1,4 @@
-import { Coins } from "lucide-react";
+import { Coins } from "@/shared/ui/icons";
 
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";

@@ -1,4 +1,4 @@
-import { ArrowRight, Crown } from "lucide-react"
+import { ArrowRight, Crown } from "@/shared/ui/icons"
 import { motion } from "motion/react"
 
 import { Button } from "@/shared/components/ui/button"
