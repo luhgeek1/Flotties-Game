@@ -11,7 +11,7 @@
 > [!TIP]
 > Официальное ТЗ: <https://gitlab.prodcontest.com/2026-final-tasks/frontend>
 
-**Демо (GitLab Pages):** <https://nipery6-8ece35.pages.prodcontest.com/>
+**Демо (GitLab Pages):** <https://luhgeek1.github.io/#/>
 
 ## Оглавление
 
